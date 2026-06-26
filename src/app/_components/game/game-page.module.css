@@ -1,0 +1,47 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  background: radial-gradient(ellipse at 50% 40%, #4a3020 0%, #2a1508 70%);
+}
+
+.view {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(232, 213, 163, 0.28);
+  font-size: 10px;
+  letter-spacing: 1px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.ui {
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .app {
+    flex-direction: row;
+    max-width: 100%;
+  }
+
+  .view {
+    flex: 1;
+  }
+
+  .ui {
+    flex-shrink: 0;
+  }
+}

@@ -36,6 +36,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Server State | TanStack React Query | 5.x |
 | Database | Supabase (PostgreSQL + PostGIS) | — |
 | 3D Graphics | Three.js | 0.185.x |
+| 3D React Renderer | @react-three/fiber | 9.x |
+| 3D Helpers | @react-three/drei | 10.x |
+| 3D Animation | @react-spring/three | 10.x |
 
 ---
 
