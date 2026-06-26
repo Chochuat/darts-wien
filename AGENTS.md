@@ -88,6 +88,14 @@ _No decisions recorded yet._
 
 ---
 
+## Available Skills
+
+| Skill | Location | Use Case |
+|-------|----------|----------|
+| `grill-me` | `.opencode/skills/grill-me/` | Load this skill when the user says "grill me", "stress test", or wants to relentlessly interrogate a plan or design before implementing. Interviews the user branch-by-branch until shared understanding is reached. |
+
+---
+
 ## Memory & Agent Instructions
 
 ### What to update and when
