@@ -132,7 +132,7 @@ export default function DartboardModel() {
   }
 
   return (
-    <group position={[0, 0.15, -0.42]}>
+    <group position={[0, 0.45, -0.42]}>
       <FullRing ir={0.8} orr={BOARD_RADIUS} col="#0a0500" />
       <PieRing innerR={0.72} outerR={0.8} c1="#cc2222" c2="#228822" />
       <PieRing innerR={0.54} outerR={0.72} c1="#111111" c2="#f5ecd7" />

@@ -6,10 +6,16 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
   type ReactNode,
 } from "react";
-import type { DartOutcome, GameState, GameAction } from "./types";
-import { randomOutcome } from "./dart-logic";
+import type {
+  DartOutcome,
+  GameState,
+  GameAction,
+  Direction,
+  FlightInput,
+} from "./types";
 
 const initialState: GameState = {
   outcomes: [],
@@ -26,17 +32,19 @@ function reducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         isThrowing: true,
-        outcomes: action.outcomes,
+        outcomes: [],
         roundKey: state.roundKey + 1,
         landedCount: 0,
       };
     }
     case "DART_LANDED": {
+      const outcomes = [...state.outcomes, action.outcome];
       const landedCount = state.landedCount + 1;
       const done = landedCount >= 3;
-      const roundScore = state.outcomes.reduce((s, o) => s + o.score, 0);
+      const roundScore = outcomes.reduce((s, o) => s + o.score, 0);
       return {
         ...state,
+        outcomes,
         landedCount,
         isThrowing: done ? false : state.isThrowing,
         totalScore:
@@ -57,30 +65,36 @@ function reducer(state: GameState, action: GameAction): GameState {
 interface GameContextValue {
   state: GameState;
   throwDarts: () => void;
-  dartLanded: () => void;
+  nudge: (dir: Direction) => void;
+  dartLanded: (outcome: DartOutcome) => void;
+  inputRef: { current: FlightInput };
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const inputRef = useRef<FlightInput>({ nudges: [] });
 
   const throwDarts = useCallback(() => {
-    const outcomes: DartOutcome[] = [
-      randomOutcome(),
-      randomOutcome(),
-      randomOutcome(),
-    ];
-    dispatch({ type: "THROW_START", outcomes });
-  }, []);
+    inputRef.current.nudges.length = 0;
+    dispatch({ type: "THROW_START" });
+  }, [inputRef]);
 
-  const dartLanded = useCallback(() => {
-    dispatch({ type: "DART_LANDED" });
+  const nudge = useCallback(
+    (dir: Direction) => {
+      inputRef.current.nudges.push(dir);
+    },
+    [inputRef],
+  );
+
+  const dartLanded = useCallback((outcome: DartOutcome) => {
+    dispatch({ type: "DART_LANDED", outcome });
   }, []);
 
   const value = useMemo<GameContextValue>(
-    () => ({ state, throwDarts, dartLanded }),
-    [state, throwDarts, dartLanded],
+    () => ({ state, throwDarts, nudge, dartLanded, inputRef }),
+    [state, throwDarts, nudge, dartLanded, inputRef],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

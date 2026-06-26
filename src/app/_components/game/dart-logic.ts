@@ -6,7 +6,7 @@ export const DART_NUMBERS = [
 ];
 
 export const BOARD_RADIUS = 0.9;
-export const BOARD_POSITION = new THREE.Vector3(0, 0.15, -0.42);
+export const BOARD_POSITION = new THREE.Vector3(0, 0.45, -0.42);
 export const BOARD_FACE_Z = BOARD_POSITION.z + 0.03;
 
 export const HAND_POS = new THREE.Vector3(0.2, -0.55, 1.7);
@@ -33,57 +33,44 @@ export function randomOutcome(): DartOutcome {
   return { type: "single", number: num, score: num, label: String(num) };
 }
 
-export function getBoardPos(outcome: DartOutcome): THREE.Vector3 {
-  const { x: bx, y: by } = BOARD_POSITION;
-  const z = BOARD_FACE_Z;
+export function computeOutcomeFromBoardPosition(
+  x: number,
+  y: number,
+): DartOutcome {
+  const dx = x - BOARD_POSITION.x;
+  const dy = y - BOARD_POSITION.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-  if (outcome.type === "miss") {
-    const a = Math.random() * Math.PI * 2;
-    const r = BOARD_RADIUS + 0.05 + Math.random() * 0.3;
-    return new THREE.Vector3(bx + Math.cos(a) * r, by + Math.sin(a) * r, z);
+  if (dist > 0.8) {
+    return { type: "miss", score: 0, label: "MISS" };
+  }
+  if (dist <= 0.04) {
+    return { type: "inner_bull", score: 50, label: "BULL" };
+  }
+  if (dist <= 0.15) {
+    return { type: "outer_bull", score: 25, label: "25" };
   }
 
-  let angle: number;
-  if (outcome.type === "inner_bull" || outcome.type === "outer_bull") {
-    angle = Math.random() * Math.PI * 2;
+  const ang = Math.atan2(dy, dx);
+  const raw = (Math.PI / 2 - ang) / WEDGE_SPAN;
+  const idx = ((Math.round(raw) % 20) + 20) % 20;
+  const num = DART_NUMBERS[idx];
+
+  let type: "single" | "double" | "triple";
+  if (dist > 0.72 && dist <= 0.8) {
+    type = "double";
+  } else if (dist > 0.46 && dist <= 0.54) {
+    type = "triple";
   } else {
-    const idx = DART_NUMBERS.indexOf(outcome.number!);
-    angle = wedgeCenterAngle(idx) + (Math.random() - 0.5) * WEDGE_HALF * 1.4;
+    type = "single";
   }
 
-  let innerR: number;
-  let outerR: number;
-  switch (outcome.type) {
-    case "inner_bull":
-      innerR = 0;
-      outerR = 0.04;
-      break;
-    case "outer_bull":
-      innerR = 0.04;
-      outerR = 0.15;
-      break;
-    case "single":
-      if (Math.random() < 0.5) {
-        innerR = 0.15;
-        outerR = 0.46;
-      } else {
-        innerR = 0.54;
-        outerR = 0.72;
-      }
-      break;
+  switch (type) {
     case "double":
-      innerR = 0.72;
-      outerR = 0.8;
-      break;
+      return { type, number: num, score: num * 2, label: "D" + num };
     case "triple":
-      innerR = 0.46;
-      outerR = 0.54;
-      break;
+      return { type, number: num, score: num * 3, label: "T" + num };
     default:
-      innerR = 0;
-      outerR = 0;
+      return { type: "single", number: num, score: num, label: String(num) };
   }
-
-  const r = innerR + Math.random() * (outerR - innerR);
-  return new THREE.Vector3(bx + Math.cos(angle) * r, by + Math.sin(angle) * r, z);
 }

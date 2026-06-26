@@ -22,6 +22,12 @@ export interface GameState {
   roundKey: number;
 }
 
+export type Direction = "up" | "down" | "left" | "right";
+
+export interface FlightInput {
+  nudges: Direction[];
+}
+
 export type GameAction =
-  | { type: "THROW_START"; outcomes: DartOutcome[] }
-  | { type: "DART_LANDED" };
+  | { type: "THROW_START" }
+  | { type: "DART_LANDED"; outcome: DartOutcome };

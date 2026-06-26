@@ -12,11 +12,11 @@ const LABEL_BACK = "rgba(10,5,0,0.55)";
 const CRIMSON_DEEP = "#8b0000";
 const CRIMSON_SHADOW = "#660000";
 
-const PANEL_X = 1.25;
-const PANEL_Y = 0.15;
+const PANEL_X = -0.55;
+const PANEL_Y = -0.75;
 const PANEL_Z = -0.49;
-const PANEL_W = 0.7;
-const PANEL_H = 1.0;
+const PANEL_W = 0.75;
+const PANEL_H = 0.8;
 
 interface HudResources {
   canvas: HTMLCanvasElement;
