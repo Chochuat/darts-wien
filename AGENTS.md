@@ -31,7 +31,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Language | TypeScript (strict) | 5.x |
 | Linting | ESLint (`eslint-config-next`) | 9.x |
 | Package Manager | npm | — |
-| Styling | CSS Modules / Global CSS | — |
+| Styling | MUI (Material UI) + CSS Modules | 9.x |
+| Forms | React Hook Form | 7.x |
+| Server State | TanStack React Query | 5.x |
+| Database | Supabase (PostgreSQL + PostGIS) | — |
+| 3D Graphics | Three.js | 0.185.x |
 
 ---
 
@@ -43,7 +47,13 @@ darts-wien/
 │   └── app/                  # App Router pages and layouts
 │       ├── globals.css       # Global styles (reset, design tokens)
 │       ├── layout.tsx        # Root layout
-│       └── page.tsx          # Home page
+│       ├── page.tsx          # Home page
+│       └── providers.tsx     # MUI theme + React Query providers
+│   └── lib/
+│       └── supabase/
+│           ├── client.ts     # Supabase browser client
+│           ├── server.ts     # Supabase server client
+│           └── types.ts      # Database + PostGIS type definitions
 ├── docs/                     # Detailed architecture decisions, conventions
 │   ├── architecture.md       # ADRs (Architecture Decision Records)
 │   └── conventions.md        # Coding conventions (full detail)

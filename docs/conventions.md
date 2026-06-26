@@ -46,6 +46,36 @@
 - Commit messages: present tense, concise. Prefer conventional commits (`feat:`, `fix:`, `refactor:`, etc.).
 - One logical change per commit.
 
+## Libraries
+
+### Supabase
+
+- Browser client: `createClient()` from `@/lib/supabase/client` — use in Client Components / event handlers.
+- Server client: `createClient()` from `@/lib/supabase/server` — use in Server Components, Route Handlers, Server Actions.
+- Database types: define tables in `src/lib/supabase/types.ts` under the `Database` interface. PostGIS geometry types are re-exported from the same file.
+- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`.
+
+### React Query
+
+- `QueryClient` is created once per render in `Providers` and passed via `QueryClientProvider`.
+- Use hooks from `@tanstack/react-query` in Client Components.
+
+### React Hook Form
+
+- No global provider needed. Import `useForm` directly in forms.
+
+### Three.js
+
+- Import from `three` directly.
+- Use a Client Component (with `"use client"`) for any Three.js rendering.
+- Consider using `@react-three/fiber` if declarative scene management is desired (not installed by default).
+
+### MUI
+
+- Theme is defined in `src/app/providers.tsx` using `createTheme`.
+- Use `ThemeProvider` and `AppRouterCacheProvider` from the same file.
+- Component-level styling: prefer MUI's `sx` prop or CSS Modules over inline styles.
+
 ## Testing
 
 _No testing framework configured yet. Document the approach when one is added._
