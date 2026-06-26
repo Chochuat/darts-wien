@@ -12,9 +12,10 @@ import {
 
 const DART_COUNT = 3;
 const SPAWN_Z = 1.6;
-const FORWARD_V0 = 0.3;
-const FORWARD_ACCEL = 0.7;
-const NUDGE_STEP = 0.035;
+const FORWARD_V0 = 0.08;
+const FORWARD_ACCEL = 0.12;
+const NUDGE_STEP = 0.06;
+const CONTINUOUS_SPEED = 0.5;
 const INTER_DART_DELAY_MS = 600;
 const REST_ROT: [number, number, number] = [-0.18, 0, 0];
 const HIDDEN_POS: [number, number, number] = [0, 0, 8];
@@ -117,9 +118,9 @@ export default function Darts() {
     f.vel += FORWARD_ACCEL * dt;
     f.pos.z -= f.vel * dt;
 
-    const q = inputRef.current.nudges;
-    if (q.length > 0) {
-      for (const dir of q) {
+    const inp = inputRef.current;
+    if (inp.impulses.length > 0) {
+      for (const dir of inp.impulses) {
         switch (dir) {
           case "up":
             f.pos.y += NUDGE_STEP;
@@ -135,7 +136,26 @@ export default function Darts() {
             break;
         }
       }
-      q.length = 0;
+      inp.impulses.length = 0;
+    }
+    if (inp.held.size > 0) {
+      const step = CONTINUOUS_SPEED * dt;
+      for (const dir of inp.held) {
+        switch (dir) {
+          case "up":
+            f.pos.y += step;
+            break;
+          case "down":
+            f.pos.y -= step;
+            break;
+          case "left":
+            f.pos.x -= step;
+            break;
+          case "right":
+            f.pos.x += step;
+            break;
+        }
+      }
     }
 
     const g = meshRefs.current[f.activeIdx];

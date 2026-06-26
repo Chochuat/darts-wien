@@ -66,6 +66,7 @@ interface GameContextValue {
   state: GameState;
   throwDarts: () => void;
   nudge: (dir: Direction) => void;
+  setHeld: (dir: Direction, on: boolean) => void;
   dartLanded: (outcome: DartOutcome) => void;
   inputRef: { current: FlightInput };
 }
@@ -74,16 +75,25 @@ const GameContext = createContext<GameContextValue | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const inputRef = useRef<FlightInput>({ nudges: [] });
+  const inputRef = useRef<FlightInput>({ impulses: [], held: new Set() });
 
   const throwDarts = useCallback(() => {
-    inputRef.current.nudges.length = 0;
+    inputRef.current.impulses.length = 0;
+    inputRef.current.held.clear();
     dispatch({ type: "THROW_START" });
   }, [inputRef]);
 
   const nudge = useCallback(
     (dir: Direction) => {
-      inputRef.current.nudges.push(dir);
+      inputRef.current.impulses.push(dir);
+    },
+    [inputRef],
+  );
+
+  const setHeld = useCallback(
+    (dir: Direction, on: boolean) => {
+      if (on) inputRef.current.held.add(dir);
+      else inputRef.current.held.delete(dir);
     },
     [inputRef],
   );
@@ -93,8 +103,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<GameContextValue>(
-    () => ({ state, throwDarts, nudge, dartLanded, inputRef }),
-    [state, throwDarts, nudge, dartLanded, inputRef],
+    () => ({ state, throwDarts, nudge, setHeld, dartLanded, inputRef }),
+    [state, throwDarts, nudge, setHeld, dartLanded, inputRef],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

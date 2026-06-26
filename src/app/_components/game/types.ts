@@ -25,7 +25,8 @@ export interface GameState {
 export type Direction = "up" | "down" | "left" | "right";
 
 export interface FlightInput {
-  nudges: Direction[];
+  impulses: Direction[];
+  held: Set<Direction>;
 }
 
 export type GameAction =
