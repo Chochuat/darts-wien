@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
@@ -126,7 +126,7 @@ function drawHud(
   roundRect(ctx, bx, by, bw, bh, bh * 0.2);
   ctx.fill();
 
-  ctx.font = `bold ${Math.round(bh * 0.45)}px ${PUB_FONT}`;
+  ctx.font = `bold ${Math.round(bh * (texts.throwLabel.length > 7 ? 0.32 : 0.45))}px ${PUB_FONT}`;
   ctx.fillStyle = CREAM;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -150,7 +150,7 @@ function drawHud(
 }
 
 export default function GameHUD() {
-  const { state, throwDarts } = useGame();
+  const { state, throwDarts, openKeypad } = useGame();
   const { t } = useTranslation();
   const buttonRect = useRef<ButtonRect>({ u0: 0, u1: 0, v0: 0, v1: 0 });
   const hud = getHud();
@@ -165,11 +165,11 @@ export default function GameHUD() {
       title: t("hud.title"),
       totalLabel: t("hud.total"),
       pointsShort: t("hud.pointsShort"),
-      throwLabel: t("hud.throw"),
+      throwLabel: state.playerName == null ? t("keyboard.title") : t("hud.throw"),
       flightStatus: t("hud.flightStatus"),
       missLabel: t("outcome.miss"),
     }),
-    [t],
+    [t, state.playerName],
   );
 
   useEffect(() => {
@@ -194,18 +194,27 @@ export default function GameHUD() {
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     if (!isOverButton(e.uv)) return;
     e.stopPropagation();
-    if (state.isThrowing) return;
+    if (state.isThrowing || state.resultOpen || state.keypadOpen) return;
+    if (state.playerName == null) {
+      openKeypad();
+      return;
+    }
     throwDarts();
   };
+
+  const [hintOpacity, setHintOpacity] = useState(1);
+  useEffect(() => {
+    const id = window.setTimeout(() => setHintOpacity(0), 5500);
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <group>
       <mesh
         position={[PANEL_X, PANEL_Y, PANEL_Z - 0.002]}
-        receiveShadow
       >
         <planeGeometry args={[PANEL_W + 0.06, PANEL_H + 0.06]} />
-        <meshStandardMaterial color="#2a1a0c" roughness={0.8} />
+        <meshBasicMaterial color="#2a1a0c" side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
       <mesh
         position={[PANEL_X, PANEL_Y, PANEL_Z]}
@@ -222,7 +231,40 @@ export default function GameHUD() {
           toneMapped={false}
         />
       </mesh>
+      <DragHint opacity={hintOpacity} text={t("leaderboard.dragHint")} />
     </group>
+  );
+}
+
+function DragHint({ opacity, text }: { opacity: number; text: string }) {
+  const tex = useMemo(() => {
+    if (typeof document === "undefined" || opacity <= 0) return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 96;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.font = 'bold 36px "Georgia", serif';
+    ctx.fillStyle = `rgba(232,213,163,${String(opacity)})`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, 256, 48);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 8;
+    return texture;
+  }, [text, opacity]);
+
+  if (opacity <= 0 || !tex) return null;
+  return (
+    <mesh position={[0.55, -0.4, -0.44]} renderOrder={11}>
+      <planeGeometry args={[0.7, 0.13]} />
+      <meshBasicMaterial
+        map={tex}
+        transparent
+        side={THREE.DoubleSide}
+        toneMapped={false}
+      />
+    </mesh>
   );
 }
 

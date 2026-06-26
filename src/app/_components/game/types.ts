@@ -20,6 +20,11 @@ export interface GameState {
   isThrowing: boolean;
   landedCount: number;
   roundKey: number;
+  playerName: string | null;
+  keypadOpen: boolean;
+  resultOpen: boolean;
+  resultScore: number;
+  leaderboardDirtyKey: number;
 }
 
 export type Direction = "up" | "down" | "left" | "right";
@@ -31,4 +36,8 @@ export interface FlightInput {
 
 export type GameAction =
   | { type: "THROW_START" }
-  | { type: "DART_LANDED"; outcome: DartOutcome };
+  | { type: "DART_LANDED"; outcome: DartOutcome }
+  | { type: "OPEN_KEYPAD" }
+  | { type: "CLOSE_KEYPAD" }
+  | { type: "SET_PLAYER_NAME"; name: string }
+  | { type: "DISMISS_RESULT" };

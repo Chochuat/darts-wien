@@ -13,5 +13,21 @@
   "controls": {
     "steerTouch": "ZIEHEN ZUM LENKEN",
     "steerMouse": "PFEILE · KLICK LENKEN"
+  },
+  "result": {
+    "nextThrow": "NÄCHSTER WURF",
+    "beReady": "SEI BEREIT!"
+  },
+  "leaderboard": {
+    "title": "TOP 10",
+    "loading": "Lädt...",
+    "empty": "Noch keine Würfe",
+    "dragHint": "ZIEHE FÜR RANGLISTE →"
+  },
+  "keyboard": {
+    "title": "NAME EINGEBEN",
+    "del": "LÖSCH",
+    "confirm": "START",
+    "cancel": "X"
   }
 }

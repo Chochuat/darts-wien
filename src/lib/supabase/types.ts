@@ -2,7 +2,29 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export interface Database {
   public: {
-    Tables: Record<string, never>;
+    Tables: {
+      game_throw: {
+        Row: {
+          id: number;
+          name: string;
+          throw: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+          throw: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+          throw?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+    };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: Record<string, never>;

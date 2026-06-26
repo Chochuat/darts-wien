@@ -13,5 +13,21 @@
   "controls": {
     "steerTouch": "DRAG TO STEER",
     "steerMouse": "ARROWS · CLICK STEER"
+  },
+  "result": {
+    "nextThrow": "NEXT THROW",
+    "beReady": "BE READY!"
+  },
+  "leaderboard": {
+    "title": "TOP 10",
+    "loading": "Loading...",
+    "empty": "No throws yet",
+    "dragHint": "DRAG TO FIND RANKINGS →"
+  },
+  "keyboard": {
+    "title": "ENTER YOUR NAME",
+    "del": "DEL",
+    "confirm": "START",
+    "cancel": "X"
   }
 }

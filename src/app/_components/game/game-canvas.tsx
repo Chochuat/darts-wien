@@ -8,15 +8,18 @@ import DartboardModel from "./dartboard-model";
 import Darts from "./darts";
 import GameHUD from "./game-hud";
 import GameControls from "./game-controls";
+import GameKeyboard from "./game-keyboard";
+import GameResult from "./game-result";
+import GameLeaderboard from "./game-leaderboard";
 import { useThree } from "@react-three/fiber";
 
-const WALL_X_POSITIONS = [-1.4, -0.7, 0, 0.7, 1.4];
+const WALL_X_POSITIONS = [-1.4, -0.7, 0, 0.7, 1.4, 2.1];
 
 function Wall() {
   return (
     <>
-      <mesh position={[0, 0, -0.5]} receiveShadow>
-        <planeGeometry args={[5, 3.5]} />
+      <mesh position={[0.3, 0, -0.5]} receiveShadow>
+        <planeGeometry args={[6, 3.5]} />
         <meshStandardMaterial color="#4a3018" roughness={0.7} />
       </mesh>
       {WALL_X_POSITIONS.map((x) => (
@@ -78,6 +81,9 @@ function SceneContents() {
       <Darts />
       <GameHUD />
       <GameControls />
+      <GameLeaderboard />
+      <GameKeyboard />
+      <GameResult />
     </>
   );
 }

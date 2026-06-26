@@ -13,5 +13,21 @@
   "controls": {
     "steerTouch": "ŤAHAJ PRE RIADENIE",
     "steerMouse": "ŠIPKY · KLIK RIADENIE"
+  },
+  "result": {
+    "nextThrow": "ĎALŠÍ HOD",
+    "beReady": "PRIPRAV SA!"
+  },
+  "leaderboard": {
+    "title": "TOP 10",
+    "loading": "Načítava sa...",
+    "empty": "Ešte žiadne hody",
+    "dragHint": "ŤAHAJ PRE RANKING →"
+  },
+  "keyboard": {
+    "title": "ZADAJ MENO",
+    "del": "ZMAŽ",
+    "confirm": "ŠTART",
+    "cancel": "X"
   }
 }

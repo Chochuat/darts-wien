@@ -7,6 +7,7 @@ import {
   useContext,
   useMemo,
   useRef,
+  useEffect,
   type ReactNode,
 } from "react";
 import type {
@@ -16,6 +17,7 @@ import type {
   Direction,
   FlightInput,
 } from "./types";
+import { saveThrow } from "./leaderboard-api";
 
 const initialState: GameState = {
   outcomes: [],
@@ -24,6 +26,11 @@ const initialState: GameState = {
   isThrowing: false,
   landedCount: 0,
   roundKey: 0,
+  playerName: null,
+  keypadOpen: false,
+  resultOpen: false,
+  resultScore: 0,
+  leaderboardDirtyKey: 0,
 };
 
 function reducer(state: GameState, action: GameAction): GameState {
@@ -35,6 +42,7 @@ function reducer(state: GameState, action: GameAction): GameState {
         outcomes: [],
         roundKey: state.roundKey + 1,
         landedCount: 0,
+        resultOpen: false,
       };
     }
     case "DART_LANDED": {
@@ -55,8 +63,19 @@ function reducer(state: GameState, action: GameAction): GameState {
           done && state.isThrowing
             ? [...state.roundHistory, roundScore]
             : state.roundHistory,
+        resultOpen: done ? true : state.resultOpen,
+        resultScore: done ? roundScore : state.resultScore,
+        leaderboardDirtyKey: done ? state.leaderboardDirtyKey + 1 : state.leaderboardDirtyKey,
       };
     }
+    case "OPEN_KEYPAD":
+      return { ...state, keypadOpen: true };
+    case "CLOSE_KEYPAD":
+      return { ...state, keypadOpen: false };
+    case "SET_PLAYER_NAME":
+      return { ...state, playerName: action.name, keypadOpen: false };
+    case "DISMISS_RESULT":
+      return { ...state, resultOpen: false };
     default:
       return state;
   }
@@ -68,6 +87,10 @@ interface GameContextValue {
   nudge: (dir: Direction) => void;
   setHeld: (dir: Direction, on: boolean) => void;
   dartLanded: (outcome: DartOutcome) => void;
+  openKeypad: () => void;
+  closeKeypad: () => void;
+  setPlayerName: (name: string) => void;
+  dismissResult: () => void;
   inputRef: { current: FlightInput };
 }
 
@@ -75,7 +98,10 @@ const GameContext = createContext<GameContextValue | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const inputRef = useRef<FlightInput>({ impulses: [], held: new Set() });
+  const inputRef = useRef<FlightInput>({
+    impulses: [],
+    held: new Set(),
+  });
 
   const throwDarts = useCallback(() => {
     inputRef.current.impulses.length = 0;
@@ -102,10 +128,43 @@ export function GameProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "DART_LANDED", outcome });
   }, []);
 
-  const value = useMemo<GameContextValue>(
-    () => ({ state, throwDarts, nudge, setHeld, dartLanded, inputRef }),
-    [state, throwDarts, nudge, setHeld, dartLanded, inputRef],
+  const openKeypad = useCallback(() => dispatch({ type: "OPEN_KEYPAD" }), []);
+  const closeKeypad = useCallback(() => dispatch({ type: "CLOSE_KEYPAD" }), []);
+  const setPlayerName = useCallback(
+    (name: string) => dispatch({ type: "SET_PLAYER_NAME", name }),
+    [],
   );
+  const dismissResult = useCallback(
+    () => dispatch({ type: "DISMISS_RESULT" }),
+    [],
+  );
+
+  const value = useMemo<GameContextValue>(
+    () => ({
+      state,
+      throwDarts,
+      nudge,
+      setHeld,
+      dartLanded,
+      openKeypad,
+      closeKeypad,
+      setPlayerName,
+      dismissResult,
+      inputRef,
+    }),
+    [state, throwDarts, nudge, setHeld, dartLanded, openKeypad, closeKeypad, setPlayerName, dismissResult, inputRef],
+  );
+
+  // Persist completed round to Supabase exactly once per round.
+  useEffect(() => {
+    if (!state.resultOpen) return;
+    if (state.roundHistory.length === 0) return;
+    if (state.playerName == null) return;
+    void saveThrow(state.playerName, state.resultScore).catch(() => {
+      /* ignore network errors silently */
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.leaderboardDirtyKey]);
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
