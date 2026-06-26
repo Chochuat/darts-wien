@@ -54,7 +54,7 @@ function SceneContents() {
 export default function GameCanvas() {
   return (
     <Canvas
-      shadows
+      shadows="percentage"
       gl={{
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.3,
