@@ -24,5 +24,4 @@ export interface GameState {
 
 export type GameAction =
   | { type: "THROW_START"; outcomes: DartOutcome[] }
-  | { type: "DART_LANDED" }
-  | { type: "RESTART" };
+  | { type: "DART_LANDED" };

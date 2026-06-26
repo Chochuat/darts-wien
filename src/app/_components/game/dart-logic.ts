@@ -11,6 +11,13 @@ export const BOARD_FACE_Z = BOARD_POSITION.z + 0.03;
 
 export const HAND_POS = new THREE.Vector3(0.2, -0.55, 1.7);
 
+export const WEDGE_HALF = Math.PI / 20;
+export const WEDGE_SPAN = Math.PI / 10;
+
+export function wedgeCenterAngle(index: number): number {
+  return Math.PI / 2 - index * WEDGE_SPAN;
+}
+
 export function randomOutcome(): DartOutcome {
   const r = Math.random();
   if (r < 0.03) return { type: "inner_bull", score: 50, label: "BULL" };
@@ -41,11 +48,7 @@ export function getBoardPos(outcome: DartOutcome): THREE.Vector3 {
     angle = Math.random() * Math.PI * 2;
   } else {
     const idx = DART_NUMBERS.indexOf(outcome.number!);
-    const wedgeHalf = Math.PI / 20;
-    angle =
-      -Math.PI / 2 +
-      idx * (2 * Math.PI / 20) +
-      (Math.random() - 0.5) * wedgeHalf * 1.4;
+    angle = wedgeCenterAngle(idx) + (Math.random() - 0.5) * WEDGE_HALF * 1.4;
   }
 
   let innerR: number;

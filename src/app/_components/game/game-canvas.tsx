@@ -6,6 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 import DartboardModel from "./dartboard-model";
 import Darts from "./darts";
+import GameHUD from "./game-hud";
 import { useGame } from "./game-context";
 
 const WALL_X_POSITIONS = [-1.4, -0.7, 0, 0.7, 1.4];
@@ -47,6 +48,7 @@ function SceneContents() {
       <Wall />
       <DartboardModel />
       <Darts key={state.roundKey} outcomes={state.outcomes} />
+      <GameHUD />
     </>
   );
 }
@@ -59,16 +61,17 @@ export default function GameCanvas() {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.3,
       }}
-      camera={{ fov: 45, near: 0.1, far: 20, position: [0, 0.1, 2.4] }}
+      camera={{ fov: 55, near: 0.1, far: 20, position: [0.35, 0.15, 3.8] }}
     >
       <Suspense fallback={null}>
         <SceneContents />
       </Suspense>
       <OrbitControls
-        target={[0, 0.15, 0]}
+        makeDefault
+        target={[0.35, 0.15, 0]}
         enableDamping
-        minDistance={1.2}
-        maxDistance={5}
+        minDistance={1.6}
+        maxDistance={7}
         maxPolarAngle={Math.PI * 0.65}
       />
     </Canvas>

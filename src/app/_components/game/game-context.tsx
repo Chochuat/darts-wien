@@ -49,12 +49,6 @@ function reducer(state: GameState, action: GameAction): GameState {
             : state.roundHistory,
       };
     }
-    case "RESTART": {
-      return {
-        ...initialState,
-        roundKey: state.roundKey + 1,
-      };
-    }
     default:
       return state;
   }
@@ -63,7 +57,6 @@ function reducer(state: GameState, action: GameAction): GameState {
 interface GameContextValue {
   state: GameState;
   throwDarts: () => void;
-  restart: () => void;
   dartLanded: () => void;
 }
 
@@ -81,17 +74,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "THROW_START", outcomes });
   }, []);
 
-  const restart = useCallback(() => {
-    dispatch({ type: "RESTART" });
-  }, []);
-
   const dartLanded = useCallback(() => {
     dispatch({ type: "DART_LANDED" });
   }, []);
 
   const value = useMemo<GameContextValue>(
-    () => ({ state, throwDarts, restart, dartLanded }),
-    [state, throwDarts, restart, dartLanded],
+    () => ({ state, throwDarts, dartLanded }),
+    [state, throwDarts, dartLanded],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
