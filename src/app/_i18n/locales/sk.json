@@ -1,0 +1,17 @@
+{
+  "hud": {
+    "orbitHint": "ŤAHAJ · SCROLLOVAŤ",
+    "title": "DARTS",
+    "total": "SÚČET",
+    "pointsShort": "bod",
+    "throw": "HOD",
+    "flightStatus": "let..."
+  },
+  "outcome": {
+    "miss": "MIMO"
+  },
+  "controls": {
+    "steerTouch": "ŤAHAJ PRE RIADENIE",
+    "steerMouse": "ŠIPKY · KLIK RIADENIE"
+  }
+}

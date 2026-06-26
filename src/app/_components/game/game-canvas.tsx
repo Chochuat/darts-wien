@@ -20,8 +20,8 @@ function Wall() {
         <meshStandardMaterial color="#4a3018" roughness={0.7} />
       </mesh>
       {WALL_X_POSITIONS.map((x) => (
-        <mesh key={x} position={[x, 0, -0.495]}>
-          <boxGeometry args={[0.015, 3.4, 0.01]} />
+        <mesh key={x} position={[x, 0, -0.498]}>
+          <boxGeometry args={[0.015, 3.4, 0.008]} />
           <meshStandardMaterial color="#3a2010" />
         </mesh>
       ))}

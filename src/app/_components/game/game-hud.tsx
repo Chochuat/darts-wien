@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGame } from "./game-context";
@@ -14,7 +15,7 @@ const CRIMSON_SHADOW = "#660000";
 
 const PANEL_X = -0.55;
 const PANEL_Y = -0.75;
-const PANEL_Z = -0.49;
+const PANEL_Z = -0.45;
 const PANEL_W = 0.75;
 const PANEL_H = 0.8;
 
@@ -45,12 +46,23 @@ interface ButtonRect {
   v1: number;
 }
 
+interface HudTexts {
+  orbitHint: string;
+  title: string;
+  totalLabel: string;
+  pointsShort: string;
+  throwLabel: string;
+  flightStatus: string;
+  missLabel: string;
+}
+
 function drawHud(
   res: HudResources,
   cw: number,
   ch: number,
   state: ReturnType<typeof useGame>["state"],
   buttonRect: { current: ButtonRect },
+  texts: HudTexts,
 ) {
   const { canvas, ctx, texture } = res;
   if (canvas.width !== cw) canvas.width = cw;
@@ -63,16 +75,16 @@ function drawHud(
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   labelBack(ctx, cw / 2, ch * 0.06, cw * 0.5, ch * 0.06);
-  ctx.fillText("DRAG · SCROLL", cw / 2, ch * 0.06);
+  ctx.fillText(texts.orbitHint, cw / 2, ch * 0.06);
 
   ctx.font = `bold ${Math.round(ch * 0.085)}px ${PUB_FONT}`;
   ctx.fillStyle = CREAM;
   labelBack(ctx, cw / 2, ch * 0.14, cw * 0.5, ch * 0.08);
-  ctx.fillText("DARTS", cw / 2, ch * 0.14);
+  ctx.fillText(texts.title, cw / 2, ch * 0.14);
 
   ctx.font = `${Math.round(ch * 0.04)}px ${PUB_FONT}`;
   ctx.fillStyle = MUTED;
-  ctx.fillText("TOTAL", cw / 2, ch * 0.24);
+  ctx.fillText(texts.totalLabel, cw / 2, ch * 0.24);
   ctx.font = `bold ${Math.round(ch * 0.11)}px ${PUB_FONT}`;
   ctx.fillStyle = CREAM;
   labelBack(ctx, cw / 2, ch * 0.32, cw * 0.5, ch * 0.11);
@@ -84,7 +96,9 @@ function drawHud(
     state.outcomes.length > 0;
 
   if (showRound) {
-    const labels = state.outcomes.map((o) => o.label).join("  ·  ");
+    const labels = state.outcomes
+      .map((o) => (o.label === "MISS" ? texts.missLabel : o.label))
+      .join("  ·  ");
     const roundScore = state.outcomes.reduce((s, o) => s + o.score, 0);
 
     ctx.font = `bold ${Math.round(ch * 0.05)}px ${PUB_FONT}`;
@@ -95,7 +109,7 @@ function drawHud(
     ctx.font = `bold ${Math.round(ch * 0.09)}px ${PUB_FONT}`;
     ctx.fillStyle = CREAM;
     labelBack(ctx, cw / 2, ch * 0.53, cw * 0.5, ch * 0.1);
-    ctx.fillText(`${roundScore} pts`, cw / 2, ch * 0.53);
+    ctx.fillText(`${roundScore} ${texts.pointsShort}`, cw / 2, ch * 0.53);
   }
 
   const bw = cw * 0.78;
@@ -116,12 +130,12 @@ function drawHud(
   ctx.fillStyle = CREAM;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("THROW", cw / 2, by + bh / 2);
+  ctx.fillText(texts.throwLabel, cw / 2, by + bh / 2);
 
   if (disabled) {
     ctx.font = `${Math.round(bh * 0.25)}px ${PUB_FONT}`;
     ctx.fillStyle = "rgba(232,213,163,0.7)";
-    ctx.fillText("flight...", cw / 2, by + bh * 1.25);
+    ctx.fillText(texts.flightStatus, cw / 2, by + bh * 1.25);
   }
   ctx.globalAlpha = 1;
 
@@ -137,6 +151,7 @@ function drawHud(
 
 export default function GameHUD() {
   const { state, throwDarts } = useGame();
+  const { t } = useTranslation();
   const buttonRect = useRef<ButtonRect>({ u0: 0, u1: 0, v0: 0, v1: 0 });
   const hud = getHud();
   const texture = hud?.texture ?? null;
@@ -144,10 +159,23 @@ export default function GameHUD() {
   const cw = 512;
   const ch = Math.round((cw / PANEL_W) * PANEL_H);
 
+  const texts = useMemo<HudTexts>(
+    () => ({
+      orbitHint: t("hud.orbitHint"),
+      title: t("hud.title"),
+      totalLabel: t("hud.total"),
+      pointsShort: t("hud.pointsShort"),
+      throwLabel: t("hud.throw"),
+      flightStatus: t("hud.flightStatus"),
+      missLabel: t("outcome.miss"),
+    }),
+    [t],
+  );
+
   useEffect(() => {
     if (!hud) return;
-    drawHud(hud, cw, ch, state, buttonRect);
-  }, [hud, cw, ch, state]);
+    drawHud(hud, cw, ch, state, buttonRect, texts);
+  }, [hud, cw, ch, state, texts]);
 
   const isOverButton = (uv: THREE.Vector2 | undefined): boolean => {
     if (!uv) return false;

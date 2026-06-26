@@ -12,7 +12,7 @@ import {
 
 const Z_L = 0.015;
 const NUMBER_RADIUS = 1.02;
-const NUMBER_LOCAL_Z = -0.075;
+const NUMBER_LOCAL_Z = -0.05;
 const PUB_FONT = '"Georgia", serif';
 
 let numberTextureCache: Map<number, THREE.CanvasTexture> | null = null;

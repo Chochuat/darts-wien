@@ -1,0 +1,17 @@
+{
+  "hud": {
+    "orbitHint": "DRAG · SCROLL",
+    "title": "DARTS",
+    "total": "TOTAL",
+    "pointsShort": "pts",
+    "throw": "THROW",
+    "flightStatus": "flight..."
+  },
+  "outcome": {
+    "miss": "MISS"
+  },
+  "controls": {
+    "steerTouch": "DRAG TO STEER",
+    "steerMouse": "ARROWS · CLICK STEER"
+  }
+}

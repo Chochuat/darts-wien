@@ -39,6 +39,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 3D React Renderer | @react-three/fiber | 9.x |
 | 3D Helpers | @react-three/drei | 10.x |
 | 3D Animation | @react-spring/three | 10.x |
+| i18n | i18next + react-i18next | — |
 
 ---
 

@@ -1,0 +1,17 @@
+{
+  "hud": {
+    "orbitHint": "ZIEHEN · SCROLLEN",
+    "title": "DARTS",
+    "total": "GESAMT",
+    "pointsShort": "Pkt",
+    "throw": "WERFEN",
+    "flightStatus": "Flug..."
+  },
+  "outcome": {
+    "miss": "NEE"
+  },
+  "controls": {
+    "steerTouch": "ZIEHEN ZUM LENKEN",
+    "steerMouse": "PFEILE · KLICK LENKEN"
+  }
+}

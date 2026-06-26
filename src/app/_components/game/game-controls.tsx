@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGame } from "./game-context";
@@ -8,7 +9,7 @@ import type { Direction } from "./types";
 
 const PANEL_X = 0.55;
 const PANEL_Y = -0.75;
-const PANEL_Z = -0.49;
+const PANEL_Z = -0.45;
 const PANEL_W = 0.75;
 const PANEL_H = 0.8;
 const BTN_SIZE = 0.18;
@@ -414,6 +415,8 @@ function KeyboardControls() {
 
 export default function GameControls() {
   const isTouch = useIsTouch();
+  const { t } = useTranslation();
+  const hint = isTouch ? t("controls.steerTouch") : t("controls.steerMouse");
   return (
     <group>
       <BackdropBlock />
@@ -426,7 +429,7 @@ export default function GameControls() {
           <ArrowButton dir="right" />
         </>
       ) : null}
-      <Hint text={isTouch ? "DRAG TO STEER" : "ARROWS · CLICK STEER"} />
+      <Hint text={hint} />
       <KeyboardControls />
     </group>
   );
