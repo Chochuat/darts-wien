@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import BarChart from "@mui/icons-material/BarChart";
 import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import TrackChanges from "@mui/icons-material/TrackChanges";
@@ -154,7 +156,7 @@ export default function Sidebar() {
             flexDirection: "column",
             alignItems: "center",
             gap: 0.5,
-            py: 1,
+            py: 0.75,
             cursor: "pointer",
             color: settingsOpen ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.3)",
             transition: "color 0.15s",
@@ -162,21 +164,31 @@ export default function Sidebar() {
           }}
         >
           <SettingsIcon sx={{ fontSize: "1.1rem" }} />
-          <Typography
-            sx={{
-              fontWeight: 700,
-              fontSize: "0.5rem",
-              letterSpacing: 1,
-              textTransform: "uppercase",
-              lineHeight: 1,
-              color: "inherit",
-            }}
-          >
-            {t("nav.settings")}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.3 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                fontSize: "0.5rem",
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                lineHeight: 1,
+                color: "inherit",
+              }}
+            >
+              {t("nav.settings")}
+            </Typography>
+            <ExpandMore
+              sx={{
+                fontSize: "0.65rem",
+                color: "inherit",
+                transition: "transform 0.25s",
+                transform: settingsOpen ? "rotate(180deg)" : "none",
+              }}
+            />
+          </Box>
         </Box>
 
-        {settingsOpen && (
+        <Collapse in={settingsOpen} timeout={250}>
           <Box sx={{ mt: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
             {SUPPORTED_LANGUAGES.map((lang) => {
               const isCurrent = lang === currentLang;
@@ -213,7 +225,7 @@ export default function Sidebar() {
               );
             })}
           </Box>
-        )}
+        </Collapse>
       </Box>
     </Box>
   );
