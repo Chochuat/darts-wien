@@ -9,9 +9,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Collapse from "@mui/material/Collapse";
 import Pagination from "@mui/material/Pagination";
-import Link from "next/link";
-import ArrowBack from "@mui/icons-material/ArrowBack";
-import SportsEsports from "@mui/icons-material/SportsEsports";
+import TrackChanges from "@mui/icons-material/TrackChanges";
 import Search from "@mui/icons-material/Search";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
@@ -20,6 +18,8 @@ import Close from "@mui/icons-material/Close";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
+import AppBar from "@/app/_components/ui/app-bar";
+import Sidebar from "@/app/_components/ui/sidebar";
 import { allMatches, standingsData } from "@/app/_components/standings/data";
 
 const PLAYERS_PER_PAGE = 20;
@@ -90,23 +90,13 @@ export default function AllMatchesPage() {
 
   return (
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>
-      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 } }}>
+      <AppBar />
+      <Sidebar />
+      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 }, ml: { lg: "100px" } }}>
         <Section>
-          {/* Back link */}
-          <Box sx={{ display: "flex", justifyContent: { xs: "center", md: "flex-start" }, mb: 2 }}>
-            <Link href="/" style={{ textDecoration: "none" }}>
-              <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.75, py: { xs: 1, md: 0 } }}>
-                <ArrowBack sx={{ color: colors.accent, fontSize: "1rem" }} />
-                <Typography sx={{ color: colors.accent, fontSize: "0.85rem", fontWeight: 600 }}>
-                  Back to standings
-                </Typography>
-              </Box>
-            </Link>
-          </Box>
-
           {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.3, px: 0.5 }}>
-            <SportsEsports sx={{ color: colors.accent, fontSize: "1.2rem" }} />
+            <TrackChanges sx={{ color: colors.accent, fontSize: "1.2rem" }} />
             <Typography sx={{ color: colors.text.primary, fontWeight: 800, fontSize: { xs: "1.15rem", md: "1.5rem" }, letterSpacing: 1 }}>
               All Matches
             </Typography>
@@ -124,7 +114,6 @@ export default function AllMatchesPage() {
                 onChange={(_, v) => setResult(v ?? "")}
                 size="small"
               >
-                <ToggleButton value="" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.text.secondary, "&.Mui-selected": { bgcolor: colors.accent, color: "#fff" } }}>All</ToggleButton>
                 <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff" } }}>
                   <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Win
                 </ToggleButton>
@@ -230,7 +219,7 @@ export default function AllMatchesPage() {
                       px: { xs: 1.75, md: 2.5 },
                       py: { xs: 1, md: 0.85 },
                       borderTop: i === 0 ? "none" : "1px solid #f0f0f0",
-                      gap: { xs: 1, md: 1.5 },
+                      gap: { xs: 0.75, md: 1 },
                     }}
                   >
                     <Box sx={{ flexShrink: 0 }}>
@@ -241,7 +230,7 @@ export default function AllMatchesPage() {
                       )}
                     </Box>
 
-                    <Box sx={{ minWidth: 0, flex: { xs: 1, md: "none" }, md: { width: 160 } }}>
+                    <Box sx={{ minWidth: 0, flex: { xs: 1, md: "none" }, md: { width: 200 } }}>
                       <Typography
                         sx={{
                           color: colors.text.primary,
@@ -252,13 +241,9 @@ export default function AllMatchesPage() {
                           whiteSpace: "nowrap",
                         }}
                       >
-                        {m.playerName}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, minWidth: 0 }}>
-                      <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        vs {m.opponent}
+                        <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
+                        {" "}
+                        <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>vs {m.opponent}</Box>
                       </Typography>
                     </Box>
 

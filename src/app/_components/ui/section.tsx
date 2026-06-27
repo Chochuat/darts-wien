@@ -8,10 +8,10 @@ export default function Section({ children }: { children: React.ReactNode }) {
     <Box
       sx={{
         bgcolor: colors.surface,
-        borderRadius: borderRadius.xl,
+        borderRadius: { xs: borderRadius.sm, md: borderRadius.xl },
         px: { xs: 1.5, sm: 2.5 },
         py: { xs: 2, sm: 3 },
-        maxWidth: { xs: 560, md: 920 },
+        maxWidth: { xs: 560, md: 920, lg: "none" },
         mx: "auto",
       }}
     >

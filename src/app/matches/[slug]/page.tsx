@@ -5,7 +5,7 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
-import SportsEsports from "@mui/icons-material/SportsEsports";
+import TrackChanges from "@mui/icons-material/TrackChanges";
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
 import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import CompareArrows from "@mui/icons-material/CompareArrows";
@@ -15,6 +15,8 @@ import SportsScore from "@mui/icons-material/SportsScore";
 import { colors, borderForRank } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
+import AppBar from "@/app/_components/ui/app-bar";
+import Sidebar from "@/app/_components/ui/sidebar";
 import RankBadge from "@/app/_components/ui/rank-badge";
 import FormIndicator from "@/app/_components/ui/form-indicator";
 import { findBySlug } from "@/app/_components/standings/data";
@@ -139,7 +141,9 @@ export default async function PlayerMatchesPage({
 
   return (
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>
-      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 } }}>
+      <AppBar />
+      <Sidebar />
+      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 }, ml: { lg: "100px" } }}>
         <Section>
           {/* Back link */}
           <Box
@@ -248,7 +252,7 @@ export default async function PlayerMatchesPage({
             }}
           >
             {[
-              { label: "Matches Played", value: player.played, icon: <SportsEsports sx={{ fontSize: "0.7rem" }} /> },
+              { label: "Matches Played", value: player.played, icon: <TrackChanges sx={{ fontSize: "0.7rem" }} /> },
               { label: "Matches Won", value: player.wins, color: colors.green, icon: <CheckCircle sx={{ fontSize: "0.7rem" }} /> },
               { label: "Matches Lost", value: player.losses, color: colors.red, icon: <Cancel sx={{ fontSize: "0.7rem" }} /> },
               { label: "Sets Won", value: player.setsFor, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.7rem" }} /> },
@@ -319,7 +323,7 @@ export default async function PlayerMatchesPage({
             }}
           >
             {[
-              { label: "P", value: player.played, icon: <SportsEsports sx={{ fontSize: "0.6rem" }} /> },
+              { label: "P", value: player.played, icon: <TrackChanges sx={{ fontSize: "0.6rem" }} /> },
               { label: "W", value: player.wins, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.6rem" }} /> },
               { label: "L", value: player.losses, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.6rem" }} /> },
               { label: "±", value: setDiffStr, color: setDiff > 0 ? colors.green : colors.red, icon: <CompareArrows sx={{ fontSize: "0.6rem" }} /> },
