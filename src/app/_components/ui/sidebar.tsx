@@ -3,7 +3,9 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import BarChart from "@mui/icons-material/BarChart";
+import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import TrackChanges from "@mui/icons-material/TrackChanges";
+import Info from "@mui/icons-material/Info";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
@@ -15,6 +17,8 @@ const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] }
 const links = [
   { label: "Standings", href: "/", icon: <BarChart sx={{ fontSize: "1.3rem" }} /> },
   { label: "Matches", href: "/matches", icon: <TrackChanges sx={{ fontSize: "1.3rem" }} /> },
+  { label: "Tournaments", href: "/tournaments", icon: <EmojiEvents sx={{ fontSize: "1.3rem" }} /> },
+  { label: "About", href: "/about", icon: <Info sx={{ fontSize: "1.3rem" }} /> },
 ];
 
 export const SIDEBAR_WIDTH = 100;
@@ -69,45 +73,45 @@ export default function Sidebar() {
 
           return (
             <Link key={link.label} href={link.href} style={{ textDecoration: "none" }}>
-              <Box
-                className={robotoCondensed.className}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 0.3,
-                  px: 1,
-                  py: 1,
-                  cursor: "pointer",
-                  position: "relative",
-                  color: isActive ? "#fff" : "rgba(255,255,255,0.3)",
-                  transition: "color 0.15s",
-                  width: SIDEBAR_WIDTH,
-                  "&:hover": {
-                    color: isActive ? "#fff" : "rgba(255,255,255,0.55)",
-                  },
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    width: 2,
-                    height: "100%",
-                    borderRadius: 1,
-                    bgcolor: isActive ? colors.accent : "transparent",
-                    transition: "background-color 0.2s",
-                  },
-                  "&:hover::after": {
-                    bgcolor: isActive ? colors.accent : "rgba(255,255,255,0.15)",
-                  },
-                }}
-              >
+                  <Box
+                    className={robotoCondensed.className}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 0.8,
+                      px: 2.5,
+                      py: 1,
+                      cursor: "pointer",
+                      position: "relative",
+                      color: isActive ? "#fff" : "rgba(255,255,255,0.3)",
+                      transition: "color 0.15s",
+                      width: SIDEBAR_WIDTH,
+                      "&:hover": {
+                        color: isActive ? "#fff" : "rgba(255,255,255,0.55)",
+                      },
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        width: 2,
+                        height: "100%",
+                        borderRadius: 1,
+                        bgcolor: isActive ? colors.accent : "transparent",
+                        transition: "background-color 0.2s",
+                      },
+                      "&:hover::after": {
+                        bgcolor: isActive ? colors.accent : "rgba(255,255,255,0.15)",
+                      },
+                    }}
+                  >
                 {link.icon}
                 <Typography
                   sx={{
                     fontWeight: 700,
                     fontSize: "0.6rem",
-                    letterSpacing: 2,
+                    letterSpacing: 1,
                     textTransform: "uppercase",
                     lineHeight: 1,
                     color: "inherit",

@@ -14,6 +14,8 @@ const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] }
 const tabs = [
   { label: "Standings", href: "/" },
   { label: "Matches", href: "/matches" },
+  { label: "Tournaments", href: "/tournaments" },
+  { label: "About", href: "/about" },
 ];
 
 export default function AppBar() {

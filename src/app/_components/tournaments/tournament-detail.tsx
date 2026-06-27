@@ -1,0 +1,355 @@
+"use client";
+
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
+import EmojiEvents from "@mui/icons-material/EmojiEvents";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import Groups from "@mui/icons-material/Groups";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { colors } from "@/lib/design-tokens";
+import Section from "@/app/_components/ui/section";
+import SectionHeading from "@/app/_components/ui/section-heading";
+import PageLayout from "@/app/_components/ui/page-layout";
+import { computeGroupStandings } from "@/app/_components/tournaments/data";
+import type { TournamentEntry } from "@/app/_components/tournaments/data";
+
+function cell(label: string | number, opts?: { color?: string; bold?: boolean }) {
+  return (
+    <Typography
+      sx={{
+        color: opts?.color ?? colors.text.secondary,
+        fontSize: "0.65rem",
+        fontWeight: opts?.bold ? 800 : 600,
+        textAlign: "center",
+        minWidth: 28,
+        flexShrink: 0,
+      }}
+    >
+      {label}
+    </Typography>
+  );
+}
+
+function SetsDiff({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: number }) {
+  const diff = setsFor - setsAgainst;
+  return (
+    <Typography
+      sx={{
+        color: diff > 0 ? colors.green : diff < 0 ? colors.red : colors.text.muted,
+        fontSize: "0.65rem",
+        fontWeight: 700,
+        textAlign: "center",
+        minWidth: 30,
+        flexShrink: 0,
+      }}
+    >
+      {diff > 0 ? `+${diff}` : diff === 0 ? "0" : String(diff)}
+    </Typography>
+  );
+}
+
+function PlayoffMatch({
+  m1,
+  m2,
+  resultKey,
+  winnerStyle,
+}: {
+  m1: { playerName: string; score: string; result: string };
+  m2: { playerName: string; score: string; result: string };
+  resultKey: string;
+  winnerStyle: "accent" | "gold" | "bronze";
+}) {
+  const scoreColor = winnerStyle === "gold" ? colors.goldText : colors.accent;
+  const scoreWeight = winnerStyle === "gold" ? 900 : 800;
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+      <Box sx={{ flex: 1, textAlign: "right", minWidth: 0 }}>
+        {winnerStyle === "gold" ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
+            {m1.result === "W" && <EmojiEvents sx={{ color: colors.gold, fontSize: "0.75rem", flexShrink: 0 }} />}
+            <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {m1.playerName}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography sx={{ color: m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {m1.playerName}
+          </Typography>
+        )}
+      </Box>
+      <Typography sx={{ color: scoreColor, fontSize: "0.75rem", fontWeight: scoreWeight, fontFamily: "'Courier New', monospace", textAlign: "center", flexShrink: 0, minWidth: resultKey === "Final" ? 34 : 32 }}>
+        {m1.score}
+      </Typography>
+      <Box sx={{ flex: 1, textAlign: "left", minWidth: 0 }}>
+        <Typography sx={{ color: winnerStyle === "gold" && m2.result !== "W" ? colors.text.secondary : m2.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: winnerStyle === "gold" ? (m2.result !== "W" ? 500 : 700) : m2.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {m2.playerName}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+function PlayoffRound({
+  roundName,
+  roundLabel,
+  tournament,
+  color,
+  borderColor,
+  bgcolor,
+}: {
+  roundName: string;
+  roundLabel: string;
+  tournament: TournamentEntry;
+  color: string;
+  borderColor: string;
+  bgcolor: string;
+}) {
+  const round = tournament.playoffs.find((r) => r.name === roundName);
+  if (!round) return null;
+
+  const pairs: { m1: typeof round.matches[0]; m2: typeof round.matches[0] }[] = [];
+  for (let i = 0; i < round.matches.length; i += 2) {
+    if (round.matches[i + 1]) pairs.push({ m1: round.matches[i], m2: round.matches[i + 1] });
+  }
+
+  const winnerStyle = roundName === "Final" ? "gold" : roundName === "3rd Place" ? "bronze" : "accent";
+
+  return (
+    <Box sx={{ flex: 1, maxWidth: { md: 300 } }}>
+      <Typography sx={{ color, fontSize: "0.65rem", fontWeight: 700, letterSpacing: 1, mb: 0.75, textAlign: "center", textTransform: "uppercase" }}>
+        {roundLabel}
+      </Typography>
+      {pairs.map(({ m1, m2 }, idx) => (
+        <Box key={idx} sx={{ bgcolor, borderRadius: 1.5, px: 1.25, py: 0.7, mb: 0.5, border: "1px solid", borderColor }}>
+          <PlayoffMatch m1={m1} m2={m2} resultKey={roundName} winnerStyle={winnerStyle} />
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+function FinalStandingsRow({ s, i }: { s: TournamentEntry["finalStandings"][number]; i: number }) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.5, borderBottom: "1px solid #f0f0f0", gap: 0.5, bgcolor: i === 0 ? `${colors.gold}12` : i === 1 ? `${colors.silver}12` : i === 2 ? `${colors.bronze}12` : i === 3 ? `${colors.accent}06` : "transparent" }}>
+      <Box sx={{ width: 22, textAlign: "center", flexShrink: 0 }}>
+        {i === 0 ? (
+          <EmojiEvents sx={{ color: colors.gold, fontSize: "0.8rem" }} titleAccess="1st" />
+        ) : i === 1 ? (
+          <EmojiEvents sx={{ color: colors.silver, fontSize: "0.7rem" }} titleAccess="2nd" />
+        ) : i === 2 ? (
+          <EmojiEvents sx={{ color: colors.bronze, fontSize: "0.7rem" }} titleAccess="3rd" />
+        ) : (
+          <Typography sx={{ color: colors.text.subtle, fontSize: "0.6rem", fontWeight: 600 }}>
+            {s.pos}
+          </Typography>
+        )}
+      </Box>
+      <Box sx={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: i <= 2 ? 700 : 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {s.name}
+        </Typography>
+        <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: { xs: "none", sm: "block" } }}>
+          {s.team}
+        </Typography>
+      </Box>
+      {cell(s.played)}
+      {cell(s.wins, { color: colors.green })}
+      {cell(s.losses, { color: colors.red })}
+      {cell(`${s.setsFor}:${s.setsAgainst}`)}
+      <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
+      {cell(s.points, { bold: true })}
+    </Box>
+  );
+}
+
+export default function TournamentDetail({ tournament }: { tournament: TournamentEntry }) {
+  const [expandedMatches, setExpandedMatches] = useState<Record<string, boolean>>({});
+
+  const toggleMatches = (groupName: string) => {
+    setExpandedMatches((prev) => ({
+      ...prev,
+      [groupName]: !prev[groupName],
+    }));
+  };
+
+  const playoffPlayerSet = new Set(
+    tournament.playoffs
+      .flatMap((r) => r.matches)
+      .flatMap((m) => [m.playerName, m.opponent])
+  );
+  const allPlayers = tournament.groups.flatMap((g) => g.players);
+  const advancingPlayers = allPlayers.filter((p) => playoffPlayerSet.has(p));
+  const advancingSet = new Set(advancingPlayers);
+
+  return (
+    <PageLayout>
+      <Section>
+        {/* Hero */}
+        <Box sx={{ px: 0.5, mb: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
+            <EmojiEvents sx={{ color: colors.gold, fontSize: "1.8rem" }} />
+            <Box>
+              <Typography
+                sx={{
+                  color: colors.text.primary,
+                  fontWeight: 800,
+                  fontSize: { xs: "1.35rem", md: "1.75rem" },
+                  letterSpacing: 1,
+                  lineHeight: 1.1,
+                }}
+              >
+                Tournament Week {tournament.week}
+              </Typography>
+              <Typography sx={{ color: colors.text.subtle, fontSize: "0.75rem", fontWeight: 600, mt: 0.15 }}>
+                {tournament.date}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 1.5 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <EmojiEvents sx={{ color: colors.gold, fontSize: "0.9rem" }} />
+              <Typography sx={{ color: colors.goldText, fontSize: "0.8rem", fontWeight: 700 }}>
+                Winner: {tournament.winner}
+              </Typography>
+            </Box>
+            <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
+              {tournament.groups.reduce((s, g) => s + g.players.length, 0)} players
+            </Typography>
+            <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
+              {tournament.groups.reduce((s, g) => s + g.matches.length / 2, 0)} group matches
+            </Typography>
+            <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
+              {tournament.playoffs.reduce((s, r) => s + r.matches.length / 2, 0)} playoff matches
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Groups */}
+        <Box sx={{ px: 0.5, mb: 3 }}>
+          <SectionHeading icon={<Groups />} label="Groups" />
+
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
+            {tournament.groups.map((g) => {
+              const standings = computeGroupStandings(g.players, g.matches);
+              const matchesVisible = expandedMatches[g.name] ?? false;
+
+              return (
+                <Box key={g.name} sx={{ border: "1px solid #e4e4e7", borderRadius: 2, overflow: "hidden" }}>
+                  <Box sx={{ bgcolor: `${colors.accent}0a`, px: 1.5, py: 0.75, borderBottom: "1px solid #e4e4e7" }}>
+                    <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.8rem" }}>
+                      Group {g.name}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ px: 1, py: 0.5 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, gap: 0.25 }}>
+                      <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 20, textAlign: "center" }}>#</Typography>
+                      <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
+                      {["P", "W", "L", "Sets", "Diff", "Pts"].map((h) => (
+                        <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : 24, textAlign: "center" }}>
+                          {h}
+                        </Typography>
+                      ))}
+                    </Box>
+
+                    {standings.map((s, i) => {
+                      const advanced = advancingSet.has(s.name);
+                      return (
+                        <Box key={s.name} sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, borderRadius: 0.5, gap: 0.25, bgcolor: advanced ? `${colors.accent}12` : "transparent" }}>
+                          <Box sx={{ width: 20, textAlign: "center", flexShrink: 0 }}>
+                            {advanced ? (
+                              <CheckCircle sx={{ color: colors.accent, fontSize: "0.6rem" }} titleAccess="Advanced" />
+                            ) : (
+                              <Typography sx={{ color: colors.text.subtle, fontSize: "0.55rem", fontWeight: 600 }}>{i + 1}</Typography>
+                            )}
+                          </Box>
+                          <Typography sx={{ color: advanced ? colors.text.primary : colors.text.secondary, fontSize: "0.75rem", fontWeight: advanced ? 700 : 500, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {s.name}
+                          </Typography>
+                          {cell(s.played)}
+                          {cell(s.wins, { color: colors.green })}
+                          {cell(s.losses, { color: colors.red })}
+                          {cell(`${s.setsFor}:${s.setsAgainst}`)}
+                          <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
+                          {cell(s.points, { bold: true })}
+                        </Box>
+                      );
+                    })}
+                  </Box>
+
+                  {/* Toggle matches */}
+                  <Box onClick={() => toggleMatches(g.name)} sx={{ borderTop: "1px solid #f0f0f0", px: 1.5, py: 0.6, display: "flex", alignItems: "center", gap: 0.4, cursor: "pointer", "&:hover": { bgcolor: `${colors.accent}06` }, transition: "background 0.15s" }}>
+                    <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, flex: 1 }}>
+                      {matchesVisible ? "HIDE" : "SHOW"} MATCHES
+                    </Typography>
+                    <ExpandMore sx={{ color: colors.text.muted, fontSize: "0.9rem", transition: "transform 0.2s", transform: matchesVisible ? "rotate(180deg)" : "none" }} />
+                  </Box>
+
+                  <Collapse in={matchesVisible}>
+                    <Box sx={{ px: 1.5, py: 0.5, borderTop: "1px solid #f0f0f0" }}>
+                      {g.matches.filter((m) => m.result === "W").map((m, i) => (
+                        <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 0.5, py: 0.2 }}>
+                          <CheckCircle sx={{ color: colors.green, fontSize: "0.55rem", flexShrink: 0 }} />
+                          <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {m.playerName}
+                          </Typography>
+                          <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>vs</Typography>
+                          <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {m.opponent}
+                          </Typography>
+                          <Typography sx={{ color: colors.accent, fontSize: "0.75rem", fontWeight: 700, fontFamily: "'Courier New', monospace", flexShrink: 0 }}>
+                            {m.score}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Collapse>
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+
+        {/* Playoffs */}
+        <Box sx={{ px: 0.5, mb: 3 }}>
+          <SectionHeading icon={<EmojiEvents />} label="Playoffs" />
+
+          <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 1.5, md: 2 }, alignItems: { md: "flex-start" }, justifyContent: { md: "center" } }}>
+            <PlayoffRound roundName="Quarter-Finals" roundLabel="Quarter-Finals" tournament={tournament} color={colors.accent} borderColor={`${colors.accent}15`} bgcolor={`${colors.accent}06`} />
+            <PlayoffRound roundName="Semi-Finals" roundLabel="Semi-Finals" tournament={tournament} color={colors.accent} borderColor={`${colors.accent}25`} bgcolor={`${colors.accent}0a`} />
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, flex: 1, maxWidth: { md: 300 } }}>
+              <PlayoffRound roundName="3rd Place" roundLabel="3rd Place" tournament={tournament} color={colors.bronze} borderColor={`${colors.bronze}30`} bgcolor={`${colors.bronze}12`} />
+              <PlayoffRound roundName="Final" roundLabel="Final" tournament={tournament} color={colors.goldText} borderColor={colors.gold} bgcolor={`${colors.gold}15`} />
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Final Standings */}
+        <Box sx={{ px: 0.5 }}>
+          <SectionHeading icon={<EmojiEvents />} label="Final Standings" />
+
+          <Box sx={{ border: "1px solid #e4e4e7", borderRadius: 2, overflow: "hidden" }}>
+            <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.6, bgcolor: `${colors.accent}08`, borderBottom: "1px solid #e4e4e7", gap: 0.5 }}>
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 22, textAlign: "center" }}>#</Typography>
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
+              {["P", "W", "L", "Sets", "Diff", "Pts"].map((h) => (
+                <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : 24, textAlign: "center" }}>
+                  {h}
+                </Typography>
+              ))}
+            </Box>
+
+            {tournament.finalStandings.map((s, i) => (
+              <FinalStandingsRow key={s.name} s={s} i={i} />
+            ))}
+          </Box>
+        </Box>
+      </Section>
+    </PageLayout>
+  );
+}

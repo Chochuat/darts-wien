@@ -49,20 +49,27 @@ This version has breaking changes — APIs, conventions, and file structure may 
 darts-wien/
 ├── src/
 │   └── app/                  # App Router pages and layouts
-│       ├── globals.css       # Global styles (reset, design tokens)
-│       ├── layout.tsx        # Root layout
-│       ├── page.tsx          # Home page
-│       └── providers.tsx     # MUI theme + React Query providers
+│       ├── _components/
+│       │   ├── standings/data.ts  # Standings types, 20 players, allMatches
+│       │   ├── tournaments/data.ts # Tournament types & data generator
+│       │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
+│       ├── matches/
+│       │   ├── page.tsx           # Filterable all-matches view (20/page)
+│       │   └── [slug]/page.tsx    # Player match history
+│       ├── tournaments/
+│       │   └── page.tsx           # Tournament list (past + future)
+│       ├── globals.css
+│       ├── layout.tsx
+│       ├── page.tsx          # Home page (Standings)
+│       └── providers.tsx
 │   └── lib/
-│       └── supabase/
-│           ├── client.ts     # Supabase browser client
-│           ├── server.ts     # Supabase server client
-│           └── types.ts      # Database + PostGIS type definitions
-├── docs/                     # Detailed architecture decisions, conventions
-│   ├── architecture.md       # ADRs (Architecture Decision Records)
-│   └── conventions.md        # Coding conventions (full detail)
-├── public/                   # Static assets
-├── opencode.json             # OpenCode config (instructions, tools)
+│       ├── design-tokens.ts  # Colors, spacing, borderRadius, helpers
+│       └── supabase/         # (not yet in use)
+├── docs/
+│   ├── architecture.md
+│   └── conventions.md
+├── public/
+├── opencode.json
 ├── next.config.ts
 ├── tsconfig.json
 ├── eslint.config.mjs

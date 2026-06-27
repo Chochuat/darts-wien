@@ -76,6 +76,16 @@
 - Use `ThemeProvider` and `AppRouterCacheProvider` from the same file.
 - Component-level styling: prefer MUI's `sx` prop or CSS Modules over inline styles.
 
+### Tournament Data
+
+- Tournament data lives in `src/app/_components/tournaments/data.ts`, separate from standings data.
+- Match results are generated deterministically based on player rank (index in `standingsData`): lower rank = stronger player always wins against higher rank. Sets lost depend on rank difference.
+- Group composition uses snake draft with a week-based rotation for variety.
+- Top 8 players across all groups (by group-stage points, then sets diff) advance to playoffs.
+- Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final.
+- Final standings sort by: winner → finalist → semi-finalists → quarter-finalists, then by points.
+- Future tournaments are static entries with `status: "future"`, empty groups/playoffs, and a locked UI state.
+
 ## Testing
 
 _No testing framework configured yet. Document the approach when one is added._

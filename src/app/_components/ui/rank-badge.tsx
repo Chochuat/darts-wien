@@ -1,5 +1,3 @@
-"use client";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { rankBadgeBg, rankBadgeColor } from "@/lib/design-tokens";
