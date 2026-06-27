@@ -425,7 +425,7 @@ function FullScreenTouchSteer() {
 
   useEffect(() => {
     if (!state.isThrowing) return;
-    if (typeof window === "undefined") return;
+    if (typeof document === "undefined") return;
 
     const setDir = (dir: Direction | null) => {
       if (dir === dirRef.current) return;
@@ -435,6 +435,7 @@ function FullScreenTouchSteer() {
     };
 
     const handleStart = (e: TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
       if (!touch) return;
       activeRef.current = true;
@@ -446,6 +447,7 @@ function FullScreenTouchSteer() {
     };
 
     const handleMove = (e: TouchEvent) => {
+      e.preventDefault();
       if (!activeRef.current) return;
       const touch = e.touches[0];
       if (!touch) return;
@@ -470,16 +472,16 @@ function FullScreenTouchSteer() {
       }
     };
 
-    window.addEventListener("touchstart", handleStart, { passive: true });
-    window.addEventListener("touchmove", handleMove, { passive: true });
-    window.addEventListener("touchend", handleEnd, { passive: true });
-    window.addEventListener("touchcancel", handleEnd, { passive: true });
+    document.addEventListener("touchstart", handleStart, { passive: false, capture: true });
+    document.addEventListener("touchmove", handleMove, { passive: false, capture: true });
+    document.addEventListener("touchend", handleEnd, { passive: true, capture: true });
+    document.addEventListener("touchcancel", handleEnd, { passive: true, capture: true });
 
     return () => {
-      window.removeEventListener("touchstart", handleStart);
-      window.removeEventListener("touchmove", handleMove);
-      window.removeEventListener("touchend", handleEnd);
-      window.removeEventListener("touchcancel", handleEnd);
+      document.removeEventListener("touchstart", handleStart, true);
+      document.removeEventListener("touchmove", handleMove, true);
+      document.removeEventListener("touchend", handleEnd, true);
+      document.removeEventListener("touchcancel", handleEnd, true);
       setDir(null);
     };
   }, [state.isThrowing, setHeld, controls]);

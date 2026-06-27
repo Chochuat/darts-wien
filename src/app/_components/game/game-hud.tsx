@@ -27,14 +27,22 @@ interface HudResources {
 
 let hudResources: HudResources | null = null;
 
+const HUD_CW = 512;
+const HUD_CH = Math.round((HUD_CW / PANEL_W) * PANEL_H);
+
 function getHud(): HudResources | null {
   if (hudResources) return hudResources;
   if (typeof document === "undefined") return null;
   const canvas = document.createElement("canvas");
+  canvas.width = HUD_CW;
+  canvas.height = HUD_CH;
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  ctx.fillStyle = "#2a1a0c";
+  ctx.fillRect(0, 0, HUD_CW, HUD_CH);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
+  texture.needsUpdate = true;
   hudResources = { canvas, ctx, texture };
   return hudResources;
 }
@@ -64,9 +72,7 @@ function drawHud(
   buttonRect: { current: ButtonRect },
   texts: HudTexts,
 ) {
-  const { canvas, ctx, texture } = res;
-  if (canvas.width !== cw) canvas.width = cw;
-  if (canvas.height !== ch) canvas.height = ch;
+  const { ctx, texture } = res;
 
   ctx.clearRect(0, 0, cw, ch);
 
@@ -156,8 +162,8 @@ export default function GameHUD() {
   const hud = getHud();
   const texture = hud?.texture ?? null;
 
-  const cw = 512;
-  const ch = Math.round((cw / PANEL_W) * PANEL_H);
+  const cw = HUD_CW;
+  const ch = HUD_CH;
 
   const texts = useMemo<HudTexts>(
     () => ({
