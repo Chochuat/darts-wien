@@ -139,10 +139,10 @@ export default function MockEsports() {
                           flexWrap: "wrap",
                         }}
                       >
-                        <StatLabel label="P" value={p.played} />
-                        <StatLabel label="W" value={p.wins} labelColor={colors.green} />
-                        <StatLabel label="L" value={p.losses} labelColor={colors.red} />
-                        <StatLabel label="SETS" value={`${p.setsFor}:${p.setsAgainst}`} />
+                        <StatLabel label={t("tableHeaders.played")} value={p.played} />
+                        <StatLabel label={t("tableHeaders.wins")} value={p.wins} labelColor={colors.green} />
+                        <StatLabel label={t("tableHeaders.losses")} value={p.losses} labelColor={colors.red} />
+                        <StatLabel label={t("tableHeaders.sets")} value={`${p.setsFor}:${p.setsAgainst}`} />
                         {p.one80s > 0 && <StatLabel label="180s" value={p.one80s} labelColor={colors.accent} />}
                         <FormIndicator form={p.form} />
                       </Box>

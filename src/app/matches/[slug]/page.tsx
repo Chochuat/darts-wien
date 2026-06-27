@@ -312,9 +312,9 @@ export default function PlayerMatchesPage() {
           }}
         >
           {[
-            { label: "P", value: player.played, icon: <TrackChanges sx={{ fontSize: "0.6rem" }} /> },
-            { label: "W", value: player.wins, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.6rem" }} /> },
-            { label: "L", value: player.losses, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.6rem" }} /> },
+            { label: t("tableHeaders.played"), value: player.played, icon: <TrackChanges sx={{ fontSize: "0.6rem" }} /> },
+            { label: t("tableHeaders.wins"), value: player.wins, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.6rem" }} /> },
+            { label: t("tableHeaders.losses"), value: player.losses, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.6rem" }} /> },
             { label: "±", value: setDiffStr, color: setDiff > 0 ? colors.green : colors.red, icon: <CompareArrows sx={{ fontSize: "0.6rem" }} /> },
           ].map((s) => (
             <Box
