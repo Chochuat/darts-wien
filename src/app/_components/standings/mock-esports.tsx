@@ -11,6 +11,7 @@ import SportsEsports from "@mui/icons-material/SportsEsports";
 import BarChart from "@mui/icons-material/BarChart";
 import People from "@mui/icons-material/People";
 import History from "@mui/icons-material/History";
+import ListAlt from "@mui/icons-material/ListAlt";
 import Link from "next/link";
 import { colors, borderForRank } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
@@ -108,6 +109,29 @@ export default function MockEsports() {
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", letterSpacing: 2, fontWeight: 600 }}>
                 Darts Liga Wien · 2025/26
               </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: { xs: 1, md: 0 } }}>
+              <Link href="/matches" style={{ textDecoration: "none" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    bgcolor: `${colors.accent}0d`,
+                    borderRadius: 1.5,
+                    py: { xs: 1, md: 0.5 },
+                    px: 1.5,
+                    transition: "background 0.15s",
+                    "&:hover": { bgcolor: `${colors.accent}15` },
+                  }}
+                >
+                  <ListAlt sx={{ color: colors.accent, fontSize: "0.85rem" }} />
+                  <Typography sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 700 }}>
+                    All Matches
+                  </Typography>
+                </Box>
+              </Link>
             </Box>
 
             {/* Desktop league summary */}

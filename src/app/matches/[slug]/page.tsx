@@ -249,6 +249,8 @@ export default async function PlayerMatchesPage({
           >
             {[
               { label: "Matches Played", value: player.played, icon: <SportsEsports sx={{ fontSize: "0.7rem" }} /> },
+              { label: "Matches Won", value: player.wins, color: colors.green, icon: <CheckCircle sx={{ fontSize: "0.7rem" }} /> },
+              { label: "Matches Lost", value: player.losses, color: colors.red, icon: <Cancel sx={{ fontSize: "0.7rem" }} /> },
               { label: "Sets Won", value: player.setsFor, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.7rem" }} /> },
               { label: "Sets Lost", value: player.setsAgainst, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.7rem" }} /> },
               { label: "Set Difference", value: setDiffStr, color: setDiff > 0 ? colors.green : colors.red, icon: <CompareArrows sx={{ fontSize: "0.7rem" }} /> },

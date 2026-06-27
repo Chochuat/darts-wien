@@ -1,62 +1,92 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
+import Collapse from "@mui/material/Collapse";
+import Pagination from "@mui/material/Pagination";
 import Link from "next/link";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import SportsEsports from "@mui/icons-material/SportsEsports";
 import Search from "@mui/icons-material/Search";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
+import FilterList from "@mui/icons-material/FilterList";
+import Close from "@mui/icons-material/Close";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
-import { allMatches, standingsData, uniqueTeams } from "@/app/_components/standings/data";
+import { allMatches, standingsData } from "@/app/_components/standings/data";
+
+const PLAYERS_PER_PAGE = 20;
 
 const playerNames = standingsData.map((p) => p.name);
 
-function matchFilter(match: (typeof allMatches)[number], filters: { player: string; team: string; result: string; dateQ: string; scoreQ: string; opponentQ: string }) {
+function matchFilter(
+  match: (typeof allMatches)[number],
+  filters: { player: string; result: string; scoreQ: string; quickQ: string },
+) {
   if (filters.player && match.playerName !== filters.player) return false;
-  if (filters.team && match.team !== filters.team) return false;
   if (filters.result && match.result !== filters.result) return false;
-  if (filters.dateQ && !match.date.toLowerCase().includes(filters.dateQ.toLowerCase())) return false;
   if (filters.scoreQ && !match.score.toLowerCase().includes(filters.scoreQ.toLowerCase())) return false;
-  if (filters.opponentQ && !match.opponent.toLowerCase().includes(filters.opponentQ.toLowerCase())) return false;
+  if (filters.quickQ) {
+    const q = filters.quickQ.toLowerCase();
+    if (
+      !match.playerName.toLowerCase().includes(q) &&
+      !match.opponent.toLowerCase().includes(q) &&
+      !match.score.toLowerCase().includes(q) &&
+      !match.date.toLowerCase().includes(q)
+    ) return false;
+  }
   return true;
 }
 
+const inputSx = {
+  bgcolor: "#fff",
+  color: colors.text.primary,
+  "& .MuiInputBase-root": { fontSize: "0.75rem", bgcolor: "#fff", color: colors.text.primary },
+  "& fieldset": { borderColor: "#d4d4d8" },
+  "&:hover fieldset": { borderColor: colors.accent },
+  "& input": { color: colors.text.primary },
+  "& input::placeholder": { color: colors.text.subtle, opacity: 1 },
+  "& .MuiInputBase-input": { color: colors.text.primary },
+  "& .MuiInputBase-input::placeholder": { color: colors.text.subtle, opacity: 1 },
+};
+
 export default function AllMatchesPage() {
   const [player, setPlayer] = useState("");
-  const [team, setTeam] = useState("");
   const [result, setResult] = useState("");
-  const [dateQ, setDateQ] = useState("");
   const [scoreQ, setScoreQ] = useState("");
-  const [opponentQ, setOpponentQ] = useState("");
+  const [quickQ, setQuickQ] = useState("");
+  const [page, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
 
   const filtered = useMemo(
-    () => allMatches.filter((m) => matchFilter(m, { player, team, result, dateQ, scoreQ, opponentQ })),
-    [player, team, result, dateQ, scoreQ, opponentQ],
+    () => allMatches.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })),
+    [player, result, scoreQ, quickQ],
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PLAYERS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PLAYERS_PER_PAGE, safePage * PLAYERS_PER_PAGE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [player, result, scoreQ, quickQ]);
 
   const clearAll = () => {
     setPlayer("");
-    setTeam("");
     setResult("");
-    setDateQ("");
     setScoreQ("");
-    setOpponentQ("");
+    setQuickQ("");
+    setPage(1);
   };
 
-  const hasFilters = player || team || result || dateQ || scoreQ || opponentQ;
+  const hasFilters = player || result || scoreQ || quickQ;
 
   return (
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>
@@ -85,99 +115,56 @@ export default function AllMatchesPage() {
             {allMatches.length} total matches
           </Typography>
 
-          {/* Filters */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, px: 0.5, mb: 2 }}>
+          {/* Filters — single row */}
+          <Box sx={{ px: 0.5, mb: 2 }}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
-              <Autocomplete
-                options={playerNames}
-                value={player}
-                onChange={(_, v) => setPlayer(v ?? "")}
-                onInputChange={(_, v) => { if (!v) setPlayer(""); }}
-                inputValue={player}
-                size="small"
-                sx={{ minWidth: 180, maxWidth: 240 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Player"
-                    slotProps={{
-                      input: {
-                        ...params.InputProps,
-                        sx: { fontSize: "0.75rem", bgcolor: `${colors.accent}08`, "& fieldset": { borderColor: "#e4e4e7" } },
-                      },
-                    }}
-                  />
-                )}
-              />
-
-              <FormControl size="small" sx={{ minWidth: 140 }}>
-                <Select
-                  value={team}
-                  displayEmpty
-                  onChange={(e) => setTeam(e.target.value)}
-                  sx={{ fontSize: "0.75rem", bgcolor: `${colors.accent}08`, "& fieldset": { borderColor: "#e4e4e7" } }}
-                >
-                  <MenuItem value="" sx={{ fontSize: "0.75rem" }}>All Teams</MenuItem>
-                  {uniqueTeams.map((t) => (
-                    <MenuItem key={t} value={t} sx={{ fontSize: "0.75rem" }}>{t}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
               <ToggleButtonGroup
                 value={result}
                 exclusive
                 onChange={(_, v) => setResult(v ?? "")}
                 size="small"
               >
-                <ToggleButton value="" sx={{ fontSize: "0.7rem", px: 1.5, borderColor: "#e4e4e7" }}>All</ToggleButton>
-                <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, borderColor: "#e4e4e7", color: colors.green }}>
+                <ToggleButton value="" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.text.secondary, "&.Mui-selected": { bgcolor: colors.accent, color: "#fff" } }}>All</ToggleButton>
+                <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff" } }}>
                   <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Win
                 </ToggleButton>
-                <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, borderColor: "#e4e4e7", color: colors.red }}>
+                <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff" } }}>
                   <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Loss
                 </ToggleButton>
               </ToggleButtonGroup>
-            </Box>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
               <TextField
-                placeholder="Search opponent..."
-                value={opponentQ}
-                onChange={(e) => setOpponentQ(e.target.value)}
+                placeholder="Search player, opponent, score or date..."
+                value={quickQ}
+                onChange={(e) => setQuickQ(e.target.value)}
                 size="small"
-                slotProps={{
-                  input: {
-                    startAdornment: <Search sx={{ fontSize: "0.85rem", mr: 0.5, color: colors.text.muted }} />,
-                    sx: { fontSize: "0.75rem", bgcolor: `${colors.accent}08`, "& fieldset": { borderColor: "#e4e4e7" } },
-                  },
-                }}
-                sx={{ minWidth: 160 }}
+                slotProps={{ input: { startAdornment: <Search sx={{ fontSize: "0.85rem", mr: 0.5, color: colors.text.muted }} /> } }}
+                sx={{ minWidth: 220, flex: { xs: 1, md: "none" }, ...inputSx }}
               />
-              <TextField
-                placeholder="Score (e.g. 3-0)"
-                value={scoreQ}
-                onChange={(e) => setScoreQ(e.target.value)}
-                size="small"
-                slotProps={{
-                  input: {
-                    sx: { fontSize: "0.75rem", bgcolor: `${colors.accent}08`, "& fieldset": { borderColor: "#e4e4e7" } },
-                  },
+
+              <Box
+                onClick={() => setShowFilters(!showFilters)}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 32,
+                  height: 32,
+                  borderRadius: 1,
+                  bgcolor: showFilters ? colors.accent : "#fff",
+                  border: "1px solid",
+                  borderColor: "#d4d4d8",
+                  cursor: "pointer",
+                  flexShrink: 0,
                 }}
-                sx={{ minWidth: 130 }}
-              />
-              <TextField
-                placeholder="Date (e.g. 20.06.)"
-                value={dateQ}
-                onChange={(e) => setDateQ(e.target.value)}
-                size="small"
-                slotProps={{
-                  input: {
-                    sx: { fontSize: "0.75rem", bgcolor: `${colors.accent}08`, "& fieldset": { borderColor: "#e4e4e7" } },
-                  },
-                }}
-                sx={{ minWidth: 140 }}
-              />
+              >
+                {showFilters ? (
+                  <Close sx={{ fontSize: "0.85rem", color: "#fff" }} />
+                ) : (
+                  <FilterList sx={{ fontSize: "0.85rem", color: colors.text.secondary }} />
+                )}
+              </Box>
+
               {hasFilters && (
                 <Typography
                   onClick={clearAll}
@@ -187,6 +174,35 @@ export default function AllMatchesPage() {
                 </Typography>
               )}
             </Box>
+
+            <Collapse in={showFilters} timeout={250}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", mt: 1.5 }}>
+                <Autocomplete
+                  options={playerNames}
+                  value={player}
+                  onChange={(_, v) => setPlayer(v ?? "")}
+                  onInputChange={(_, v) => { if (!v) setPlayer(""); }}
+                  inputValue={player}
+                  size="small"
+                  sx={{ minWidth: 180, maxWidth: 240 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Filter by player"
+                      sx={inputSx}
+                    />
+                  )}
+                />
+
+                <TextField
+                  placeholder="Score (e.g. 3-0)"
+                  value={scoreQ}
+                  onChange={(e) => setScoreQ(e.target.value)}
+                  size="small"
+                  sx={{ minWidth: 130, ...inputSx }}
+                />
+              </Box>
+            </Collapse>
           </Box>
 
           {/* Results count */}
@@ -195,7 +211,7 @@ export default function AllMatchesPage() {
           </Typography>
 
           {/* Match list */}
-          <Card>
+          <Card borderColor={colors.accent4d}>
             {filtered.length === 0 ? (
               <Box sx={{ py: 4, textAlign: "center" }}>
                 <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>
@@ -203,7 +219,7 @@ export default function AllMatchesPage() {
                 </Typography>
               </Box>
             ) : (
-              filtered.map((m, i) => {
+              paginated.map((m, i) => {
                 const isWin = m.result === "W";
                 return (
                   <Box
@@ -226,23 +242,17 @@ export default function AllMatchesPage() {
                     </Box>
 
                     <Box sx={{ minWidth: 0, flex: { xs: 1, md: "none" }, md: { width: 160 } }}>
-                      <Link href={`/matches/${m.playerName.toLowerCase().replace(/\s+/g, "-")}`} style={{ textDecoration: "none" }}>
-                        <Typography
-                          sx={{
-                            color: colors.accent,
-                            fontSize: "0.75rem",
-                            fontWeight: 600,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            "&:hover": { textDecoration: "underline" },
-                          }}
-                        >
-                          {m.playerName}
-                        </Typography>
-                      </Link>
-                      <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {m.team}
+                      <Typography
+                        sx={{
+                          color: colors.text.primary,
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {m.playerName}
                       </Typography>
                     </Box>
 
@@ -295,6 +305,31 @@ export default function AllMatchesPage() {
               })
             )}
           </Card>
+
+          {totalPages > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Pagination
+                count={totalPages}
+                page={safePage}
+                onChange={(_, p) => setPage(p)}
+                size="small"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    fontSize: "0.75rem",
+                    color: colors.text.secondary,
+                    borderColor: "#d4d4d8",
+                  },
+                  "& .Mui-selected": {
+                    bgcolor: `${colors.accent} !important`,
+                    color: "#fff !important",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  },
+                }}
+              />
+            </Box>
+          )}
         </Section>
       </Box>
     </Box>
