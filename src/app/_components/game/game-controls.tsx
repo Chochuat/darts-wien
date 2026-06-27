@@ -14,12 +14,9 @@ const PANEL_W = 0.75;
 const PANEL_H = 0.8;
 const BTN_SIZE = 0.18;
 const BTN_GAP = 0.21;
-const JOY_RADIUS = 0.2;
-const JOY_KNOB = 0.07;
 const CREAM = "#e8d5a3";
 const CRIMSON_DEEP = "#8b0000";
 const DARK_BACK = "#1a0c04";
-const DEADZONE = 0.08;
 
 let arrowCache: Partial<Record<Direction, THREE.CanvasTexture>> | null = null;
 
@@ -191,127 +188,6 @@ function ArrowButton({ dir }: { dir: Direction }) {
   );
 }
 
-function Joystick() {
-  const { state, setHeld } = useGame();
-  const knobRef = useRef<THREE.Mesh>(null);
-  const activeRef = useRef(false);
-  const dirRef = useRef<Direction | null>(null);
-  const { disable, enable } = useOrbitBlock();
-
-  useEffect(() => () => {
-    document.body.style.cursor = "";
-    enable();
-  }, [enable]);
-
-  useFrame(() => {
-    const knob = knobRef.current;
-    if (!knob) return;
-    if (!activeRef.current) {
-      knob.position.set(PANEL_X, PANEL_Y, PANEL_Z + 0.012);
-    }
-  });
-
-  const applyUv = (uv: THREE.Vector2 | undefined) => {
-    if (!uv) return;
-    let dx = uv.x - 0.5;
-    let dy = uv.y - 0.5;
-    const mag = Math.sqrt(dx * dx + dy * dy);
-    const maxMag = 0.5;
-    if (mag > maxMag) {
-      dx = (dx / mag) * maxMag;
-      dy = (dy / mag) * maxMag;
-    }
-    const knob = knobRef.current;
-    if (knob) {
-      knob.position.set(
-        PANEL_X + dx * JOY_RADIUS * 2,
-        PANEL_Y + dy * JOY_RADIUS * 2,
-        PANEL_Z + 0.012,
-      );
-    }
-    const adx = Math.abs(dx);
-    const ady = Math.abs(dy);
-    let next: Direction | null = null;
-    if (adx > DEADZONE || ady > DEADZONE) {
-      if (adx > ady) next = dx > 0 ? "right" : "left";
-      else next = dy > 0 ? "up" : "down";
-    }
-    if (next !== dirRef.current) {
-      if (dirRef.current) setHeld(dirRef.current, false);
-      if (next) setHeld(next, true);
-      dirRef.current = next;
-    }
-  };
-
-  const handleDown = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    if (e.nativeEvent && typeof e.nativeEvent.stopPropagation === "function") {
-      e.nativeEvent.stopPropagation();
-    }
-    disable();
-    if (!state.isThrowing) return;
-    activeRef.current = true;
-    applyUv(e.uv);
-    const el = e.nativeEvent?.target as Element | undefined;
-    if (el && typeof el.setPointerCapture === "function" && e.pointerId != null) {
-      try {
-        el.setPointerCapture(e.pointerId);
-      } catch {
-        // ignore
-      }
-    }
-  };
-
-  const handleMove = (e: ThreeEvent<PointerEvent>) => {
-    if (!activeRef.current) return;
-    e.stopPropagation();
-    applyUv(e.uv);
-  };
-
-  const handleUp = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    activeRef.current = false;
-    if (dirRef.current) setHeld(dirRef.current, false);
-    dirRef.current = null;
-    enable();
-  };
-
-  return (
-    <group>
-      <mesh
-        position={[PANEL_X, PANEL_Y, PANEL_Z + 0.001]}
-        onPointerDown={handleDown}
-        onPointerMove={handleMove}
-        onPointerUp={handleUp}
-        onPointerOut={handleUp}
-        onPointerCancel={handleUp}
-        renderOrder={11}
-      >
-        <circleGeometry args={[JOY_RADIUS, 48]} />
-        <meshBasicMaterial
-          color={CRIMSON_DEEP}
-          transparent
-          side={THREE.DoubleSide}
-          toneMapped={false}
-          opacity={state.isThrowing ? 0.55 : 0.25}
-        />
-      </mesh>
-      <mesh
-        ref={knobRef}
-        position={[PANEL_X, PANEL_Y, PANEL_Z + 0.012]}
-        renderOrder={14}
-      >
-        <circleGeometry args={[JOY_KNOB, 32]} />
-        <meshBasicMaterial
-          color={CREAM}
-          side={THREE.DoubleSide}
-          toneMapped={false}
-        />
-      </mesh>
-    </group>
-  );
-}
-
 function BackdropBlock() {
   const { disable, enable } = useOrbitBlock();
   return (
@@ -467,9 +343,6 @@ function FullScreenTouchSteer() {
     const handleEnd = () => {
       activeRef.current = false;
       setDir(null);
-      if (controls) {
-        (controls as { enabled: boolean }).enabled = true;
-      }
     };
 
     document.addEventListener("touchstart", handleStart, { passive: false, capture: true });
@@ -483,51 +356,32 @@ function FullScreenTouchSteer() {
       document.removeEventListener("touchend", handleEnd, true);
       document.removeEventListener("touchcancel", handleEnd, true);
       setDir(null);
+      if (controls) {
+        (controls as { enabled: boolean }).enabled = true;
+      }
     };
   }, [state.isThrowing, setHeld, controls]);
 
   return null;
 }
 
-function CameraHint() {
-  const tex = useMemo(() => {
-    if (typeof document === "undefined") return null;
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 96;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-    ctx.font = 'bold 34px "Georgia", serif';
-    ctx.fillStyle = "rgba(232,213,163,0.5)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("DRAG TO ORBIT CAMERA", 256, 48);
-    const t = new THREE.CanvasTexture(canvas);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 8;
-    return t;
-  }, []);
-  return (
-    <mesh position={[0, 1.55, -0.45]} renderOrder={5}>
-      <planeGeometry args={[1.2, 0.15]} />
-      <meshBasicMaterial
-        map={tex ?? undefined}
-        transparent
-        side={THREE.DoubleSide}
-        toneMapped={false}
-        depthTest={false}
-      />
-    </mesh>
-  );
-}
-
 export default function GameControls() {
   const isTouch = useIsTouch();
+  const { state } = useGame();
   const { t } = useTranslation();
+  const controls = useThree((s) => s.controls) as { enabled: boolean } | null;
+
+  useFrame(() => {
+    if (controls && state.isThrowing) {
+      // eslint-disable-next-line react-hooks/immutability
+      controls.enabled = false;
+    }
+  });
+
   const hint = isTouch ? t("controls.steerTouch") : t("controls.steerMouse");
   return (
     <group>
       <BackdropBlock />
-      {isTouch ? <Joystick /> : null}
       {!isTouch ? (
         <>
           <ArrowButton dir="up" />
@@ -539,7 +393,6 @@ export default function GameControls() {
       <Hint text={hint} />
       <KeyboardControls />
       {isTouch ? <FullScreenTouchSteer /> : null}
-      {isTouch ? <CameraHint /> : null}
     </group>
   );
 }
