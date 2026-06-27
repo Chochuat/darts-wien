@@ -1,12 +1,16 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import type { MatchResult } from "@/app/_components/standings/data";
 
 export default function MatchRow({ match }: { match: MatchResult }) {
   const isWin = match.result === "W";
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -36,7 +40,7 @@ export default function MatchRow({ match }: { match: MatchResult }) {
             whiteSpace: "nowrap",
           }}
         >
-          vs {match.opponent}
+          {t("common.vs")} {match.opponent}
         </Typography>
       </Box>
 

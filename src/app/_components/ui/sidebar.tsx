@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import BarChart from "@mui/icons-material/BarChart";
@@ -7,26 +8,39 @@ import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import TrackChanges from "@mui/icons-material/TrackChanges";
 import Info from "@mui/icons-material/Info";
 import SportsEsports from "@mui/icons-material/SportsEsports";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
 import { colors } from "@/lib/design-tokens";
+import i18n, { SUPPORTED_LANGUAGES } from "@/app/_i18n/i18n";
+import type { SupportedLanguage } from "@/app/_i18n/i18n";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
-const links = [
-  { label: "Standings", href: "/", icon: <BarChart sx={{ fontSize: "1.3rem" }} /> },
-  { label: "Matches", href: "/matches", icon: <TrackChanges sx={{ fontSize: "1.3rem" }} /> },
-  { label: "Tournaments", href: "/tournaments", icon: <EmojiEvents sx={{ fontSize: "1.3rem" }} /> },
-  { label: "Game", href: "/game", icon: <SportsEsports sx={{ fontSize: "1.3rem" }} /> },
-  { label: "About", href: "/about", icon: <Info sx={{ fontSize: "1.3rem" }} /> },
-];
+const LANG_LABELS: Record<SupportedLanguage, string> = {
+  en: "EN",
+  de: "DE",
+  sk: "SK",
+};
 
 export const SIDEBAR_WIDTH = 100;
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const currentLang = i18n.language as SupportedLanguage;
+
+  const links = [
+    { label: t("nav.standings"), href: "/", icon: <BarChart sx={{ fontSize: "1.3rem" }} /> },
+    { label: t("nav.matches"), href: "/matches", icon: <TrackChanges sx={{ fontSize: "1.3rem" }} /> },
+    { label: t("nav.tournaments"), href: "/tournaments", icon: <EmojiEvents sx={{ fontSize: "1.3rem" }} /> },
+    { label: t("nav.game"), href: "/game", icon: <SportsEsports sx={{ fontSize: "1.3rem" }} /> },
+    { label: t("nav.about"), href: "/about", icon: <Info sx={{ fontSize: "1.3rem" }} /> },
+  ];
 
   return (
     <Box
@@ -74,40 +88,40 @@ export default function Sidebar() {
           const isActive = pathname === link.href;
 
           return (
-            <Link key={link.label} href={link.href} style={{ textDecoration: "none" }}>
-                  <Box
-                    className={robotoCondensed.className}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 0.8,
-                      px: 2.5,
-                      py: 1,
-                      cursor: "pointer",
-                      position: "relative",
-                      color: isActive ? "#fff" : "rgba(255,255,255,0.3)",
-                      transition: "color 0.15s",
-                      width: SIDEBAR_WIDTH,
-                      "&:hover": {
-                        color: isActive ? "#fff" : "rgba(255,255,255,0.55)",
-                      },
-                      "&::after": {
-                        content: '""',
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                        width: 2,
-                        height: "100%",
-                        borderRadius: 1,
-                        bgcolor: isActive ? colors.accent : "transparent",
-                        transition: "background-color 0.2s",
-                      },
-                      "&:hover::after": {
-                        bgcolor: isActive ? colors.accent : "rgba(255,255,255,0.15)",
-                      },
-                    }}
-                  >
+            <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>
+              <Box
+                className={robotoCondensed.className}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 0.8,
+                  px: 2.5,
+                  py: 1,
+                  cursor: "pointer",
+                  position: "relative",
+                  color: isActive ? "#fff" : "rgba(255,255,255,0.3)",
+                  transition: "color 0.15s",
+                  width: SIDEBAR_WIDTH,
+                  "&:hover": {
+                    color: isActive ? "#fff" : "rgba(255,255,255,0.55)",
+                  },
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: 2,
+                    height: "100%",
+                    borderRadius: 1,
+                    bgcolor: isActive ? colors.accent : "transparent",
+                    transition: "background-color 0.2s",
+                  },
+                  "&:hover::after": {
+                    bgcolor: isActive ? colors.accent : "rgba(255,255,255,0.15)",
+                  },
+                }}
+              >
                 {link.icon}
                 <Typography
                   sx={{
@@ -125,6 +139,81 @@ export default function Sidebar() {
             </Link>
           );
         })}
+      </Box>
+
+      {/* Spacer */}
+      <Box sx={{ flex: 1 }} />
+
+      {/* Language settings */}
+      <Box sx={{ width: "100%", px: 1.5, pb: 2 }}>
+        <Box
+          onClick={() => setSettingsOpen(!settingsOpen)}
+          className={robotoCondensed.className}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 0.5,
+            py: 1,
+            cursor: "pointer",
+            color: settingsOpen ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.3)",
+            transition: "color 0.15s",
+            "&:hover": { color: "rgba(255,255,255,0.55)" },
+          }}
+        >
+          <SettingsIcon sx={{ fontSize: "1.1rem" }} />
+          <Typography
+            sx={{
+              fontWeight: 700,
+              fontSize: "0.5rem",
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              lineHeight: 1,
+              color: "inherit",
+            }}
+          >
+            {t("nav.settings")}
+          </Typography>
+        </Box>
+
+        {settingsOpen && (
+          <Box sx={{ mt: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
+            {SUPPORTED_LANGUAGES.map((lang) => {
+              const isCurrent = lang === currentLang;
+              return (
+                <Box
+                  key={lang}
+                  onClick={() => {
+                    void i18n.changeLanguage(lang);
+                    setSettingsOpen(false);
+                  }}
+                  className={robotoCondensed.className}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 32,
+                    height: 24,
+                    borderRadius: 0.5,
+                    cursor: "pointer",
+                    bgcolor: isCurrent ? colors.accent : "transparent",
+                    color: isCurrent ? "#fff" : "rgba(255,255,255,0.4)",
+                    fontWeight: 700,
+                    fontSize: "0.6rem",
+                    letterSpacing: 1,
+                    transition: "all 0.15s",
+                    "&:hover": {
+                      bgcolor: isCurrent ? colors.accent : "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  {LANG_LABELS[lang]}
+                </Box>
+              );
+            })}
+          </Box>
+        )}
       </Box>
     </Box>
   );

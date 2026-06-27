@@ -15,6 +15,7 @@ import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
 import FilterList from "@mui/icons-material/FilterList";
 import Close from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
@@ -64,6 +65,7 @@ export default function AllMatchesPage() {
   const [quickQ, setQuickQ] = useState("");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const { t } = useTranslation();
 
   const filtered = useMemo(
     () => allMatches.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })),
@@ -91,7 +93,7 @@ export default function AllMatchesPage() {
   return (
     <PageLayout>
       <Section>
-        <PageHeader icon={<TrackChanges />} title="All Matches" subtitle={`${allMatches.length} total matches`} />
+        <PageHeader icon={<TrackChanges />} title={t("matchesPage.title")} subtitle={t("matchesPage.subtitle", { count: allMatches.length })} />
 
         {/* Filters — single row */}
         <Box sx={{ px: 0.5, mb: 2 }}>
@@ -103,15 +105,15 @@ export default function AllMatchesPage() {
                 size="small"
               >
                 <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }}>
-                  <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Win
+                  <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.win")}
                 </ToggleButton>
                 <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff", "&:hover": { bgcolor: colors.red } } }}>
-                  <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Loss
+                  <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.loss")}
                 </ToggleButton>
               </ToggleButtonGroup>
 
             <TextField
-              placeholder="Search player, opponent, score or date..."
+              placeholder={t("matchesPage.searchPlaceholder")}
               value={quickQ}
               onChange={(e) => setQuickQ(e.target.value)}
               size="small"
@@ -147,7 +149,7 @@ export default function AllMatchesPage() {
                 onClick={clearAll}
                 sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 600, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
               >
-                Clear all
+                {t("common.clearAll")}
               </Typography>
             )}
           </Box>
@@ -165,14 +167,14 @@ export default function AllMatchesPage() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder="Filter by player"
+                    placeholder={t("matchesPage.filterPlayer")}
                     sx={inputSx}
                   />
                 )}
               />
 
               <TextField
-                placeholder="Score (e.g. 3-0)"
+                placeholder={t("matchesPage.filterScore")}
                 value={scoreQ}
                 onChange={(e) => setScoreQ(e.target.value)}
                 size="small"
@@ -184,7 +186,7 @@ export default function AllMatchesPage() {
 
         {/* Results count */}
         <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 600, px: 0.5, mb: 1 }}>
-          {filtered.length} match{filtered.length !== 1 ? "es" : ""} found
+          {t("matchesPage.matchesFound", { count: filtered.length })}
         </Typography>
 
         {/* Match list */}
@@ -192,7 +194,7 @@ export default function AllMatchesPage() {
           {filtered.length === 0 ? (
             <Box sx={{ py: 4, textAlign: "center" }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>
-                No matches match your filters.
+                {t("common.noMatchesFilter")}
               </Typography>
             </Box>
           ) : (
@@ -257,7 +259,7 @@ export default function AllMatchesPage() {
                         </Typography>
                       )}
                       {" "}
-                      <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>vs {m.opponent}</Box>
+                      <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {m.opponent}</Box>
                     </Typography>
                   </Box>
 

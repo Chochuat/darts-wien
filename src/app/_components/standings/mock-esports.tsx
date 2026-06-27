@@ -9,6 +9,7 @@ import ArrowForward from "@mui/icons-material/ArrowForward";
 import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import History from "@mui/icons-material/History";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { colors, borderForRank } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
@@ -24,6 +25,7 @@ const totalMatches = standingsData.reduce((acc, p) => acc + p.played, 0) / 2;
 
 export default function MockEsports() {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const toggle = (name: string) => {
     setExpanded((prev) => (prev === name ? null : name));
@@ -53,20 +55,20 @@ export default function MockEsports() {
                   letterSpacing: 1,
                 }}
               >
-                Standings
+                {t("standings.title")}
               </Typography>
             </Box>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem", letterSpacing: 1, fontWeight: 600 }}>
-              Darts Liga Wien · 2025/26
+              {t("standings.subtitle")}
             </Typography>
           </Box>
 
           {/* Desktop league summary */}
           <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3, mt: 1 }}>
             {[
-              { label: "Players", value: standingsData.length },
-              { label: "Matches", value: totalMatches },
-              { label: "Top Streak", value: "9W" },
+              { label: t("common.players"), value: standingsData.length },
+              { label: t("common.matches"), value: totalMatches },
+              { label: t("standings.topStreak"), value: `9${t("common.wAbbr")}` },
             ].map((s) => (
               <Box key={s.label} sx={{ textAlign: "right" }}>
                 <Typography sx={{ color: colors.text.muted, fontSize: "0.5rem", fontWeight: 700, letterSpacing: 1 }}>
@@ -167,7 +169,7 @@ export default function MockEsports() {
                           mt: 0.1,
                         }}
                       >
-                        PTS
+                        {t("standings.pts")}
                       </Typography>
                     </Box>
 
@@ -194,7 +196,7 @@ export default function MockEsports() {
                           letterSpacing: 1,
                         }}
                       >
-                        LAST 5 MATCHES
+                        {t("standings.last5")}
                       </Typography>
                     </Box>
 
@@ -228,7 +230,7 @@ export default function MockEsports() {
                               fontWeight: 700,
                             }}
                           >
-                            View all matches
+                            {t("standings.viewAll")}
                           </Typography>
                           <ArrowForward sx={{ color: colors.accent, fontSize: "0.9rem" }} />
                         </Box>

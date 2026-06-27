@@ -1,8 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 
 export default function LiveIndicator() {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
       <Box
@@ -19,7 +22,7 @@ export default function LiveIndicator() {
         }}
       />
       <Typography sx={{ color: colors.green, fontSize: "0.5rem", fontWeight: 800, letterSpacing: 1 }}>
-        LIVE
+        {t("common.live")}
       </Typography>
     </Box>
   );

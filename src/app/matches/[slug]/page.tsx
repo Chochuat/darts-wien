@@ -1,3 +1,6 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
@@ -11,6 +14,7 @@ import CompareArrows from "@mui/icons-material/CompareArrows";
 import EventIcon from "@mui/icons-material/Event";
 import Person from "@mui/icons-material/Person";
 import SportsScore from "@mui/icons-material/SportsScore";
+import { useTranslation } from "react-i18next";
 import { colors, borderForRank } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
@@ -22,6 +26,7 @@ import type { MatchResult } from "@/app/_components/standings/data";
 
 function MatchHistoryRow({ match }: { match: MatchResult }) {
   const isWin = match.result === "W";
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -61,7 +66,7 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
             fontWeight: 500,
           }}
         >
-          vs <strong>{match.opponent}</strong>
+          {t("common.vs")} <strong>{match.opponent}</strong>
         </Typography>
       </Box>
 
@@ -119,7 +124,7 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
               letterSpacing: 1,
             }}
           >
-            {isWin ? "WIN" : "LOSS"}
+            {isWin ? t("common.winAbbr") : t("common.lossAbbr")}
           </Typography>
         </Box>
       </Box>
@@ -127,13 +132,11 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
   );
 }
 
-export default async function PlayerMatchesPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default function PlayerMatchesPage() {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug;
   const player = findBySlug(slug);
+  const { t } = useTranslation();
 
   if (!player) {
     return (
@@ -141,10 +144,10 @@ export default async function PlayerMatchesPage({
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: 2, minHeight: "100%" }}>
           <Box sx={{ textAlign: "center" }}>
             <Typography sx={{ color: "#fff", fontSize: "1.5rem", fontWeight: 800, mb: 1 }}>
-              Player not found
+              {t("common.playerNotFound")}
             </Typography>
             <Link href="/" style={{ color: colors.accent, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>
-              ← Back to standings
+              {t("common.backToStandings")}
             </Link>
           </Box>
         </Box>
@@ -203,16 +206,16 @@ export default async function PlayerMatchesPage({
             <Box sx={{ textAlign: { xs: "left", md: "right" } }}>
               <Typography sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: { md: "flex-end" }, color: colors.text.muted, fontSize: "0.5rem", fontWeight: 700, letterSpacing: 1 }}>
                 <CheckCircle sx={{ fontSize: "0.55rem", color: colors.green }} />
-                RECORD
+                {t("standings.record")}
               </Typography>
               <Typography sx={{ color: colors.text.primary, fontWeight: 800, fontSize: "0.95rem" }}>
-                {player.wins}W / {player.losses}L
+                {player.wins}{t("common.wAbbr")} / {player.losses}{t("common.lAbbr")}
               </Typography>
             </Box>
             <Box sx={{ textAlign: { xs: "left", md: "right" } }}>
               <Typography sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: { md: "flex-end" }, color: colors.text.muted, fontSize: "0.5rem", fontWeight: 700, letterSpacing: 1 }}>
                 <SportsScore sx={{ fontSize: "0.55rem", color: colors.accent }} />
-                POINTS
+                {t("standings.points")}
               </Typography>
               <Typography sx={{ color: colors.accent, fontWeight: 900, fontSize: "1.1rem" }}>
                 {player.points}
@@ -221,7 +224,7 @@ export default async function PlayerMatchesPage({
             <Box sx={{ textAlign: { xs: "left", md: "right" } }}>
               <Typography sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: { md: "flex-end" }, color: colors.text.muted, fontSize: "0.5rem", fontWeight: 700, letterSpacing: 1 }}>
                 <CompareArrows sx={{ fontSize: "0.55rem", color: colors.text.muted }} />
-                FORM
+                {t("standings.form")}
               </Typography>
               <FormIndicator form={player.form} />
             </Box>
@@ -238,12 +241,12 @@ export default async function PlayerMatchesPage({
           }}
         >
           {[
-            { label: "Matches Played", value: player.played, icon: <TrackChanges sx={{ fontSize: "0.7rem" }} /> },
-            { label: "Matches Won", value: player.wins, color: colors.green, icon: <CheckCircle sx={{ fontSize: "0.7rem" }} /> },
-            { label: "Matches Lost", value: player.losses, color: colors.red, icon: <Cancel sx={{ fontSize: "0.7rem" }} /> },
-            { label: "Sets Won", value: player.setsFor, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.7rem" }} /> },
-            { label: "Sets Lost", value: player.setsAgainst, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.7rem" }} /> },
-            { label: "Set Difference", value: setDiffStr, color: setDiff > 0 ? colors.green : colors.red, icon: <CompareArrows sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.matchesPlayed"), value: player.played, icon: <TrackChanges sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.matchesWon"), value: player.wins, color: colors.green, icon: <CheckCircle sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.matchesLost"), value: player.losses, color: colors.red, icon: <Cancel sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.setsWon"), value: player.setsFor, color: colors.green, icon: <ArrowUpward sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.setsLost"), value: player.setsAgainst, color: colors.red, icon: <ArrowDownward sx={{ fontSize: "0.7rem" }} /> },
+            { label: t("playerPage.setDiff"), value: setDiffStr, color: setDiff > 0 ? colors.green : colors.red, icon: <CompareArrows sx={{ fontSize: "0.7rem" }} /> },
           ].map((s) => (
             <Box key={s.label} sx={{ bgcolor: `${colors.accent}08`, borderRadius: 1.5, px: 1.5, py: 1 }}>
               <Typography sx={{ color: colors.text.secondary, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, mb: 0.2, display: "flex", alignItems: "center", gap: 0.3 }}>
@@ -271,19 +274,19 @@ export default async function PlayerMatchesPage({
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, minWidth: 44 }}>
               <EventIcon sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>
-                DATE
+                {t("matchesPage.date")}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, flex: 1 }}>
               <Person sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>
-                OPPONENT
+                {t("matchesPage.opponent")}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.3, minWidth: 100 }}>
               <SportsScore sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>
-                RESULT
+                {t("matchesPage.result")}
               </Typography>
             </Box>
           </Box>
@@ -291,7 +294,7 @@ export default async function PlayerMatchesPage({
           {sortedMatches.length === 0 ? (
             <Box sx={{ py: 3, textAlign: "center" }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.8rem" }}>
-                No matches recorded yet.
+                {t("matchesPage.noMatchesRecorded")}
               </Typography>
             </Box>
           ) : (

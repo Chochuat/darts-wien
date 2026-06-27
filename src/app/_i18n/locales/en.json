@@ -1,11 +1,135 @@
 {
+  "common": {
+    "win": "Win",
+    "loss": "Loss",
+    "winAbbr": "WIN",
+    "lossAbbr": "LOSS",
+    "vs": "vs",
+    "live": "LIVE",
+    "players": "Players",
+    "matches": "Matches",
+    "player": "Player",
+    "playerNotFound": "Player not found",
+    "backToStandings": "← Back to standings",
+    "week": "Week {{week}}",
+    "group": "Group {{name}}",
+    "winner": "Winner: {{name}}",
+    "matchesFound_one": "{{count}} match found",
+    "matchesFound_other": "{{count}} matches found",
+    "noResults": "No results",
+    "noMatchesFilter": "No matches match your filters.",
+    "clearAll": "Clear all",
+    "wAbbr": "W",
+    "lAbbr": "L",
+    "tournamentNotFound": "Tournament not found."
+  },
+  "nav": {
+    "standings": "Standings",
+    "matches": "Matches",
+    "tournaments": "Tournaments",
+    "game": "Game",
+    "about": "About",
+    "settings": "Settings",
+    "language": "Language"
+  },
+  "lang": {
+    "en": "English",
+    "de": "Deutsch",
+    "sk": "Slovenčina"
+  },
+  "standings": {
+    "title": "Standings",
+    "subtitle": "Darts Liga Wien · 2025/26",
+    "summaryLabel": "Summary",
+    "topStreak": "Top Streak",
+    "pts": "PTS",
+    "last5": "LAST 5 MATCHES",
+    "viewAll": "View all matches",
+    "record": "RECORD",
+    "points": "POINTS",
+    "form": "FORM"
+  },
+  "matchesPage": {
+    "title": "All Matches",
+    "subtitle": "{{count}} total matches",
+    "searchPlaceholder": "Search player, opponent, score or date...",
+    "filterPlayer": "Filter by player",
+    "filterScore": "Score (e.g. 3-0)",
+    "matchesFound": "{{count}} matches found",
+    "date": "DATE",
+    "opponent": "OPPONENT",
+    "result": "RESULT",
+    "noMatchesRecorded": "No matches recorded yet."
+  },
+  "playerPage": {
+    "matchesPlayed": "Matches Played",
+    "matchesWon": "Matches Won",
+    "matchesLost": "Matches Lost",
+    "setsWon": "Sets Won",
+    "setsLost": "Sets Lost",
+    "setDiff": "Set Difference"
+  },
+  "tournamentsList": {
+    "title": "Tournaments",
+    "subtitle": "{{count}} tournaments · {{completed}} completed",
+    "players": "{{count}} players",
+    "groupMatches": "{{count}} group matches",
+    "playoffMatches": "{{count}} playoff matches",
+    "futureText": "Schedule and groups will be released soon"
+  },
+  "tournamentDetail": {
+    "winner": "Winner: {{name}}",
+    "players": "{{count}} players",
+    "groupMatches": "{{count}} group matches",
+    "playoffMatches": "{{count}} playoff matches",
+    "groupsFormat": "Groups: {{game}} · first to {{legs}} legs · max {{maxThrows}} throws",
+    "playoffsFormat": "Playoffs: {{game}} · first to {{legs}} legs · max {{maxThrows}} throws",
+    "rules": "Draw based on standings · Bull challenge starts · 3 games simultaneously",
+    "groups": "Groups",
+    "playoffs": "Playoffs",
+    "finalStandings": "Final Standings",
+    "showMatches": "SHOW MATCHES",
+    "hideMatches": "HIDE MATCHES",
+    "quarterFinals": "Quarter-Finals",
+    "semiFinals": "Semi-Finals",
+    "thirdPlace": "3rd Place",
+    "final": "Final",
+    "advanced": "Advanced"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Darts Liga Wien · Founded 2020",
+    "description1": "Darts Wien is Vienna's premier darts league, bringing together the city's most competitive players across six teams. Founded in 2020, the league has grown from a small gathering of enthusiasts into a structured competition with weekly matches, seasonal tournaments, and a dedicated following.",
+    "description2": "Our mission is to promote the sport of darts in Vienna through fair competition, community engagement, and professional organization. Whether you're a seasoned player or new to the game, Darts Wien offers a welcoming environment for everyone.",
+    "teams": "Teams",
+    "season": "Season",
+    "venues": "Venues",
+    "leagueOrg": "League Organization",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "matchDays": "Match Days",
+    "socialMedia": "Social Media",
+    "website": "Website",
+    "discord": "Discord",
+    "telegram": "Telegram",
+    "commissioner": "League Commissioner",
+    "commissionerBio": "Founder and head organizer since 2020.",
+    "tournamentDirector": "Tournament Director",
+    "tournamentDirectorBio": "Coordinates all tournament schedules and brackets.",
+    "headReferee": "Head Referee",
+    "headRefereeBio": "Ensures fair play and rules compliance across all matches.",
+    "communications": "Communications",
+    "communicationsBio": "Handles league announcements, social media, and press."
+  },
   "hud": {
     "orbitHint": "DRAG · SCROLL",
     "title": "DARTS",
     "total": "TOTAL",
     "pointsShort": "pts",
     "throw": "THROW",
-    "flightStatus": "flight..."
+    "flightStatus": "in flight..."
   },
   "outcome": {
     "miss": "MISS"
@@ -16,18 +140,27 @@
   },
   "result": {
     "nextThrow": "NEXT THROW",
-    "beReady": "BE READY!"
+    "beReady": "GET READY!"
   },
   "leaderboard": {
     "title": "TOP 10",
     "loading": "Loading...",
     "empty": "No throws yet",
-    "dragHint": "DRAG TO FIND RANKINGS →"
+    "dragHint": "DRAG FOR RANKING →"
   },
   "keyboard": {
-    "title": "ENTER YOUR NAME",
+    "title": "ENTER NAME",
     "del": "DEL",
     "confirm": "START",
     "cancel": "X"
+  },
+  "tableHeaders": {
+    "played": "P",
+    "wins": "W",
+    "losses": "L",
+    "sets": "Sets",
+    "one80s": "180s",
+    "diff": "Diff",
+    "pts": "Pts"
   }
 }

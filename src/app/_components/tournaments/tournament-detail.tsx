@@ -8,6 +8,7 @@ import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Groups from "@mui/icons-material/Groups";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import SectionHeading from "@/app/_components/ui/section-heading";
@@ -194,6 +195,7 @@ function FinalStandingsRow({ s, i }: { s: TournamentEntry["finalStandings"][numb
 
 export default function TournamentDetail({ tournament }: { tournament: TournamentEntry }) {
   const [expandedMatches, setExpandedMatches] = useState<Record<string, boolean>>({});
+  const { t } = useTranslation();
 
   const toggleMatches = (groupName: string) => {
     setExpandedMatches((prev) => ({
@@ -228,7 +230,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                   lineHeight: 1.1,
                 }}
               >
-                Tournament Week {tournament.week}
+                {t("common.week", { week: tournament.week })}
               </Typography>
               <Typography sx={{ color: colors.text.subtle, fontSize: "0.75rem", fontWeight: 600, mt: 0.15 }}>
                 {tournament.date}
@@ -240,17 +242,17 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <EmojiEvents sx={{ color: colors.gold, fontSize: "0.9rem" }} />
               <Typography sx={{ color: colors.goldText, fontSize: "0.8rem", fontWeight: 700 }}>
-                Winner: {tournament.winner}
+                {t("common.winner", { name: tournament.winner ?? "" })}
               </Typography>
             </Box>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {tournament.groups.reduce((s, g) => s + g.players.length, 0)} players
+              {t("tournamentDetail.players", { count: tournament.groups.reduce((s, g) => s + g.players.length, 0) })}
             </Typography>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {tournament.groups.reduce((s, g) => s + g.matches.length / 2, 0)} group matches
+              {t("tournamentDetail.groupMatches", { count: tournament.groups.reduce((s, g) => s + g.matches.length / 2, 0) })}
             </Typography>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {tournament.playoffs.reduce((s, r) => s + r.matches.length / 2, 0)} playoff matches
+              {t("tournamentDetail.playoffMatches", { count: tournament.playoffs.reduce((s, r) => s + r.matches.length / 2, 0) })}
             </Typography>
           </Box>
 
@@ -274,7 +276,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                 sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.accent, flexShrink: 0 }}
               />
               <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                Groups: {GROUP_FORMAT.game} · first to {GROUP_FORMAT.legs} legs · max {GROUP_FORMAT.maxThrows} throws
+                {t("tournamentDetail.groupsFormat", { game: GROUP_FORMAT.game, legs: GROUP_FORMAT.legs, maxThrows: GROUP_FORMAT.maxThrows })}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
@@ -282,7 +284,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                 sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }}
               />
               <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                Playoffs: {PLAYOFF_FORMAT.game} · first to {PLAYOFF_FORMAT.legs} legs · max {PLAYOFF_FORMAT.maxThrows} throws
+                {t("tournamentDetail.playoffsFormat", { game: PLAYOFF_FORMAT.game, legs: PLAYOFF_FORMAT.legs, maxThrows: PLAYOFF_FORMAT.maxThrows })}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
@@ -290,7 +292,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                 sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.green, flexShrink: 0 }}
               />
               <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                Draw based on standings · Bull challenge starts · 3 games simultaneously
+                {t("tournamentDetail.rules")}
               </Typography>
             </Box>
           </Box>
@@ -298,7 +300,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
 
         {/* Groups */}
         <Box sx={{ px: 0.5, mb: 3 }}>
-          <SectionHeading icon={<Groups />} label="Groups" />
+          <SectionHeading icon={<Groups />} label={t("tournamentDetail.groups")} />
 
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
             {tournament.groups.map((g) => {
@@ -309,17 +311,17 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                 <Box key={g.name} sx={{ border: "1px solid #e4e4e7", borderRadius: 2, overflow: "hidden" }}>
                   <Box sx={{ bgcolor: `${colors.accent}0a`, px: 1.5, py: 0.75, borderBottom: "1px solid #e4e4e7" }}>
                     <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.8rem" }}>
-                      Group {g.name}
+                      {t("common.group", { name: g.name })}
                     </Typography>
                   </Box>
 
                   <Box sx={{ px: 1, py: 0.5 }}>
                     <Box sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, gap: 0.25 }}>
                       <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 20, textAlign: "center" }}>#</Typography>
-                      <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
-                      {["P", "W", "L", "Sets", "180s", "Diff", "Pts"].map((h) => (
-                        <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : h === "180s" ? 26 : 24, textAlign: "center" }}>
-                          {h}
+                      <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>{t("common.player")}</Typography>
+                      {["played", "wins", "losses", "sets", "one80s", "diff", "pts"].map((h) => (
+                        <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "sets" || h === "diff" ? 30 : h === "one80s" ? 26 : 24, textAlign: "center" }}>
+                          {t(`tableHeaders.${h}`)}
                         </Typography>
                       ))}
                     </Box>
@@ -330,7 +332,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                         <Box key={s.name} sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, borderRadius: 0.5, gap: 0.25, bgcolor: advanced ? `${colors.accent}12` : "transparent" }}>
                           <Box sx={{ width: 20, textAlign: "center", flexShrink: 0 }}>
                             {advanced ? (
-                              <CheckCircle sx={{ color: colors.accent, fontSize: "0.6rem" }} titleAccess="Advanced" />
+                              <CheckCircle sx={{ color: colors.accent, fontSize: "0.6rem" }} titleAccess={t("tournamentDetail.advanced")} />
                             ) : (
                               <Typography sx={{ color: colors.text.subtle, fontSize: "0.55rem", fontWeight: 600 }}>{i + 1}</Typography>
                             )}
@@ -353,7 +355,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                   {/* Toggle matches */}
                   <Box onClick={() => toggleMatches(g.name)} sx={{ borderTop: "1px solid #f0f0f0", px: 1.5, py: 0.6, display: "flex", alignItems: "center", gap: 0.4, cursor: "pointer", "&:hover": { bgcolor: `${colors.accent}06` }, transition: "background 0.15s" }}>
                     <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, flex: 1 }}>
-                      {matchesVisible ? "HIDE" : "SHOW"} MATCHES
+                      {matchesVisible ? t("tournamentDetail.hideMatches") : t("tournamentDetail.showMatches")}
                     </Typography>
                     <ExpandMore sx={{ color: colors.text.muted, fontSize: "0.9rem", transition: "transform 0.2s", transform: matchesVisible ? "rotate(180deg)" : "none" }} />
                   </Box>
@@ -384,7 +386,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                               180
                             </Typography>
                           )}
-                          <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>vs</Typography>
+                          <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>{t("common.vs")}</Typography>
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.opponent}
                           </Typography>
@@ -403,30 +405,30 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
 
         {/* Playoffs */}
         <Box sx={{ px: 0.5, mb: 3 }}>
-          <SectionHeading icon={<EmojiEvents />} label="Playoffs" />
+          <SectionHeading icon={<EmojiEvents />} label={t("tournamentDetail.playoffs")} />
 
           <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 1.5, md: 2 }, alignItems: { md: "flex-start" }, justifyContent: { md: "center" } }}>
-            <PlayoffRound roundName="Quarter-Finals" roundLabel="Quarter-Finals" tournament={tournament} color={colors.accent} borderColor={`${colors.accent}15`} bgcolor={`${colors.accent}06`} />
-            <PlayoffRound roundName="Semi-Finals" roundLabel="Semi-Finals" tournament={tournament} color={colors.accent} borderColor={`${colors.accent}25`} bgcolor={`${colors.accent}0a`} />
+            <PlayoffRound roundName="Quarter-Finals" roundLabel={t("tournamentDetail.quarterFinals")} tournament={tournament} color={colors.accent} borderColor={`${colors.accent}15`} bgcolor={`${colors.accent}06`} />
+            <PlayoffRound roundName="Semi-Finals" roundLabel={t("tournamentDetail.semiFinals")} tournament={tournament} color={colors.accent} borderColor={`${colors.accent}25`} bgcolor={`${colors.accent}0a`} />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, flex: 1, maxWidth: { md: 300 } }}>
-              <PlayoffRound roundName="3rd Place" roundLabel="3rd Place" tournament={tournament} color={colors.bronze} borderColor={`${colors.bronze}30`} bgcolor={`${colors.bronze}12`} />
-              <PlayoffRound roundName="Final" roundLabel="Final" tournament={tournament} color={colors.goldText} borderColor={colors.gold} bgcolor={`${colors.gold}15`} />
+              <PlayoffRound roundName="3rd Place" roundLabel={t("tournamentDetail.thirdPlace")} tournament={tournament} color={colors.bronze} borderColor={`${colors.bronze}30`} bgcolor={`${colors.bronze}12`} />
+              <PlayoffRound roundName="Final" roundLabel={t("tournamentDetail.final")} tournament={tournament} color={colors.goldText} borderColor={colors.gold} bgcolor={`${colors.gold}15`} />
             </Box>
           </Box>
         </Box>
 
         {/* Final Standings */}
         <Box sx={{ px: 0.5 }}>
-          <SectionHeading icon={<EmojiEvents />} label="Final Standings" />
+          <SectionHeading icon={<EmojiEvents />} label={t("tournamentDetail.finalStandings")} />
 
           <Box sx={{ border: "1px solid #e4e4e7", borderRadius: 2, overflow: "hidden" }}>
             <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.6, bgcolor: `${colors.accent}08`, borderBottom: "1px solid #e4e4e7", gap: 0.5 }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 22, textAlign: "center" }}>#</Typography>
-              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
-              {["P", "W", "L", "Sets", "180s", "Diff", "Pts"].map((h) => (
-                <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : h === "180s" ? 26 : 24, textAlign: "center" }}>
-                  {h}
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>{t("common.player")}</Typography>
+              {["played", "wins", "losses", "sets", "one80s", "diff", "pts"].map((h) => (
+                <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "sets" || h === "diff" ? 30 : h === "one80s" ? 26 : 24, textAlign: "center" }}>
+                  {t(`tableHeaders.${h}`)}
                 </Typography>
               ))}
             </Box>
