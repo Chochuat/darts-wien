@@ -46,10 +46,10 @@ function matchFilter(
 }
 
 const inputSx = {
-  bgcolor: "#fff",
+  bgcolor: colors.card,
   color: colors.text.primary,
-  "& .MuiInputBase-root": { fontSize: "0.75rem", bgcolor: "#fff", color: colors.text.primary },
-  "& fieldset": { borderColor: "#d4d4d8" },
+  "& .MuiInputBase-root": { fontSize: "0.75rem", bgcolor: colors.card, color: colors.text.primary },
+  "& fieldset": { borderColor: colors.accent4d },
   "&:hover fieldset": { borderColor: colors.accent },
   "& input": { color: colors.text.primary },
   "& input::placeholder": { color: colors.text.subtle, opacity: 1 },
@@ -96,19 +96,19 @@ export default function AllMatchesPage() {
         {/* Filters — single row */}
         <Box sx={{ px: 0.5, mb: 2 }}>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
-            <ToggleButtonGroup
-              value={result}
-              exclusive
-              onChange={(_, v) => setResult(v ?? "")}
-              size="small"
-            >
-              <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff" } }}>
-                <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Win
-              </ToggleButton>
-              <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: "#fff", borderColor: "#d4d4d8", color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff" } }}>
-                <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Loss
-              </ToggleButton>
-            </ToggleButtonGroup>
+              <ToggleButtonGroup
+                value={result}
+                exclusive
+                onChange={(_, v) => setResult(v ?? "")}
+                size="small"
+              >
+                <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }}>
+                  <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Win
+                </ToggleButton>
+                <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff", "&:hover": { bgcolor: colors.red } } }}>
+                  <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> Loss
+                </ToggleButton>
+              </ToggleButtonGroup>
 
             <TextField
               placeholder="Search player, opponent, score or date..."
@@ -128,9 +128,9 @@ export default function AllMatchesPage() {
                 width: 32,
                 height: 32,
                 borderRadius: 1,
-                bgcolor: showFilters ? colors.accent : "#fff",
+                bgcolor: showFilters ? colors.accent : colors.card,
                 border: "1px solid",
-                borderColor: "#d4d4d8",
+                borderColor: colors.accent4d,
                 cursor: "pointer",
                 flexShrink: 0,
               }}
@@ -218,7 +218,13 @@ export default function AllMatchesPage() {
                     )}
                   </Box>
 
-                  <Box sx={{ minWidth: 0, flex: { xs: 1, md: "none" }, md: { width: 200 } }}>
+                  <Box
+                    sx={{
+                      minWidth: 0,
+                      flex: { xs: 1, md: "none" },
+                      md: { width: 200 },
+                    }}
+                  >
                     <Typography
                       sx={{
                         color: colors.text.primary,
@@ -248,27 +254,6 @@ export default function AllMatchesPage() {
                   >
                     {m.score}
                   </Typography>
-
-                  <Box
-                    sx={{
-                      bgcolor: isWin ? `${colors.green}12` : `${colors.red}12`,
-                      borderRadius: 1,
-                      px: 1,
-                      py: 0.2,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: isWin ? colors.green : colors.red,
-                        fontWeight: 800,
-                        fontSize: "0.55rem",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      {isWin ? "WIN" : "LOSS"}
-                    </Typography>
-                  </Box>
 
                   <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", textAlign: "right", minWidth: 40, flexShrink: 0 }}>
                     {m.date}

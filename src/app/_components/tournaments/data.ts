@@ -32,6 +32,9 @@ export interface TournamentEntry {
   }[];
 }
 
+export const GROUP_FORMAT = { game: "301", legs: 2, maxThrows: 45 } as const;
+export const PLAYOFF_FORMAT = { game: "501", legs: 3, maxThrows: 45 } as const;
+
 const ALL_PLAYERS = standingsData.map((p) => p.name);
 
 function playerRank(name: string): number {

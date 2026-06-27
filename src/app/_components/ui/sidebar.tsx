@@ -6,6 +6,7 @@ import BarChart from "@mui/icons-material/BarChart";
 import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import TrackChanges from "@mui/icons-material/TrackChanges";
 import Info from "@mui/icons-material/Info";
+import SportsEsports from "@mui/icons-material/SportsEsports";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
@@ -18,6 +19,7 @@ const links = [
   { label: "Standings", href: "/", icon: <BarChart sx={{ fontSize: "1.3rem" }} /> },
   { label: "Matches", href: "/matches", icon: <TrackChanges sx={{ fontSize: "1.3rem" }} /> },
   { label: "Tournaments", href: "/tournaments", icon: <EmojiEvents sx={{ fontSize: "1.3rem" }} /> },
+  { label: "Game", href: "/game", icon: <SportsEsports sx={{ fontSize: "1.3rem" }} /> },
   { label: "About", href: "/about", icon: <Info sx={{ fontSize: "1.3rem" }} /> },
 ];
 

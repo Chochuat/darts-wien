@@ -12,7 +12,7 @@ import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import SectionHeading from "@/app/_components/ui/section-heading";
 import PageLayout from "@/app/_components/ui/page-layout";
-import { computeGroupStandings } from "@/app/_components/tournaments/data";
+import { computeGroupStandings, GROUP_FORMAT, PLAYOFF_FORMAT } from "@/app/_components/tournaments/data";
 import type { TournamentEntry } from "@/app/_components/tournaments/data";
 
 function cell(label: string | number, opts?: { color?: string; bold?: boolean }) {
@@ -225,6 +225,47 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
               {tournament.playoffs.reduce((s, r) => s + r.matches.length / 2, 0)} playoff matches
             </Typography>
+          </Box>
+
+          {/* Format info */}
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1.5,
+              mt: 2,
+              px: 1.5,
+              py: 1.25,
+              bgcolor: `${colors.accent}08`,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: `${colors.accent}15`,
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+              <Box
+                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.accent, flexShrink: 0 }}
+              />
+              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                Groups: {GROUP_FORMAT.game} · first to {GROUP_FORMAT.legs} legs · max {GROUP_FORMAT.maxThrows} throws
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+              <Box
+                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }}
+              />
+              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                Playoffs: {PLAYOFF_FORMAT.game} · first to {PLAYOFF_FORMAT.legs} legs · max {PLAYOFF_FORMAT.maxThrows} throws
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+              <Box
+                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.green, flexShrink: 0 }}
+              />
+              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                Draw based on standings · Bull challenge starts · 3 games simultaneously
+              </Typography>
+            </Box>
           </Box>
         </Box>
 

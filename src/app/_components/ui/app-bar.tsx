@@ -15,6 +15,7 @@ const tabs = [
   { label: "Standings", href: "/" },
   { label: "Matches", href: "/matches" },
   { label: "Tournaments", href: "/tournaments" },
+  { label: "Game", href: "/game" },
   { label: "About", href: "/about" },
 ];
 

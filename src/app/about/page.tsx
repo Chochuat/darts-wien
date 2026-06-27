@@ -4,6 +4,12 @@ import Info from "@mui/icons-material/Info";
 import Groups from "@mui/icons-material/Groups";
 import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import LocationOn from "@mui/icons-material/LocationOn";
+import Email from "@mui/icons-material/Email";
+import Phone from "@mui/icons-material/Phone";
+import AccessTime from "@mui/icons-material/AccessTime";
+import Public from "@mui/icons-material/Public";
+import Forum from "@mui/icons-material/Forum";
+import Send from "@mui/icons-material/Send";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import PageLayout from "@/app/_components/ui/page-layout";
@@ -103,6 +109,106 @@ export default function AboutPage() {
                 <Typography sx={{ color: colors.text.muted, fontSize: "0.75rem" }}>
                   {m.bio}
                 </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Contact */}
+        <Box sx={{ px: 0.5, mt: 3 }}>
+          <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.95rem", letterSpacing: 1, mb: 1.5 }}>
+            Contact
+          </Typography>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(4, 1fr)" }, gap: 1.5 }}>
+            {[
+              { icon: <Email />, label: "Email", value: "info@dartswien.at" },
+              { icon: <Phone />, label: "Phone", value: "+43 1 234 5678" },
+              { icon: <LocationOn />, label: "Location", value: "Vienna, Austria" },
+              { icon: <AccessTime />, label: "Match Days", value: "Wed & Sat" },
+            ].map((c) => (
+              <Box
+                key={c.label}
+                sx={{
+                  bgcolor: colors.card,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.5,
+                  border: "1px solid",
+                  borderColor: colors.accent4d,
+                  textAlign: "center",
+                }}
+              >
+                <Box sx={{ color: colors.accent, fontSize: "1.1rem", mb: 0.5, display: "flex", justifyContent: "center" }}>
+                  {c.icon}
+                </Box>
+                <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", mb: 0.15 }}>
+                  {c.label}
+                </Typography>
+                <Typography sx={{ color: colors.text.primary, fontWeight: 600, fontSize: "0.8rem" }}>
+                  {c.value}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
+          <Box
+            sx={{
+              mt: 1.5,
+              borderRadius: 2,
+              overflow: "hidden",
+              border: "1px solid",
+              borderColor: colors.accent4d,
+              height: 220,
+            }}
+          >
+            <iframe
+              src="https://www.openstreetmap.org/export/embed.html?bbox=16.3500%2C48.1900%2C16.4000%2C48.2200&layer=mapnik&marker=48.2050%2C16.3750"
+              width="100%"
+              height="220"
+              style={{ border: 0, display: "block" }}
+              title="Darts Wien Venue Map"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+          </Box>
+        </Box>
+
+        {/* Social Media */}
+        <Box sx={{ px: 0.5, mt: 3 }}>
+          <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.95rem", letterSpacing: 1, mb: 1.5 }}>
+            Social Media
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+            {[
+              { icon: <Public />, label: "Website", handle: "dartswien.at" },
+              { icon: <Forum />, label: "Discord", handle: "discord.gg/dartswien" },
+              { icon: <Send />, label: "Telegram", handle: "@dartswien" },
+            ].map((s) => (
+              <Box
+                key={s.label}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  bgcolor: colors.card,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.25,
+                  border: "1px solid",
+                  borderColor: colors.accent4d,
+                }}
+              >
+                <Box sx={{ color: colors.accent, fontSize: "1rem", display: "flex" }}>
+                  {s.icon}
+                </Box>
+                <Box>
+                  <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.8rem" }}>
+                    {s.label}
+                  </Typography>
+                  <Typography sx={{ color: colors.text.muted, fontSize: "0.65rem" }}>
+                    {s.handle}
+                  </Typography>
+                </Box>
               </Box>
             ))}
           </Box>
