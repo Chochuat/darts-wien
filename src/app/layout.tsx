@@ -5,6 +5,9 @@ import Providers from "./providers";
 export const metadata: Metadata = {
   title: "darts-wien",
   description: "",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
