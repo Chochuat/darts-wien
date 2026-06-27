@@ -107,6 +107,7 @@ export default function GameCanvas() {
         minDistance={3}
         maxDistance={5.5}
         maxPolarAngle={Math.PI * 0.65}
+        rotateSpeed={-1}
       />
     </Canvas>
   );
