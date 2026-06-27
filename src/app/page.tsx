@@ -1,5 +1,5 @@
-import GamePage from "./_components/game/game-page";
+import MockEsports from "./_components/standings/mock-esports";
 
 export default function Home() {
-  return <GamePage />;
+  return <MockEsports />;
 }
