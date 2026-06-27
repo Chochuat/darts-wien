@@ -14,13 +14,13 @@ export default function StatLabel({ label, value, labelColor }: StatLabelProps) 
       <Typography
         sx={{
           color: labelColor ?? colors.text.muted,
-          fontSize: "0.5rem",
+          fontSize: "0.6rem",
           fontWeight: 700,
         }}
       >
         {label}
       </Typography>
-      <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+      <Typography sx={{ color: colors.text.secondary, fontSize: "0.8rem", fontWeight: 600 }}>
         {value}
       </Typography>
     </Box>

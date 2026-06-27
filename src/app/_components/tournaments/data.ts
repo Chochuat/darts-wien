@@ -26,6 +26,7 @@ export interface TournamentEntry {
     played: number;
     wins: number;
     losses: number;
+    one80s: number;
     setsFor: number;
     setsAgainst: number;
     points: number;
@@ -63,6 +64,11 @@ function generateMatch(
   const team1 = playerTeam(p1);
   const team2 = playerTeam(p2);
 
+  // Deterministic 180: top-4 players sometimes hit one against close opponents
+  const minRank = Math.min(r1, r2);
+  const one80Player = diff <= 3 && minRank <= 3 ? (p1Better ? p1 : p2) : undefined;
+  const one80Match = one80Player && diff <= 2 ? one80Player : undefined;
+
   const m1: MatchEntry = {
     playerName: p1,
     team: team1,
@@ -70,6 +76,7 @@ function generateMatch(
     score: `${score1}-${score2}`,
     result: p1Better ? "W" : "L",
     date,
+    one80: p1 === one80Match || undefined,
   };
   const m2: MatchEntry = {
     playerName: p2,
@@ -78,6 +85,7 @@ function generateMatch(
     score: `${score2}-${score1}`,
     result: p1Better ? "L" : "W",
     date,
+    one80: p2 === one80Match || undefined,
   };
   return [m1, m2];
 }
@@ -111,6 +119,7 @@ function computeStandingsForGroup(g: TournamentGroup) {
   return g.players.map((name) => {
     const playerMatches = g.matches.filter((m) => m.playerName === name);
     const wins = playerMatches.filter((m) => m.result === "W").length;
+    const one80s = playerMatches.filter((m) => m.one80).length;
     const setsFor = playerMatches.reduce(
       (sum, m) => sum + parseInt(m.score.split("-")[0]),
       0
@@ -121,9 +130,10 @@ function computeStandingsForGroup(g: TournamentGroup) {
     );
     return {
       name,
-      points: wins * 2,
+      points: wins * 2 + one80s * 2,
       setsDiff: setsFor - setsAgainst,
       wins,
+      one80s,
     };
   }).sort(
     (a, b) =>
@@ -273,6 +283,7 @@ function computeFinalStandings(
     const playerMatches = allMatches.filter((m) => m.playerName === name);
     const wins = playerMatches.filter((m) => m.result === "W").length;
     const losses = playerMatches.filter((m) => m.result === "L").length;
+    const one80s = playerMatches.filter((m) => m.one80).length;
     const setsFor = playerMatches.reduce(
       (sum, m) => sum + parseInt(m.score.split("-")[0]),
       0
@@ -288,9 +299,10 @@ function computeFinalStandings(
       played: playerMatches.length,
       wins,
       losses,
+      one80s,
       setsFor,
       setsAgainst,
-      points: wins * 2,
+      points: wins * 2 + one80s * 2,
     };
   });
 }
@@ -390,6 +402,7 @@ export function computeGroupStandings(
       );
       const wins = playerMatches.filter((m) => m.result === "W").length;
       const losses = playerMatches.filter((m) => m.result === "L").length;
+      const one80s = playerMatches.filter((m) => m.one80).length;
       const setsFor = playerMatches.reduce(
         (sum, m) => sum + parseInt(m.score.split("-")[0]),
         0
@@ -404,9 +417,10 @@ export function computeGroupStandings(
         played: playerMatches.length,
         wins,
         losses,
+        one80s,
         setsFor,
         setsAgainst,
-        points: wins * 2,
+        points: wins * 2 + one80s * 2,
       };
     })
     .sort(

@@ -141,6 +141,7 @@ export default function MockEsports() {
                         <StatLabel label="W" value={p.wins} labelColor={colors.green} />
                         <StatLabel label="L" value={p.losses} labelColor={colors.red} />
                         <StatLabel label="SETS" value={`${p.setsFor}:${p.setsAgainst}`} />
+                        {p.one80s > 0 && <StatLabel label="180s" value={p.one80s} labelColor={colors.accent} />}
                         <FormIndicator form={p.form} />
                       </Box>
                     </Box>

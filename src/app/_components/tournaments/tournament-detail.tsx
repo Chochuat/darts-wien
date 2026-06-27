@@ -50,14 +50,35 @@ function SetsDiff({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: numb
   );
 }
 
+function Badge180() {
+  return (
+    <Typography
+      sx={{
+        color: colors.accent,
+        fontSize: "0.45rem",
+        fontWeight: 900,
+        letterSpacing: 0.5,
+        bgcolor: `${colors.accent}15`,
+        px: 0.4,
+        py: 0.1,
+        borderRadius: 0.5,
+        lineHeight: 1,
+        flexShrink: 0,
+      }}
+    >
+      180
+    </Typography>
+  );
+}
+
 function PlayoffMatch({
   m1,
   m2,
   resultKey,
   winnerStyle,
 }: {
-  m1: { playerName: string; score: string; result: string };
-  m2: { playerName: string; score: string; result: string };
+  m1: { playerName: string; score: string; result: string; one80?: boolean };
+  m2: { playerName: string; score: string; result: string; one80?: boolean };
   resultKey: string;
   winnerStyle: "accent" | "gold" | "bronze";
 }) {
@@ -73,20 +94,25 @@ function PlayoffMatch({
             <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {m1.playerName}
             </Typography>
+            {m1.one80 && <Badge180 />}
           </Box>
         ) : (
-          <Typography sx={{ color: m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {m1.playerName}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
+            <Typography sx={{ color: m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {m1.playerName}
+            </Typography>
+            {m1.one80 && <Badge180 />}
+          </Box>
         )}
       </Box>
       <Typography sx={{ color: scoreColor, fontSize: "0.75rem", fontWeight: scoreWeight, fontFamily: "'Courier New', monospace", textAlign: "center", flexShrink: 0, minWidth: resultKey === "Final" ? 34 : 32 }}>
         {m1.score}
       </Typography>
-      <Box sx={{ flex: 1, textAlign: "left", minWidth: 0 }}>
+      <Box sx={{ flex: 1, textAlign: "left", minWidth: 0, display: "flex", alignItems: "center", gap: 0.3 }}>
         <Typography sx={{ color: winnerStyle === "gold" && m2.result !== "W" ? colors.text.secondary : m2.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: winnerStyle === "gold" ? (m2.result !== "W" ? 500 : 700) : m2.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {m2.playerName}
         </Typography>
+        {m2.one80 && <Badge180 />}
       </Box>
     </Box>
   );
@@ -159,6 +185,7 @@ function FinalStandingsRow({ s, i }: { s: TournamentEntry["finalStandings"][numb
       {cell(s.wins, { color: colors.green })}
       {cell(s.losses, { color: colors.red })}
       {cell(`${s.setsFor}:${s.setsAgainst}`)}
+      {cell(s.one80s, { color: colors.accent })}
       <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
       {cell(s.points, { bold: true })}
     </Box>
@@ -290,8 +317,8 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                     <Box sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, gap: 0.25 }}>
                       <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 20, textAlign: "center" }}>#</Typography>
                       <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
-                      {["P", "W", "L", "Sets", "Diff", "Pts"].map((h) => (
-                        <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : 24, textAlign: "center" }}>
+                      {["P", "W", "L", "Sets", "180s", "Diff", "Pts"].map((h) => (
+                        <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : h === "180s" ? 26 : 24, textAlign: "center" }}>
                           {h}
                         </Typography>
                       ))}
@@ -315,6 +342,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                           {cell(s.wins, { color: colors.green })}
                           {cell(s.losses, { color: colors.red })}
                           {cell(`${s.setsFor}:${s.setsAgainst}`)}
+                          {cell(s.one80s, { color: colors.accent })}
                           <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
                           {cell(s.points, { bold: true })}
                         </Box>
@@ -338,6 +366,24 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.playerName}
                           </Typography>
+                          {m.one80 && (
+                            <Typography
+                              sx={{
+                                color: colors.accent,
+                                fontSize: "0.45rem",
+                                fontWeight: 900,
+                                letterSpacing: 0.5,
+                                bgcolor: `${colors.accent}15`,
+                                px: 0.4,
+                                py: 0.1,
+                                borderRadius: 0.5,
+                                lineHeight: 1,
+                                flexShrink: 0,
+                              }}
+                            >
+                              180
+                            </Typography>
+                          )}
                           <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>vs</Typography>
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.opponent}
@@ -378,8 +424,8 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
             <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.6, bgcolor: `${colors.accent}08`, borderBottom: "1px solid #e4e4e7", gap: 0.5 }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, width: 22, textAlign: "center" }}>#</Typography>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, flex: 1, minWidth: 0 }}>Player</Typography>
-              {["P", "W", "L", "Sets", "Diff", "Pts"].map((h) => (
-                <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : 24, textAlign: "center" }}>
+              {["P", "W", "L", "Sets", "180s", "Diff", "Pts"].map((h) => (
+                <Typography key={h} sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, minWidth: h === "Sets" || h === "Diff" ? 30 : h === "180s" ? 26 : 24, textAlign: "center" }}>
                   {h}
                 </Typography>
               ))}

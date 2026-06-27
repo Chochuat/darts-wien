@@ -3,6 +3,7 @@ export interface MatchResult {
   score: string;
   result: "W" | "L";
   date: string;
+  one80?: boolean;
 }
 
 export interface MatchEntry extends MatchResult {
@@ -20,16 +21,17 @@ export interface StandingsPlayer {
   setsFor: number;
   setsAgainst: number;
   points: number;
+  one80s: number;
   form: ("W" | "L")[];
   matches: MatchResult[];
 }
 
 export const standingsData: StandingsPlayer[] = [
   {
-    pos: 1, name: "Mike Thorn", team: "DC Vienna", played: 20, wins: 17, losses: 3, setsFor: 52, setsAgainst: 14, points: 34, form: ["W", "W", "W", "L", "W"],
+    pos: 1, name: "Mike Thorn", team: "DC Vienna", played: 20, wins: 17, losses: 3, setsFor: 52, setsAgainst: 14, points: 34, one80s: 2, form: ["W", "W", "W", "L", "W"],
     matches: [
-      { opponent: "Dave Steel", score: "3-0", result: "W", date: "20.06." },
-      { opponent: "Luke Swift", score: "3-0", result: "W", date: "13.06." },
+      { opponent: "Dave Steel", score: "3-0", result: "W", date: "20.06.", one80: true },
+      { opponent: "Luke Swift", score: "3-0", result: "W", date: "13.06.", one80: true },
       { opponent: "Tom Knight", score: "3-0", result: "W", date: "06.06." },
       { opponent: "Erik Frost", score: "2-3", result: "L", date: "30.05." },
       { opponent: "Chris Arrow", score: "3-1", result: "W", date: "23.05." },
@@ -41,10 +43,10 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 2, name: "Dave Steel", team: "Bullseye BC", played: 20, wins: 16, losses: 4, setsFor: 49, setsAgainst: 18, points: 32, form: ["W", "W", "L", "W", "W"],
+    pos: 2, name: "Dave Steel", team: "Bullseye BC", played: 20, wins: 16, losses: 4, setsFor: 49, setsAgainst: 18,     points: 32, one80s: 2, form: ["W", "W", "L", "W", "W"],
     matches: [
-      { opponent: "Pete Hammer", score: "3-1", result: "W", date: "20.06." },
-      { opponent: "John Bull", score: "3-0", result: "W", date: "13.06." },
+      { opponent: "Pete Hammer", score: "3-1", result: "W", date: "20.06.", one80: true },
+      { opponent: "John Bull", score: "3-0", result: "W", date: "13.06.", one80: true },
       { opponent: "Mike Thorn", score: "1-3", result: "L", date: "06.06." },
       { opponent: "Tom Knight", score: "3-0", result: "W", date: "30.05." },
       { opponent: "Luke Swift", score: "3-0", result: "W", date: "23.05." },
@@ -56,9 +58,9 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 3, name: "Chris Arrow", team: "DC Vienna", played: 20, wins: 15, losses: 5, setsFor: 46, setsAgainst: 22, points: 30, form: ["W", "L", "W", "W", "L"],
+    pos: 3, name: "Chris Arrow", team: "DC Vienna", played: 20, wins: 15, losses: 5, setsFor: 46, setsAgainst: 22,     points: 30, one80s: 1, form: ["W", "L", "W", "W", "L"],
     matches: [
-      { opponent: "Tom Knight", score: "3-0", result: "W", date: "20.06." },
+      { opponent: "Tom Knight", score: "3-0", result: "W", date: "20.06.", one80: true },
       { opponent: "Erik Frost", score: "2-3", result: "L", date: "13.06." },
       { opponent: "Pete Hammer", score: "3-1", result: "W", date: "06.06." },
       { opponent: "John Bull", score: "3-0", result: "W", date: "30.05." },
@@ -71,9 +73,9 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 4, name: "Marco Berger", team: "Vienna Eagles", played: 20, wins: 14, losses: 6, setsFor: 43, setsAgainst: 25, points: 28, form: ["W", "W", "L", "W", "W"],
+    pos: 4, name: "Marco Berger", team: "Vienna Eagles", played: 20, wins: 14, losses: 6, setsFor: 43, setsAgainst: 25,     points: 28, one80s: 1, form: ["W", "W", "L", "W", "W"],
     matches: [
-      { opponent: "Felix Gross", score: "3-2", result: "W", date: "20.06." },
+      { opponent: "Felix Gross", score: "3-2", result: "W", date: "20.06.", one80: true },
       { opponent: "Lukas Weber", score: "1-3", result: "L", date: "13.06." },
       { opponent: "John Bull", score: "3-0", result: "W", date: "06.06." },
       { opponent: "Pete Hammer", score: "3-1", result: "W", date: "30.05." },
@@ -86,7 +88,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 5, name: "Felix Gross", team: "Golden Darts", played: 20, wins: 13, losses: 7, setsFor: 40, setsAgainst: 28, points: 26, form: ["L", "W", "W", "L", "W"],
+    pos: 5, name: "Felix Gross", team: "Golden Darts", played: 20, wins: 13, losses: 7, setsFor: 40, setsAgainst: 28,     points: 26, one80s: 0, form: ["L", "W", "W", "L", "W"],
     matches: [
       { opponent: "Marco Berger", score: "2-3", result: "L", date: "20.06." },
       { opponent: "John Bull", score: "3-1", result: "W", date: "13.06." },
@@ -101,7 +103,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 6, name: "John Bull", team: "Golden Darts", played: 20, wins: 12, losses: 8, setsFor: 37, setsAgainst: 31, points: 24, form: ["L", "W", "L", "W", "L"],
+    pos: 6, name: "John Bull", team: "Golden Darts", played: 20, wins: 12, losses: 8, setsFor: 37, setsAgainst: 31,     points: 24, one80s: 0, form: ["L", "W", "L", "W", "L"],
     matches: [
       { opponent: "Luke Swift", score: "2-3", result: "L", date: "20.06." },
       { opponent: "Dave Steel", score: "0-3", result: "L", date: "13.06." },
@@ -116,7 +118,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 7, name: "Max Richter", team: "Bullseye BC", played: 20, wins: 11, losses: 9, setsFor: 35, setsAgainst: 34, points: 22, form: ["W", "L", "L", "W", "W"],
+    pos: 7, name: "Max Richter", team: "Bullseye BC", played: 20, wins: 11, losses: 9, setsFor: 35, setsAgainst: 34,     points: 22, one80s: 0, form: ["W", "L", "L", "W", "W"],
     matches: [
       { opponent: "Lukas Weber", score: "3-1", result: "W", date: "20.06." },
       { opponent: "Pete Hammer", score: "1-3", result: "L", date: "13.06." },
@@ -131,7 +133,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 8, name: "Pete Hammer", team: "Bullseye BC", played: 20, wins: 10, losses: 10, setsFor: 32, setsAgainst: 37, points: 20, form: ["L", "L", "W", "L", "W"],
+    pos: 8, name: "Pete Hammer", team: "Bullseye BC", played: 20, wins: 10, losses: 10, setsFor: 32, setsAgainst: 37,     points: 20, one80s: 0, form: ["L", "L", "W", "L", "W"],
     matches: [
       { opponent: "Dave Steel", score: "1-3", result: "L", date: "20.06." },
       { opponent: "Tom Knight", score: "2-3", result: "L", date: "13.06." },
@@ -146,10 +148,10 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 9, name: "Lukas Weber", team: "Vienna Eagles", played: 20, wins: 9, losses: 11, setsFor: 30, setsAgainst: 38, points: 18, form: ["L", "W", "W", "L", "L"],
+    pos: 9, name: "Lukas Weber", team: "Vienna Eagles", played: 20, wins: 9, losses: 11, setsFor: 30, setsAgainst: 38,     points: 18, one80s: 1, form: ["L", "W", "W", "L", "L"],
     matches: [
       { opponent: "Max Righter", score: "1-3", result: "L", date: "20.06." },
-      { opponent: "Marco Berger", score: "3-1", result: "W", date: "13.06." },
+      { opponent: "Marco Berger", score: "3-1", result: "W", date: "13.06.", one80: true },
       { opponent: "Simon Adler", score: "3-2", result: "W", date: "06.06." },
       { opponent: "Felix Gross", score: "2-3", result: "L", date: "30.05." },
       { opponent: "Erik Frost", score: "0-3", result: "L", date: "23.05." },
@@ -161,7 +163,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 10, name: "Simon Adler", team: "DC Vienna", played: 20, wins: 8, losses: 12, setsFor: 28, setsAgainst: 41, points: 16, form: ["W", "L", "L", "L", "W"],
+    pos: 10, name: "Simon Adler", team: "DC Vienna", played: 20, wins: 8, losses: 12, setsFor: 28, setsAgainst: 41,     points: 16, one80s: 0, form: ["W", "L", "L", "L", "W"],
     matches: [
       { opponent: "Erik Frost", score: "3-1", result: "W", date: "20.06." },
       { opponent: "Luke Swift", score: "1-3", result: "L", date: "13.06." },
@@ -176,7 +178,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 11, name: "Luke Swift", team: "Vienna Eagles", played: 20, wins: 7, losses: 13, setsFor: 25, setsAgainst: 44, points: 14, form: ["L", "W", "L", "L", "L"],
+    pos: 11, name: "Luke Swift", team: "Vienna Eagles", played: 20, wins: 7, losses: 13, setsFor: 25, setsAgainst: 44,     points: 14, one80s: 0, form: ["L", "W", "L", "L", "L"],
     matches: [
       { opponent: "John Bull", score: "3-2", result: "W", date: "20.06." },
       { opponent: "Mike Thorn", score: "0-3", result: "L", date: "13.06." },
@@ -191,7 +193,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 12, name: "Tom Knight", team: "Golden Darts", played: 20, wins: 6, losses: 14, setsFor: 22, setsAgainst: 47, points: 12, form: ["L", "L", "L", "W", "L"],
+    pos: 12, name: "Tom Knight", team: "Golden Darts", played: 20, wins: 6, losses: 14, setsFor: 22, setsAgainst: 47,     points: 12, one80s: 0, form: ["L", "L", "L", "W", "L"],
     matches: [
       { opponent: "Chris Arrow", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Pete Hammer", score: "3-2", result: "W", date: "13.06." },
@@ -206,7 +208,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 13, name: "Erik Frost", team: "Vienna Eagles", played: 20, wins: 5, losses: 15, setsFor: 19, setsAgainst: 50, points: 10, form: ["L", "L", "L", "L", "L"],
+    pos: 13, name: "Erik Frost", team: "Vienna Eagles", played: 20, wins: 5, losses: 15, setsFor: 19, setsAgainst: 50,     points: 10, one80s: 0, form: ["L", "L", "L", "L", "L"],
     matches: [
       { opponent: "Simon Adler", score: "1-3", result: "L", date: "20.06." },
       { opponent: "Chris Arrow", score: "3-2", result: "W", date: "13.06." },
@@ -221,7 +223,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 14, name: "Ben Schwarz", team: "DC Vienna", played: 20, wins: 5, losses: 15, setsFor: 18, setsAgainst: 51, points: 10, form: ["L", "L", "W", "L", "L"],
+    pos: 14, name: "Ben Schwarz", team: "DC Vienna", played: 20, wins: 5, losses: 15, setsFor: 18, setsAgainst: 51, points: 10, one80s: 0, form: ["L", "L", "W", "L", "L"],
     matches: [
       { opponent: "Lukas Weber", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Max Richter", score: "1-3", result: "L", date: "13.06." },
@@ -236,7 +238,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 15, name: "Jonas Wolf", team: "Bullseye BC", played: 20, wins: 4, losses: 16, setsFor: 15, setsAgainst: 54, points: 8, form: ["L", "W", "L", "L", "L"],
+    pos: 15, name: "Jonas Wolf", team: "Bullseye BC", played: 20, wins: 4, losses: 16, setsFor: 15, setsAgainst: 54,     points: 8, one80s: 0, form: ["L", "W", "L", "L", "L"],
     matches: [
       { opponent: "Tom Knight", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Simon Adler", score: "3-2", result: "W", date: "13.06." },
@@ -251,7 +253,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 16, name: "David Maurer", team: "Golden Darts", played: 20, wins: 4, losses: 16, setsFor: 14, setsAgainst: 55, points: 8, form: ["L", "L", "L", "W", "L"],
+    pos: 16, name: "David Maurer", team: "Golden Darts", played: 20, wins: 4, losses: 16, setsFor: 14, setsAgainst: 55, points: 8, one80s: 0, form: ["L", "L", "L", "W", "L"],
     matches: [
       { opponent: "Max Richter", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Felix Gross", score: "1-3", result: "L", date: "13.06." },
@@ -266,7 +268,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 17, name: "Paul Graf", team: "DC Vienna", played: 20, wins: 3, losses: 17, setsFor: 11, setsAgainst: 58, points: 6, form: ["L", "L", "L", "L", "W"],
+    pos: 17, name: "Paul Graf", team: "DC Vienna", played: 20, wins: 3, losses: 17, setsFor: 11, setsAgainst: 58,     points: 6, one80s: 0, form: ["L", "L", "L", "L", "W"],
     matches: [
       { opponent: "Marco Berger", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Ben Schwarz", score: "1-3", result: "L", date: "13.06." },
@@ -281,7 +283,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 18, name: "Leo Fischer", team: "Vienna Eagles", played: 20, wins: 2, losses: 18, setsFor: 8, setsAgainst: 61, points: 4, form: ["L", "L", "L", "L", "L"],
+    pos: 18, name: "Leo Fischer", team: "Vienna Eagles", played: 20, wins: 2, losses: 18, setsFor: 8, setsAgainst: 61,     points: 4, one80s: 0, form: ["L", "L", "L", "L", "L"],
     matches: [
       { opponent: "Jonas Wolf", score: "1-3", result: "L", date: "20.06." },
       { opponent: "David Maurer", score: "2-3", result: "L", date: "13.06." },
@@ -296,7 +298,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 19, name: "Nils Hoffmann", team: "Bullseye BC", played: 20, wins: 2, losses: 18, setsFor: 7, setsAgainst: 62, points: 4, form: ["W", "L", "L", "L", "L"],
+    pos: 19, name: "Nils Hoffmann", team: "Bullseye BC", played: 20, wins: 2, losses: 18, setsFor: 7, setsAgainst: 62, points: 4, one80s: 0, form: ["W", "L", "L", "L", "L"],
     matches: [
       { opponent: "David Maurer", score: "3-2", result: "W", date: "20.06." },
       { opponent: "Paul Graf", score: "0-3", result: "L", date: "13.06." },
@@ -311,7 +313,7 @@ export const standingsData: StandingsPlayer[] = [
     ],
   },
   {
-    pos: 20, name: "Tim Krüger", team: "Golden Darts", played: 20, wins: 1, losses: 19, setsFor: 4, setsAgainst: 65, points: 2, form: ["L", "L", "L", "L", "L"],
+    pos: 20, name: "Tim Krüger", team: "Golden Darts", played: 20, wins: 1, losses: 19, setsFor: 4, setsAgainst: 65,     points: 2, one80s: 0, form: ["L", "L", "L", "L", "L"],
     matches: [
       { opponent: "Paul Graf", score: "0-3", result: "L", date: "20.06." },
       { opponent: "Leo Fischer", score: "1-3", result: "L", date: "13.06." },
@@ -341,6 +343,7 @@ export const allMatches: MatchEntry[] = standingsData.flatMap((p) =>
     score: m.score,
     result: m.result,
     date: m.date,
+    one80: m.one80,
   }))
 );
 

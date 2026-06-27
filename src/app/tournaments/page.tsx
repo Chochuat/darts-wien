@@ -96,6 +96,8 @@ export default function TournamentsListPage() {
                           {t.groups.reduce((sum, g) => sum + g.matches.length / 2, 0)} group matches
                           {" · "}
                           {t.playoffs.reduce((sum, r) => sum + r.matches.length / 2, 0)} playoff matches
+                          {" · "}
+                          {[...t.groups.flatMap((g) => g.matches), ...t.playoffs.flatMap((r) => r.matches)].filter((m) => m.one80).length} 180s
                         </Typography>
                       )}
                       {!isPast && (

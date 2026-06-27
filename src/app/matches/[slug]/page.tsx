@@ -84,6 +84,23 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
         >
           {match.score}
         </Typography>
+        {match.one80 && (
+          <Typography
+            sx={{
+              color: colors.accent,
+              fontSize: "0.5rem",
+              fontWeight: 900,
+              letterSpacing: 0.5,
+              bgcolor: `${colors.accent}15`,
+              px: 0.5,
+              py: 0.15,
+              borderRadius: 0.5,
+              lineHeight: 1,
+            }}
+          >
+            180
+          </Typography>
+        )}
         <Box
           sx={{
             bgcolor: isWin ? `${colors.green}12` : `${colors.red}12`,

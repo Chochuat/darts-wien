@@ -40,18 +40,37 @@ export default function MatchRow({ match }: { match: MatchResult }) {
         </Typography>
       </Box>
 
-      <Typography
-        sx={{
-          color: isWin ? colors.green : colors.red,
-          fontSize: "0.75rem",
-          fontWeight: 700,
-          fontFamily: "'Courier New', monospace",
-          textAlign: "center",
-          minWidth: 36,
-        }}
-      >
-        {match.score}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Typography
+          sx={{
+            color: isWin ? colors.green : colors.red,
+            fontSize: "0.75rem",
+            fontWeight: 700,
+            fontFamily: "'Courier New', monospace",
+            textAlign: "center",
+            minWidth: 36,
+          }}
+        >
+          {match.score}
+        </Typography>
+        {match.one80 && (
+          <Typography
+            sx={{
+              color: colors.accent,
+              fontSize: "0.5rem",
+              fontWeight: 900,
+              letterSpacing: 0.5,
+              bgcolor: `${colors.accent}15`,
+              px: 0.5,
+              py: 0.15,
+              borderRadius: 0.5,
+              lineHeight: 1,
+            }}
+          >
+            180
+          </Typography>
+        )}
+      </Box>
 
       <Typography
         sx={{

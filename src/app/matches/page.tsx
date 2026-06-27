@@ -236,6 +236,26 @@ export default function AllMatchesPage() {
                       }}
                     >
                       <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
+                      {(m as { one80?: boolean }).one80 && (
+                        <Typography
+                          component="span"
+                          sx={{
+                            color: colors.accent,
+                            fontSize: "0.5rem",
+                            fontWeight: 900,
+                            letterSpacing: 0.5,
+                            bgcolor: `${colors.accent}15`,
+                            px: 0.5,
+                            py: 0.15,
+                            borderRadius: 0.5,
+                            lineHeight: 1,
+                            ml: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          180
+                        </Typography>
+                      )}
                       {" "}
                       <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>vs {m.opponent}</Box>
                     </Typography>
