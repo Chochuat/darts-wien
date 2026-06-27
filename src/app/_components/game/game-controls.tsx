@@ -97,13 +97,11 @@ function useOrbitBlock() {
     | null;
   const disable = () => {
     if (controls) {
-      /* eslint-disable-next-line react-hooks/immutability */
       (controls as { enabled: boolean }).enabled = false;
     }
   };
   const enable = () => {
     if (controls) {
-      /* eslint-disable-next-line react-hooks/immutability */
       (controls as { enabled: boolean }).enabled = true;
     }
   };
@@ -413,6 +411,113 @@ function KeyboardControls() {
   return null;
 }
 
+const DEADZONE_PX = 24;
+
+function FullScreenTouchSteer() {
+  const { state, setHeld } = useGame();
+  const controls = useThree((s) => s.controls) as
+    | { enabled: boolean }
+    | null;
+  const activeRef = useRef(false);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const dirRef = useRef<Direction | null>(null);
+
+  useEffect(() => {
+    if (!state.isThrowing) return;
+    if (typeof window === "undefined") return;
+
+    const setDir = (dir: Direction | null) => {
+      if (dir === dirRef.current) return;
+      if (dirRef.current) setHeld(dirRef.current, false);
+      if (dir) setHeld(dir, true);
+      dirRef.current = dir;
+    };
+
+    const handleStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      activeRef.current = true;
+      startXRef.current = touch.clientX;
+      startYRef.current = touch.clientY;
+      if (controls) {
+        (controls as { enabled: boolean }).enabled = false;
+      }
+    };
+
+    const handleMove = (e: TouchEvent) => {
+      if (!activeRef.current) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      const dx = touch.clientX - startXRef.current;
+      const dy = touch.clientY - startYRef.current;
+      const adx = Math.abs(dx);
+      const ady = Math.abs(dy);
+      if (adx < DEADZONE_PX && ady < DEADZONE_PX) {
+        setDir(null);
+      } else if (adx > ady) {
+        setDir(dx > 0 ? "right" : "left");
+      } else {
+        setDir(dy > 0 ? "down" : "up");
+      }
+    };
+
+    const handleEnd = () => {
+      activeRef.current = false;
+      setDir(null);
+      if (controls) {
+        (controls as { enabled: boolean }).enabled = true;
+      }
+    };
+
+    window.addEventListener("touchstart", handleStart, { passive: true });
+    window.addEventListener("touchmove", handleMove, { passive: true });
+    window.addEventListener("touchend", handleEnd, { passive: true });
+    window.addEventListener("touchcancel", handleEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", handleStart);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleEnd);
+      window.removeEventListener("touchcancel", handleEnd);
+      setDir(null);
+    };
+  }, [state.isThrowing, setHeld, controls]);
+
+  return null;
+}
+
+function CameraHint() {
+  const tex = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 96;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.font = 'bold 34px "Georgia", serif';
+    ctx.fillStyle = "rgba(232,213,163,0.5)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("DRAG TO ORBIT CAMERA", 256, 48);
+    const t = new THREE.CanvasTexture(canvas);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 8;
+    return t;
+  }, []);
+  return (
+    <mesh position={[0, 1.55, -0.45]} renderOrder={5}>
+      <planeGeometry args={[1.2, 0.15]} />
+      <meshBasicMaterial
+        map={tex ?? undefined}
+        transparent
+        side={THREE.DoubleSide}
+        toneMapped={false}
+        depthTest={false}
+      />
+    </mesh>
+  );
+}
+
 export default function GameControls() {
   const isTouch = useIsTouch();
   const { t } = useTranslation();
@@ -431,6 +536,8 @@ export default function GameControls() {
       ) : null}
       <Hint text={hint} />
       <KeyboardControls />
+      {isTouch ? <FullScreenTouchSteer /> : null}
+      {isTouch ? <CameraHint /> : null}
     </group>
   );
 }

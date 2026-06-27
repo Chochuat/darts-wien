@@ -8,7 +8,6 @@ import DartboardModel from "./dartboard-model";
 import Darts from "./darts";
 import GameHUD from "./game-hud";
 import GameControls from "./game-controls";
-import GameKeyboard from "./game-keyboard";
 import GameResult from "./game-result";
 import GameLeaderboard from "./game-leaderboard";
 import { useThree } from "@react-three/fiber";
@@ -82,7 +81,6 @@ function SceneContents() {
       <GameHUD />
       <GameControls />
       <GameLeaderboard />
-      <GameKeyboard />
       <GameResult />
     </>
   );
