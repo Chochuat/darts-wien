@@ -10,7 +10,7 @@ The codebase has exactly **3 distinct match families** — not 5 or 6:
 
 | `match_type` | What is it? | Does it have a playoff? | Does it have a final? | 3rd place? |
 |---|---|---|---|---|
-| `'league'` | Season-long league schedule (standingsData) | **No.** Season champion = most aggregate points. No bracket. | **No.** | **No.** |
+| `'league'` | Season-long league schedule | **No.** Season champion = most aggregate points. No bracket. | **No.** | **No.** |
 | `'tournament_group'` | Weekly tournament group stage (round-robin) | No — this IS the group phase that feeds the playoff | N/A | N/A |
 | `'tournament_playoff'` | Any knockout match (QF/SF/3rd/Final) in any tournament | **Yes** — same column, disambiguated by `tournament_round_name` | `'Final'` | `'3rd Place'` |
 
@@ -109,7 +109,7 @@ Within `tournament_playoff`, the round name + tournament type gives full context
 
 ### `matches` — unified, one row per match
 
-**Critical rule:** one row per actual match (two players), NOT two perspective rows like the mock data. App computes `W`/`L` from leg scores. Matches have a lifecycle: `pending` (generated, ready to play) → `completed` (result filled) or `no_show` (walkover).
+**Critical rule:** one row per actual match (two players), NOT two perspective rows. App computes `W`/`L` from leg scores. Matches have a lifecycle: `pending` (generated, ready to play) → `completed` (result filled) or `no_show` (walkover).
 
 | Column | PostgreSQL type | Value domain / CHECK | FK reference | Notes |
 |---|---|---|---|---|
@@ -340,16 +340,16 @@ supabase/migrations/
 
 ---
 
-## 6. Counts When Seeded from Current Mock Data
+## 6. Seed Data Estimates (when populated from real data)
 
-| Table | Rows |
+| Table | Approx. Rows |
 |---|---|
 | `seasons` | 1 |
 | `players` | 20 |
 | `season_players` | 20 |
 | `tournaments` | 16 |
-| `tournament_registrations` | ~300 (varies by tournament pool) |
-| `tournament_groups` | ~57 (4 groups × 13 regular + 3 groups × 2 = 58, minus grand final) |
+| `tournament_registrations` | ~300 |
+| `tournament_groups` | ~57 |
 | `tournament_group_players` | ~300 |
-| **`matches`** | **~1,532 total** (`~200 league + ~1,220 tournament_group + ~112 tournament_playoff`) |
-| `tournament_final_standings` | 128 (8 players × 16 tournaments) |
+| `matches` | ~1,532 total |
+| `tournament_final_standings` | 128 |

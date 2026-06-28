@@ -1,5 +1,5 @@
-import MockEsports from "./_components/standings/mock-esports";
+import StandingsView from "./_components/standings/standings-view";
 
 export default function Home() {
-  return <MockEsports />;
+  return <StandingsView />;
 }

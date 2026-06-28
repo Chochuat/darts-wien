@@ -1,7 +1,7 @@
 # API Endpoints — Darts Wien
 
-> Target: replace mock data with Supabase-backed endpoints.
 > All endpoints are Next.js App Router Route Handlers under `/api/`.
+> All mock data has been removed — the app uses real API endpoints throughout.
 > All read endpoints: public access (anon), RLS `FOR SELECT USING (true)`.
 > All write endpoints: `auth.role() = 'authenticated'` (organizers only).
 
@@ -461,19 +461,6 @@ Already exists as direct Supabase calls in `leaderboard-api.ts`. Documented here
 
 ## Migration Notes
 
-### Replacing mock data imports
-
-| Page | Current import | Future endpoint |
-|---|---|---|
-| `page.tsx` (home) | `standingsData` | `GET /api/seasons/[activeSeasonId]/standings` |
-| `matches/[slug]/page.tsx` | `findBySlug()` | `GET /api/players/[slug]` |
-| `matches/page.tsx` | `allMatches, standingsData` | `GET /api/matches?seasonId=X` |
-| `tournaments/page.tsx` | `tournaments` (from data.ts) | `GET /api/tournaments?seasonId=X` |
-| `tournament-detail.tsx` | `findTournamentByWeek()` | `GET /api/tournaments/[id]` |
-
 ### Perspective rows are client-side
 
-The DB stores one row per physical match. For the "all matches" page which shows perspective rows (each row showing "Mike Thorn vs Dave Steel 3-0 W"), the client can:
-
-- **Option A:** Call `GET /api/players/[id]/matches` for the global "all matches" view — but this shows all perspectives for all players, which is redundant.
-- **Option B (recommended):** Call `GET /api/matches` to get raw match rows, then unroll into perspective rows on the client. For each match, emit two rows: one from p1's view (W/L, score formatted, 180 count shown if > 0) and one from p2's view. This matches the current mock data's `allMatches` flattening.
+The DB stores one row per physical match. For the "all matches" page which shows perspective rows (each row showing "Mike Thorn vs Dave Steel 3-0 W"), the client calls `GET /api/matches` to get raw match rows and unrolls them into perspective rows on the client. For each match, two rows are emitted: one from p1's view and one from p2's view.

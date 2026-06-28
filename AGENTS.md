@@ -50,8 +50,8 @@ darts-wien/
 ├── src/
 │   └── app/                  # App Router pages and layouts
 │       ├── _components/
-│       │   ├── standings/data.ts  # Standings types, 20 players, allMatches
-│       │   ├── tournaments/data.ts # Tournament types & data generator
+│       │   ├── standings/standings-view.tsx  # API-backed standings display
+│       │   ├── tournaments/format-constants.ts # Game format constants
 │       │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
 │       ├── matches/
 │       │   ├── page.tsx           # Filterable all-matches view (20/page)

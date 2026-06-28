@@ -14,7 +14,7 @@ import Section from "@/app/_components/ui/section";
 import SectionHeading from "@/app/_components/ui/section-heading";
 import Badge180 from "@/app/_components/ui/badge-180";
 import PageLayout from "@/app/_components/ui/page-layout";
-import { GROUP_FORMAT, PLAYOFF_FORMAT, GRAND_FINAL_FORMAT } from "@/app/_components/tournaments/data";
+import { GROUP_FORMAT, PLAYOFF_FORMAT, GRAND_FINAL_FORMAT } from "@/app/_components/tournaments/format-constants";
 import type {
   TournamentDetailResponse,
   TournamentSummary,

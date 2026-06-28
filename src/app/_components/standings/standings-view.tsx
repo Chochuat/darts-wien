@@ -21,7 +21,7 @@ import LiveIndicator from "@/app/_components/ui/live-indicator";
 import MatchRow from "@/app/_components/ui/match-row";
 import { useStandings } from "@/lib/hooks/use-standings";
 
-export default function MockEsports() {
+export default function StandingsView() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
   const { data, isLoading, isError } = useStandings(1);
