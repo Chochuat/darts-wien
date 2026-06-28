@@ -21,10 +21,10 @@ import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import RankBadge from "@/app/_components/ui/rank-badge";
 import FormIndicator from "@/app/_components/ui/form-indicator";
-import { findBySlug } from "@/app/_components/standings/data";
-import type { MatchResult } from "@/app/_components/standings/data";
+import { usePlayerBySlug } from "@/lib/hooks/use-players";
+import type { PlayerMatchPerspective } from "@/lib/validation";
 
-function MatchHistoryRow({ match }: { match: MatchResult }) {
+function MatchHistoryRow({ match }: { match: PlayerMatchPerspective }) {
   const isWin = match.result === "W";
   const { t } = useTranslation();
 
@@ -66,7 +66,7 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
             fontWeight: 500,
           }}
         >
-          {t("common.vs")} <strong>{match.opponent}</strong>
+          {t("common.vs")} <strong>{match.opponentName}</strong>
         </Typography>
       </Box>
 
@@ -89,7 +89,7 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
         >
           {match.score}
         </Typography>
-        {match.one80 && (
+        {match.one80 > 0 && (
           <Typography
             sx={{
               color: colors.accent,
@@ -135,10 +135,22 @@ function MatchHistoryRow({ match }: { match: MatchResult }) {
 export default function PlayerMatchesPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
-  const player = findBySlug(slug);
+  const { data, isLoading, isError } = usePlayerBySlug(slug);
   const { t } = useTranslation();
 
-  if (!player) {
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: 2, minHeight: "100%" }}>
+          <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>
+            {t("common.loading")}
+          </Typography>
+        </Box>
+      </PageLayout>
+    );
+  }
+
+  if (isError || !data) {
     return (
       <PageLayout>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: 2, minHeight: "100%" }}>
@@ -155,7 +167,7 @@ export default function PlayerMatchesPage() {
     );
   }
 
-  const sortedMatches = [...player.matches].reverse();
+  const { player, matches } = data;
   const setDiff = player.setsFor - player.setsAgainst;
   const setDiffStr = setDiff > 0 ? `+${setDiff}` : `${setDiff}`;
 
@@ -288,14 +300,14 @@ export default function PlayerMatchesPage() {
             </Box>
           </Box>
 
-          {sortedMatches.length === 0 ? (
+          {matches.length === 0 ? (
             <Box sx={{ py: 3, textAlign: "center" }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.8rem" }}>
                 {t("matchesPage.noMatchesRecorded")}
               </Typography>
             </Box>
           ) : (
-            sortedMatches.map((m, i) => <MatchHistoryRow key={i} match={m} />)
+            matches.map((m) => <MatchHistoryRow key={m.id} match={m} />)
           )}
         </Card>
 

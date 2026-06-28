@@ -6,9 +6,9 @@ import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
-import type { MatchResult } from "@/app/_components/standings/data";
+import type { StandingRecentMatch } from "@/lib/validation";
 
-export default function MatchRow({ match }: { match: MatchResult }) {
+export default function MatchRow({ match }: { match: StandingRecentMatch }) {
   const isWin = match.result === "W";
   const { t } = useTranslation();
 
@@ -57,7 +57,7 @@ export default function MatchRow({ match }: { match: MatchResult }) {
         >
           {match.score}
         </Typography>
-        {match.one80 && (
+        {match.one80 > 0 && (
           <Typography
             sx={{
               color: colors.accent,

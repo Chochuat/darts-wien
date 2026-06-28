@@ -104,19 +104,21 @@ export const TournamentRow = z.object({
 });
 export type TournamentRow = z.infer<typeof TournamentRow>;
 
-export const TournamentInsert = z.object({
+const tournamentInsertBase = z.object({
   season_id: seasonId,
   week_number: z.number().int().min(1).max(16),
   date: dateString,
   type: tournamentType.default("regular"),
   num_groups: z.number().int().min(2).max(4).nullable().default(null),
-}).refine(
+});
+
+export const TournamentInsert = tournamentInsertBase.refine(
   (t) => t.type === "grand_final" ? t.num_groups === null : true,
   { message: "num_groups must be null for grand_final" },
 );
 export type TournamentInsert = z.infer<typeof TournamentInsert>;
 
-export const TournamentUpdate = TournamentInsert.partial();
+export const TournamentUpdate = tournamentInsertBase.partial();
 export type TournamentUpdate = z.infer<typeof TournamentUpdate>;
 
 // ─── Tournament Registrations ─────────────────────────────────
@@ -390,6 +392,17 @@ export const TournamentListQuery = z.object({
 });
 export type TournamentListQuery = z.infer<typeof TournamentListQuery>;
 
+// ─── Recent match for standings expanded view ─────────────────
+
+export const StandingRecentMatch = z.object({
+  opponent: nonEmptyName,
+  score: z.string().min(1),
+  result: z.enum(["W", "L"]),
+  date: dateString,
+  one80: positiveSmallInt.default(0),
+});
+export type StandingRecentMatch = z.infer<typeof StandingRecentMatch>;
+
 // ─── API: Season standings response ───────────────────────────
 
 export const StandingPlayer = z.object({
@@ -405,6 +418,7 @@ export const StandingPlayer = z.object({
   points: positiveSmallInt,
   one80s: positiveSmallInt,
   form: z.array(z.enum(["W", "L"])),
+  recentMatches: z.array(StandingRecentMatch).default([]),
 });
 export type StandingPlayer = z.infer<typeof StandingPlayer>;
 
@@ -429,10 +443,10 @@ export const PlayerMatchPerspective = z.object({
   date: dateString,
   one80: positiveSmallInt,
   matchType: matchType,
-  tournamentWeek: z.number().int().min(1).max(16).optional(),
-  tournamentType: tournamentType.optional(),
-  roundName: roundName.optional(),
-  groupLabel: groupLabel.optional(),
+  tournamentWeek: z.number().int().min(1).max(16).nullable().optional(),
+  tournamentType: tournamentType.nullable().optional(),
+  roundName: roundName.nullable().optional(),
+  groupLabel: groupLabel.nullable().optional(),
 });
 export type PlayerMatchPerspective = z.infer<typeof PlayerMatchPerspective>;
 
@@ -484,11 +498,11 @@ export const ApiMatchRow = z.object({
   player2_180: positiveSmallInt,
   noShowPlayerId: playerId.nullable(),
   matchDate: dateString,
-  tournamentWeek: z.number().int().min(1).max(16).optional(),
-  tournamentType: tournamentType.optional(),
-  groupLabel: groupLabel.optional(),
-  roundName: roundName.optional(),
-  sortOrder: z.number().int().min(0).optional(),
+  tournamentWeek: z.number().int().min(1).max(16).nullable().optional(),
+  tournamentType: tournamentType.nullable().optional(),
+  groupLabel: groupLabel.nullable().optional(),
+  roundName: roundName.nullable().optional(),
+  sortOrder: z.number().int().min(0).nullable().optional(),
 });
 export type ApiMatchRow = z.infer<typeof ApiMatchRow>;
 
@@ -543,7 +557,7 @@ export type TournamentDetailResponse = z.infer<typeof TournamentDetailResponse>;
 export const ApiMatchesResponse = z.object({
   total: z.number().int().min(0),
   page: z.number().int().min(1),
-  limit: z.number().int().min(1).max(100),
+  limit: z.number().int().min(1).max(5000),
   matches: z.array(ApiMatchRow),
 });
 export type ApiMatchesResponse = z.infer<typeof ApiMatchesResponse>;

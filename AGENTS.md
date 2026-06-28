@@ -84,6 +84,8 @@ darts-wien/
 npm run dev       # Dev server → http://localhost:3000
 npm run build     # Production build
 npm run lint      # ESLint
+npm test          # Vitest (41 tests: 33 Zod schema + 8 hook/fetch)
+npm run test:watch# Vitest watch mode
 ```
 
 ---

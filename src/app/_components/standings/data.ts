@@ -349,6 +349,6 @@ export const uniqueDates = [...new Set(allMatches.map((m) => m.date))].sort(
   (a, b) => {
     const [da, ma] = a.split(".").map(Number);
     const [db, mb] = b.split(".").map(Number);
-    return db - da || mb - ma;
+    return mb - ma || db - da;
   }
 );

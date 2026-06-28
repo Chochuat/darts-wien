@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -21,14 +21,48 @@ import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
-import { allMatches, standingsData } from "@/app/_components/standings/data";
+import { useMatches } from "@/lib/hooks/use-matches";
+import type { ApiMatchRow } from "@/lib/validation";
+
+interface MatchDisplay {
+  playerName: string;
+  opponent: string;
+  score: string;
+  result: "W" | "L";
+  date: string;
+  one80: number;
+  id: number;
+}
+
+function toDisplayEntries(m: ApiMatchRow): [MatchDisplay, MatchDisplay] {
+  const p1Score = m.legsPlayer1 ?? 0;
+  const p2Score = m.legsPlayer2 ?? 0;
+  return [
+    {
+      id: m.id,
+      playerName: m.player1.name,
+      opponent: m.player2.name,
+      score: `${p1Score}-${p2Score}`,
+      result: p1Score > p2Score ? "W" : "L",
+      date: m.matchDate,
+      one80: m.player1_180,
+    },
+    {
+      id: m.id,
+      playerName: m.player2.name,
+      opponent: m.player1.name,
+      score: `${p2Score}-${p1Score}`,
+      result: p2Score > p1Score ? "W" : "L",
+      date: m.matchDate,
+      one80: m.player2_180,
+    },
+  ];
+}
 
 const PLAYERS_PER_PAGE = 20;
 
-const playerNames = standingsData.map((p) => p.name);
-
 function matchFilter(
-  match: (typeof allMatches)[number],
+  match: MatchDisplay,
   filters: { player: string; result: string; scoreQ: string; quickQ: string },
 ) {
   if (filters.player && match.playerName !== filters.player) return false;
@@ -66,19 +100,29 @@ export default function AllMatchesPage() {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const { t } = useTranslation();
+  const { data, isLoading, isError } = useMatches({ limit: 5000 });
+
+  const allEntries: MatchDisplay[] = useMemo(() => {
+    if (!data) return [];
+    return data.matches.flatMap(toDisplayEntries);
+  }, [data]);
+
+  const playerNames = useMemo(() => {
+    const names = new Set(allEntries.map((m) => m.playerName));
+    return [...names].sort();
+  }, [allEntries]);
 
   const filtered = useMemo(
-    () => allMatches.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })),
-    [player, result, scoreQ, quickQ],
+    () => allEntries.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })),
+    [allEntries, player, result, scoreQ, quickQ],
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PLAYERS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PLAYERS_PER_PAGE, safePage * PLAYERS_PER_PAGE);
 
-  useEffect(() => {
-    setPage(1);
-  }, [player, result, scoreQ, quickQ]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setPage(1); }, [player, result, scoreQ, quickQ]);
 
   const clearAll = () => {
     setPlayer("");
@@ -90,10 +134,34 @@ export default function AllMatchesPage() {
 
   const hasFilters = player || result || scoreQ || quickQ;
 
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <Section>
+          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
+            {t("common.loading")}
+          </Typography>
+        </Section>
+      </PageLayout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <PageLayout>
+        <Section>
+          <Typography sx={{ color: colors.red, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
+            {t("common.error")}
+          </Typography>
+        </Section>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout>
       <Section>
-        <PageHeader icon={<TrackChanges />} title={t("matchesPage.title")} subtitle={t("matchesPage.subtitle", { count: allMatches.length })} />
+        <PageHeader icon={<TrackChanges />} title={t("matchesPage.title")} subtitle={t("matchesPage.subtitle", { count: data?.total ?? 0 })} />
 
         {/* Filters — single row */}
         <Box sx={{ px: 0.5, mb: 2 }}>
@@ -202,7 +270,7 @@ export default function AllMatchesPage() {
               const isWin = m.result === "W";
               return (
                 <Box
-                  key={`${m.playerName}-${i}`}
+                  key={`${m.playerName}-${m.id}`}
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -238,7 +306,7 @@ export default function AllMatchesPage() {
                       }}
                     >
                       <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
-                      {(m as { one80?: number }).one80 && (
+                      {m.one80 > 0 && (
                         <Typography
                           component="span"
                           sx={{

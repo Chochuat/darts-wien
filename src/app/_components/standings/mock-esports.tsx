@@ -19,17 +19,43 @@ import StatLabel from "@/app/_components/ui/stat-label";
 import FormIndicator from "@/app/_components/ui/form-indicator";
 import LiveIndicator from "@/app/_components/ui/live-indicator";
 import MatchRow from "@/app/_components/ui/match-row";
-import { standingsData, slugify } from "./data";
-
-const totalMatches = standingsData.reduce((acc, p) => acc + p.played, 0) / 2;
+import { useStandings } from "@/lib/hooks/use-standings";
 
 export default function MockEsports() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { data, isLoading, isError } = useStandings(1);
 
   const toggle = (name: string) => {
     setExpanded((prev) => (prev === name ? null : name));
   };
+
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <Section>
+          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
+            {t("common.loading")}
+          </Typography>
+        </Section>
+      </PageLayout>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <PageLayout>
+        <Section>
+          <Typography sx={{ color: colors.red, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
+            {t("common.error")}
+          </Typography>
+        </Section>
+      </PageLayout>
+    );
+  }
+
+  const { players } = data;
+  const totalMatches = players.reduce((acc, p) => acc + p.played, 0) / 2;
 
   return (
     <PageLayout>
@@ -66,7 +92,7 @@ export default function MockEsports() {
           {/* Desktop league summary */}
           <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3, mt: 1 }}>
             {[
-              { label: t("common.players"), value: standingsData.length },
+              { label: t("common.players"), value: players.length },
               { label: t("common.matches"), value: totalMatches },
               { label: t("standings.topStreak"), value: `9${t("common.wAbbr")}` },
             ].map((s) => (
@@ -84,11 +110,11 @@ export default function MockEsports() {
 
         {/* Player cards */}
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: { xs: 1.25, md: 1 } }}>
-          {standingsData.map((p) => {
+          {players.map((p) => {
             const isOpen = expanded === p.name;
 
             return (
-              <Card key={p.name} borderColor={borderForRank(p.pos)} hoverBorderColor={p.pos === 1 ? "#fde68a" : p.pos === 2 ? "#d4d4d8" : p.pos === 3 ? "#e8a75d" : colors.accent}>
+              <Card key={p.slug} borderColor={borderForRank(p.pos)} hoverBorderColor={p.pos === 1 ? "#fde68a" : p.pos === 2 ? "#d4d4d8" : p.pos === 3 ? "#e8a75d" : colors.accent}>
                 <Box onClick={() => toggle(p.name)} sx={{ cursor: "pointer" }}>
                   <Box
                     sx={{
@@ -191,13 +217,13 @@ export default function MockEsports() {
                       </Typography>
                     </Box>
 
-                    {p.matches.slice(0, 5).map((m, i) => (
+                    {p.recentMatches.slice(0, 5).map((m, i) => (
                       <MatchRow key={i} match={m} />
                     ))}
 
                     <Box sx={{ borderTop: "1px solid #f0f0f0", px: { xs: 1.75, md: 2.5 }, py: { xs: 1, md: 0.75 } }}>
                       <Link
-                        href={`/matches/${slugify(p.name)}`}
+                        href={`/matches/${p.slug}`}
                         style={{ textDecoration: "none", display: "block" }}
                       >
                         <Box

@@ -21,4 +21,9 @@
 
 ## Records
 
-_No decisions recorded yet. Add the first ADR when you make your first architectural choice._
+## ADR-001: Standings Stats Include All Match Types
+**Status:** Accepted  
+**Date:** 2026-06-28  
+**Context:** The standings page displayed "last 5 matches" showing only league matches (filtered by `match_type = 'league'`), while the player detail page showed all completed matches. This caused confusion — tournament group, playoff, and final matches were excluded from standings stats (wins, losses, sets, 180s, form, recent matches).  
+**Decision:** The standings API now queries all completed matches with no `match_type` filter. Stats, form, and recent matches are computed from every completed match in the season (league, tournament group, playoff, final, grand final) ordered by `match_date DESC`.  
+**Consequences:** Standings stats now reflect a player's full performance across all match types. The trade-off is that the standings no longer isolate league-only performance, but this matches user expectation that "all matches count."
