@@ -91,7 +91,7 @@ function PieRing({
       />,
     );
   }
-  return <>{wedges}</>;
+  return wedges;
 }
 
 function FullRing({ ir, orr, col }: { ir: number; orr: number; col: string }) {
@@ -111,7 +111,8 @@ function NumberLabel({ index }: { index: number }) {
   const a = wedgeCenterAngle(index);
   const x = Math.cos(a) * NUMBER_RADIUS;
   const y = Math.sin(a) * NUMBER_RADIUS;
-  const texture = useMemo(() => getNumberTexture(DART_NUMBERS[index]), [index]);
+  const num = DART_NUMBERS[index];
+  const texture = useMemo(() => getNumberTexture(num ?? 20), [num]);
   return (
     <mesh position={[x, y, NUMBER_LOCAL_Z]}>
       <planeGeometry args={[0.2, 0.2]} />

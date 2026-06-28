@@ -10,6 +10,7 @@ export default function FormIndicator({ form }: FormIndicatorProps) {
     <Box sx={{ display: "flex", gap: 0.3, alignItems: "center" }}>
       {form.map((r, i) => (
         <Box
+          // eslint-disable-next-line react/no-array-index-key
           key={i}
           sx={{
             width: 7,

@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
-import { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/lib/validation";
+import type { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/lib/validation";
 
 export async function GET(
   _req: NextRequest,

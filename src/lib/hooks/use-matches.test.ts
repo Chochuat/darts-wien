@@ -38,7 +38,7 @@ describe("Matches fetch with Zod validation", () => {
     const data = await res.json();
     const { ApiMatchesResponse } = await import("@/lib/validation");
     const parsed = ApiMatchesResponse.parse(data);
-    expect(parsed.matches[0].player1.name).toBe("Mike Thorn");
+    expect(parsed.matches[0]?.player1.name).toBe("Mike Thorn");
   });
 
   it("rejects response with invalid matchType", async () => {
@@ -80,10 +80,12 @@ describe("Matches fetch with Zod validation", () => {
     params.set("matchType", "league");
 
     await fetch(`/api/matches?${params.toString()}`);
-    const calledUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
-      .calls[0][0] as string;
+    const call = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0];
+    const calledUrl = call?.[0] as string | undefined;
 
-    expect(calledUrl).toContain("playerId=1");
-    expect(calledUrl).toContain("matchType=league");
+    expect(calledUrl).toBeDefined();
+    expect(calledUrl!).toContain("playerId=1");
+    expect(calledUrl!).toContain("matchType=league");
   });
 });

@@ -217,8 +217,8 @@ export default function StandingsView() {
                       </Typography>
                     </Box>
 
-                    {p.recentMatches.slice(0, 5).map((m, i) => (
-                      <MatchRow key={i} match={m} />
+                    {p.recentMatches.slice(0, 5).map((m) => (
+                      <MatchRow key={`${m.date}-${m.opponent}`} match={m} />
                     ))}
 
                     <Box sx={{ borderTop: "1px solid #f0f0f0", px: { xs: 1.75, md: 2.5 }, py: { xs: 1, md: 0.75 } }}>

@@ -35,7 +35,7 @@ describe("Standings fetch with Zod validation", () => {
     const data = await res.json();
     const { StandingsResponse } = await import("@/lib/validation");
     const parsed = StandingsResponse.parse(data);
-    expect(parsed.players[0].name).toBe("Mike Thorn");
+    expect(parsed.players[0]?.name).toBe("Mike Thorn");
   });
 
   it("rejects response with negative points", async () => {

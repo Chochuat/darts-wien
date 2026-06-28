@@ -65,6 +65,9 @@ export function computeOutcomeFromBoardPosition(
     type = "single";
   }
 
+  if (num === undefined) {
+    return { type: "miss", score: 0, label: "MISS" };
+  }
   switch (type) {
     case "double":
       return { type, number: num, score: num * 2, label: "D" + num };

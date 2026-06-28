@@ -7,15 +7,32 @@
 
 ## TypeScript
 
-- All code in TypeScript. Strict mode enabled.
+- All code in TypeScript. Strict mode (`strict: true`) with these additional checks:
+  - `noUncheckedIndexedAccess` — guard all array/object indexed access
+  - `noUnusedLocals` — no dead code
+  - `noUnusedParameters` — prefix unused params with `_`
+  - `noImplicitOverride` — use `override` keyword for class method overrides
+  - `verbatimModuleSyntax` — use `import type` for type-only imports
+  - `forceConsistentCasingInFileNames` — case-sensitive imports
 - Avoid `any` — use `unknown` and type guards instead.
 - Prefer `interface` over `type` for object shapes, unless union/intersection is needed.
+- All type-only imports must use `import type { ... }` syntax (enforced by `@typescript-eslint/consistent-type-imports`).
+- Target `ES2022`.
+
+## ESLint
+
+- Rules enforced via `eslint.config.mjs` (flat config).
+- Key rules: `@typescript-eslint/no-explicit-any` (error), `@typescript-eslint/no-unused-vars` (error), `@typescript-eslint/consistent-type-imports` (error).
+- React: `react/jsx-no-useless-fragment`, `react/self-closing-comp`, `react/no-array-index-key` (warn).
+- No `console.log` in committed code (`no-console` warn).
+- Prefer `eslint-disable-next-line` for intentional violations (e.g. array index keys in static lists).
+- Run `npm run lint` before committing.
 
 ## React Components
 
 - React Server Components by default. Only add `"use client"` when:
-  - Using event handlers (`onClick`, `onChange`, etc.)
-  - Using hooks (`useState`, `useEffect`, etc.)
+  - Using event handlers (onClick, onChange, etc.)
+  - Using hooks (useState, useEffect, etc.)
   - Using browser-only APIs
 - Component files: one component per file (except small private helpers).
 - Props type declared inline or as a named interface in the same file.

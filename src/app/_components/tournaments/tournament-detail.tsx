@@ -160,7 +160,9 @@ function PlayoffRound({
 }) {
   const pairs: { m1: PerspectiveMatch; m2: PerspectiveMatch }[] = [];
   for (let i = 0; i < allPlayoffEntries.length; i += 2) {
-    if (allPlayoffEntries[i + 1]) pairs.push({ m1: allPlayoffEntries[i], m2: allPlayoffEntries[i + 1] });
+    const m1 = allPlayoffEntries[i];
+    const m2 = allPlayoffEntries[i + 1];
+    if (m1 && m2) pairs.push({ m1, m2 });
   }
 
   const winnerStyle = roundName === "Final" ? "gold" : roundName === "3rd Place" ? "bronze" : "accent";
@@ -170,8 +172,8 @@ function PlayoffRound({
       <Typography sx={{ color, fontSize: "0.65rem", fontWeight: 700, letterSpacing: 1, mb: 0.75, textAlign: "center", textTransform: "uppercase" }}>
         {roundLabel}
       </Typography>
-      {pairs.map(({ m1, m2 }, idx) => (
-        <Box key={idx} sx={{ bgcolor, borderRadius: 1.5, px: 1.25, py: 0.7, mb: 0.5, border: "1px solid", borderColor }}>
+      {pairs.map(({ m1, m2 }) => (
+        <Box key={`${m1.playerName}-${m2.playerName}`} sx={{ bgcolor, borderRadius: 1.5, px: 1.25, py: 0.7, mb: 0.5, border: "1px solid", borderColor }}>
           <PlayoffMatch m1={m1} m2={m2} resultKey={roundName} winnerStyle={winnerStyle} />
         </Box>
       ))}
@@ -429,8 +431,8 @@ export default function TournamentDetail({
 
                   <Collapse in={matchesVisible}>
                     <Box sx={{ px: 1.5, py: 0.5, borderTop: "1px solid #f0f0f0" }}>
-                      {groupMatches.filter((m) => m.result === "W").map((m, i) => (
-                        <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 0.5, py: 0.2 }}>
+                      {groupMatches.filter((m) => m.result === "W").map((m) => (
+                        <Box key={`${m.playerName}-${m.opponent}-${m.score}`} sx={{ display: "flex", alignItems: "center", gap: 0.5, py: 0.2 }}>
                           <CheckCircle sx={{ color: colors.green, fontSize: "0.55rem", flexShrink: 0 }} />
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.playerName}
@@ -462,7 +464,11 @@ export default function TournamentDetail({
             <PlayoffRound
               roundName="Quarter-Finals"
               roundLabel={t("tournamentDetail.quarterFinals")}
-              allPlayoffEntries={detail.playoffs.find((r) => r.name === "Quarter-Finals")?.matches.flatMap((m) => [toPerspective(m, m.player1.name)!, toPerspective(m, m.player2.name)!]) ?? []}
+              allPlayoffEntries={detail.playoffs.find((r) => r.name === "Quarter-Finals")?.matches.flatMap((m) => {
+                const p1 = toPerspective(m, m.player1.name);
+                const p2 = toPerspective(m, m.player2.name);
+                return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
+              }) ?? []}
               color={colors.accent}
               borderColor={`${colors.accent}15`}
               bgcolor={`${colors.accent}06`}
@@ -470,7 +476,11 @@ export default function TournamentDetail({
             <PlayoffRound
               roundName="Semi-Finals"
               roundLabel={t("tournamentDetail.semiFinals")}
-              allPlayoffEntries={detail.playoffs.find((r) => r.name === "Semi-Finals")?.matches.flatMap((m) => [toPerspective(m, m.player1.name)!, toPerspective(m, m.player2.name)!]) ?? []}
+              allPlayoffEntries={detail.playoffs.find((r) => r.name === "Semi-Finals")?.matches.flatMap((m) => {
+                const p1 = toPerspective(m, m.player1.name);
+                const p2 = toPerspective(m, m.player2.name);
+                return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
+              }) ?? []}
               color={colors.accent}
               borderColor={`${colors.accent}25`}
               bgcolor={`${colors.accent}0a`}
@@ -480,7 +490,11 @@ export default function TournamentDetail({
               <PlayoffRound
                 roundName="3rd Place"
                 roundLabel={t("tournamentDetail.thirdPlace")}
-                allPlayoffEntries={detail.playoffs.find((r) => r.name === "3rd Place")?.matches.flatMap((m) => [toPerspective(m, m.player1.name)!, toPerspective(m, m.player2.name)!]) ?? []}
+                allPlayoffEntries={detail.playoffs.find((r) => r.name === "3rd Place")?.matches.flatMap((m) => {
+                  const p1 = toPerspective(m, m.player1.name);
+                  const p2 = toPerspective(m, m.player2.name);
+                  return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
+                }) ?? []}
                 color={colors.bronze}
                 borderColor={`${colors.bronze}30`}
                 bgcolor={`${colors.bronze}12`}
@@ -488,7 +502,11 @@ export default function TournamentDetail({
               <PlayoffRound
                 roundName="Final"
                 roundLabel={t("tournamentDetail.final")}
-                allPlayoffEntries={detail.playoffs.find((r) => r.name === "Final")?.matches.flatMap((m) => [toPerspective(m, m.player1.name)!, toPerspective(m, m.player2.name)!]) ?? []}
+                allPlayoffEntries={detail.playoffs.find((r) => r.name === "Final")?.matches.flatMap((m) => {
+                  const p1 = toPerspective(m, m.player1.name);
+                  const p2 = toPerspective(m, m.player2.name);
+                  return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
+                }) ?? []}
                 color={colors.goldText}
                 borderColor={colors.gold}
                 bgcolor={`${colors.gold}15`}

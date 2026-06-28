@@ -17,7 +17,6 @@ const MUTED = "#c9a86a";
 const GOLD = "#f5d36b";
 const SILVER = "#d6d6dc";
 const BRONZE = "#c98a54";
-const CRIMSON_DEEP = "#8b0000";
 const DARK_BACK = "#120802";
 
 interface LbResources {
@@ -83,9 +82,10 @@ function drawLb(
   ctx.textBaseline = "middle";
   for (let i = 0; i < entries.length && i < 10; i++) {
     const e = entries[i];
+    if (!e) continue;
     const y = startY + i * rowH;
     const podium = i < 3;
-    const posColor = podium ? PODIUM_COLORS[i] : MUTED;
+    const posColor = (podium ? PODIUM_COLORS[i] : MUTED) ?? MUTED;
     const nameColor = podium ? CREAM : MUTED;
     const scoreColor = podium ? CREAM : MUTED;
     const fontWeight = podium ? "bold" : "normal";
@@ -147,5 +147,4 @@ export default function GameLeaderboard() {
       </mesh>
     </group>
   );
-  void CRIMSON_DEEP;
 }
