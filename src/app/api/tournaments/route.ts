@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { searchParams } = new URL(req.url);
   const seasonId = searchParams.get("seasonId");
@@ -20,9 +18,7 @@ export async function GET(req: NextRequest) {
 
   const { data: tournaments, error } = await query;
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   const result = await Promise.all(
     (tournaments ?? []).map(async (t) => {
@@ -62,8 +58,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const body = await req.json();
   const { seasonId, weekNumber, date, type, numGroups } = body;
@@ -87,9 +82,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json(data, { status: 201 });
 }

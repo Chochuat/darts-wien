@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase } from "@/lib/api-utils";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: player, error: playerError } = await supabase
     .from("players")

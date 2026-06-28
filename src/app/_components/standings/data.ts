@@ -148,7 +148,7 @@ export const standingsData: StandingsPlayer[] = [
   {
     pos: 9, name: "Lukas Weber", played: 20, wins: 9, losses: 11, setsFor: 30, setsAgainst: 38,     points: 18, one80s: 1, form: ["L", "W", "W", "L", "L"],
     matches: [
-      { opponent: "Max Righter", score: "1-3", result: "L", date: "20.06." },
+      { opponent: "Max Richter", score: "1-3", result: "L", date: "20.06." },
       { opponent: "Marco Berger", score: "3-1", result: "W", date: "13.06.", one80: 1 },
       { opponent: "Simon Adler", score: "3-2", result: "W", date: "06.06." },
       { opponent: "Felix Gross", score: "2-3", result: "L", date: "30.05." },

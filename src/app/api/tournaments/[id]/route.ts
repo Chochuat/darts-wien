@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function GET(
   _req: NextRequest,
@@ -12,8 +11,7 @@ export async function GET(
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: tournament, error: tError } = await supabase
     .from("tournaments")
@@ -226,8 +224,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const updates: Record<string, unknown> = {};
   if (body.date !== undefined) updates.date = body.date;
@@ -240,9 +237,7 @@ export async function PATCH(
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json(data);
 }

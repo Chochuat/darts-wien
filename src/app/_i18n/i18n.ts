@@ -10,6 +10,12 @@ export const SUPPORTED_LANGUAGES = ["en", "de", "sk"] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const DEFAULT_LANGUAGE: SupportedLanguage = "sk";
 
+export const LANG_LABELS: Record<SupportedLanguage, string> = {
+  en: "EN",
+  de: "DE",
+  sk: "SK",
+};
+
 if (!i18n.isInitialized) {
   void i18n.use(initReactI18next).init({
     resources: {

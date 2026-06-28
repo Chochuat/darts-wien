@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 import { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/lib/validation";
 
 export async function GET(
@@ -13,8 +12,7 @@ export async function GET(
     return NextResponse.json({ error: "Invalid season ID" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: season, error: seasonError } = await supabase
     .from("seasons")
@@ -36,17 +34,13 @@ export async function GET(
     .order("match_date", { ascending: false })
     .order("id", { ascending: false });
 
-  if (matchError) {
-    return NextResponse.json({ error: matchError.message }, { status: 500 });
-  }
+  if (matchError) return errorResponse(matchError);
 
   const { data: players, error: playerError } = await supabase
     .from("players")
     .select("id, name, slug");
 
-  if (playerError) {
-    return NextResponse.json({ error: playerError.message }, { status: 500 });
-  }
+  if (playerError) return errorResponse(playerError);
 
   const playerMap = new Map(players.map((p) => [p.id, p]));
 

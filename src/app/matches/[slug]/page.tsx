@@ -21,6 +21,7 @@ import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import RankBadge from "@/app/_components/ui/rank-badge";
 import FormIndicator from "@/app/_components/ui/form-indicator";
+import Badge180 from "@/app/_components/ui/badge-180";
 import { usePlayerBySlug } from "@/lib/hooks/use-players";
 import type { PlayerMatchPerspective } from "@/lib/validation";
 
@@ -89,23 +90,7 @@ function MatchHistoryRow({ match }: { match: PlayerMatchPerspective }) {
         >
           {match.score}
         </Typography>
-        {match.one80 > 0 && (
-          <Typography
-            sx={{
-              color: colors.accent,
-              fontSize: "0.5rem",
-              fontWeight: 900,
-              letterSpacing: 0.5,
-              bgcolor: `${colors.accent}15`,
-              px: 0.5,
-              py: 0.15,
-              borderRadius: 0.5,
-              lineHeight: 1,
-            }}
-          >
-            180
-          </Typography>
-        )}
+        {match.one80 > 0 && <Badge180 />}
         <Box
           sx={{
             bgcolor: isWin ? `${colors.green}12` : `${colors.red}12`,

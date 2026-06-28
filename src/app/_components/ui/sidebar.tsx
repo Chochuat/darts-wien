@@ -16,17 +16,11 @@ import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
 import { colors } from "@/lib/design-tokens";
-import i18n, { SUPPORTED_LANGUAGES } from "@/app/_i18n/i18n";
+import i18n, { SUPPORTED_LANGUAGES, LANG_LABELS } from "@/app/_i18n/i18n";
 import type { SupportedLanguage } from "@/app/_i18n/i18n";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
-
-const LANG_LABELS: Record<SupportedLanguage, string> = {
-  en: "EN",
-  de: "DE",
-  sk: "SK",
-};
 
 export const SIDEBAR_WIDTH = 100;
 
@@ -87,7 +81,7 @@ export default function Sidebar() {
       {/* Nav */}
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         {links.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
           return (
             <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>

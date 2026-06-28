@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -21,6 +21,7 @@ import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
+import Badge180 from "@/app/_components/ui/badge-180";
 import { useMatches } from "@/lib/hooks/use-matches";
 import type { ApiMatchRow } from "@/lib/validation";
 
@@ -120,9 +121,6 @@ export default function AllMatchesPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PLAYERS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PLAYERS_PER_PAGE, safePage * PLAYERS_PER_PAGE);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setPage(1); }, [player, result, scoreQ, quickQ]);
 
   const clearAll = () => {
     setPlayer("");
@@ -292,7 +290,7 @@ export default function AllMatchesPage() {
                     sx={{
                       minWidth: 0,
                       flex: { xs: 1, md: "none" },
-                      md: { width: 200 },
+                      width: { md: 200 },
                     }}
                   >
                     <Typography
@@ -306,26 +304,7 @@ export default function AllMatchesPage() {
                       }}
                     >
                       <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
-                      {m.one80 > 0 && (
-                        <Typography
-                          component="span"
-                          sx={{
-                            color: colors.accent,
-                            fontSize: "0.5rem",
-                            fontWeight: 900,
-                            letterSpacing: 0.5,
-                            bgcolor: `${colors.accent}15`,
-                            px: 0.5,
-                            py: 0.15,
-                            borderRadius: 0.5,
-                            lineHeight: 1,
-                            ml: 0.5,
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          180
-                        </Typography>
-                      )}
+                      {m.one80 > 0 && <Badge180 />}
                       {" "}
                       <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {m.opponent}</Box>
                     </Typography>

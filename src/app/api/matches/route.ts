@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { searchParams } = new URL(req.url);
   const seasonId = searchParams.get("seasonId");
@@ -38,9 +36,7 @@ export async function GET(req: NextRequest) {
     .order("match_date", { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   const allPlayerIds = new Set<number>();
   for (const m of matches ?? []) {

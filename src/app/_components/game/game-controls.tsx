@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
@@ -89,19 +89,23 @@ function useIsTouch(): boolean {
 }
 
 function useOrbitBlock() {
-  const controls = useThree((s) => s.controls) as
+  const controlsValue = useThree((s) => s.controls) as
     | { enabled: boolean }
     | null;
-  const disable = () => {
-    if (controls) {
-      (controls as { enabled: boolean }).enabled = false;
+  const controlsRef = useRef(controlsValue);
+  useEffect(() => {
+    controlsRef.current = controlsValue;
+  }, [controlsValue]);
+  const disable = useCallback(() => {
+    if (controlsRef.current) {
+      controlsRef.current.enabled = false;
     }
-  };
-  const enable = () => {
-    if (controls) {
-      (controls as { enabled: boolean }).enabled = true;
+  }, []);
+  const enable = useCallback(() => {
+    if (controlsRef.current) {
+      controlsRef.current.enabled = true;
     }
-  };
+  }, []);
   return { disable, enable };
 }
 

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function GET(
   _req: NextRequest,
@@ -12,17 +11,14 @@ export async function GET(
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: registrations, error } = await supabase
     .from("tournament_registrations")
     .select("player_id, checked_in, created_at")
     .eq("tournament_id", tournamentId);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   const playerIds = registrations.map((r) => r.player_id);
   const { data: players } = await supabase
@@ -60,8 +56,7 @@ export async function POST(
     return NextResponse.json({ error: "playerId is required" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("tournament_registrations")
@@ -69,9 +64,7 @@ export async function POST(
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json(data, { status: 201 });
 }

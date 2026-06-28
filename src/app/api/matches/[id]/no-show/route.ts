@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse, validationError } from "@/lib/api-utils";
 import { MatchNoShowUpdate } from "@/lib/validation";
 
 export async function PATCH(
@@ -15,15 +14,9 @@ export async function PATCH(
 
   const body = await req.json();
   const parsed = MatchNoShowUpdate.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Validation failed", details: parsed.error.issues },
-      { status: 400 },
-    );
-  }
+  if (!parsed.success) return validationError(parsed.error.issues);
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: match, error: findError } = await supabase
     .from("matches")
@@ -68,9 +61,7 @@ export async function PATCH(
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json(data);
 }

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function POST(
   _req: NextRequest,
@@ -12,8 +11,7 @@ export async function POST(
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: pendingMatches } = await supabase
     .from("matches")
@@ -52,9 +50,7 @@ export async function POST(
     })
     .eq("id", tournamentId);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json({ success: true, winnerPlayerId });
 }

@@ -8,17 +8,11 @@ import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
 import { colors } from "@/lib/design-tokens";
-import i18n, { SUPPORTED_LANGUAGES } from "@/app/_i18n/i18n";
+import i18n, { SUPPORTED_LANGUAGES, LANG_LABELS } from "@/app/_i18n/i18n";
 import type { SupportedLanguage } from "@/app/_i18n/i18n";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
-
-const LANG_LABELS: Record<SupportedLanguage, string> = {
-  en: "EN",
-  de: "DE",
-  sk: "SK",
-};
 
 export default function AppBar() {
   const pathname = usePathname();
@@ -94,7 +88,7 @@ export default function AppBar() {
       {/* Tabs — mobile only */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.5, width: "100%" }}>
         {tabs.map((tab) => {
-          const isActive = pathname === tab.href;
+          const isActive = pathname === tab.href || (tab.href !== "/" && pathname.startsWith(tab.href + "/"));
 
           return (
             <Link key={tab.href} href={tab.href} style={{ textDecoration: "none" }}>

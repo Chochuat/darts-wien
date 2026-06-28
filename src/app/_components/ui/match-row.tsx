@@ -6,6 +6,7 @@ import CheckCircle from "@mui/icons-material/CheckCircle";
 import Cancel from "@mui/icons-material/Cancel";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
+import Badge180 from "@/app/_components/ui/badge-180";
 import type { StandingRecentMatch } from "@/lib/validation";
 
 export default function MatchRow({ match }: { match: StandingRecentMatch }) {
@@ -57,23 +58,7 @@ export default function MatchRow({ match }: { match: StandingRecentMatch }) {
         >
           {match.score}
         </Typography>
-        {match.one80 > 0 && (
-          <Typography
-            sx={{
-              color: colors.accent,
-              fontSize: "0.5rem",
-              fontWeight: 900,
-              letterSpacing: 0.5,
-              bgcolor: `${colors.accent}15`,
-              px: 0.5,
-              py: 0.15,
-              borderRadius: 0.5,
-              lineHeight: 1,
-            }}
-          >
-            180
-          </Typography>
-        )}
+        {match.one80 > 0 && <Badge180 />}
       </Box>
 
       <Typography

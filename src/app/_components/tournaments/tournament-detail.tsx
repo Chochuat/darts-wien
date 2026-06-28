@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import SectionHeading from "@/app/_components/ui/section-heading";
+import Badge180 from "@/app/_components/ui/badge-180";
 import PageLayout from "@/app/_components/ui/page-layout";
 import { GROUP_FORMAT, PLAYOFF_FORMAT, GRAND_FINAL_FORMAT } from "@/app/_components/tournaments/data";
 import type {
@@ -91,27 +92,6 @@ function SetsDiff({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: numb
       }}
     >
       {diff > 0 ? `+${diff}` : diff === 0 ? "0" : String(diff)}
-    </Typography>
-  );
-}
-
-function Badge180() {
-  return (
-    <Typography
-      sx={{
-        color: colors.accent,
-        fontSize: "0.45rem",
-        fontWeight: 900,
-        letterSpacing: 0.5,
-        bgcolor: `${colors.accent}15`,
-        px: 0.4,
-        py: 0.1,
-        borderRadius: 0.5,
-        lineHeight: 1,
-        flexShrink: 0,
-      }}
-    >
-      180
     </Typography>
   );
 }
@@ -455,24 +435,7 @@ export default function TournamentDetail({
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.playerName}
                           </Typography>
-                          {m.one80 > 0 && (
-                            <Typography
-                              sx={{
-                                color: colors.accent,
-                                fontSize: "0.45rem",
-                                fontWeight: 900,
-                                letterSpacing: 0.5,
-                                bgcolor: `${colors.accent}15`,
-                                px: 0.4,
-                                py: 0.1,
-                                borderRadius: 0.5,
-                                lineHeight: 1,
-                                flexShrink: 0,
-                              }}
-                            >
-                              180
-                            </Typography>
-                          )}
+            {m.one80 > 0 && <Badge180 />}
                           <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>{t("common.vs")}</Typography>
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.opponent}

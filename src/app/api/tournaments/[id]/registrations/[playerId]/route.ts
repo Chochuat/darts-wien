@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 export async function DELETE(
   _req: NextRequest,
@@ -14,8 +13,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data: tournament } = await supabase
     .from("tournaments")
@@ -36,9 +34,7 @@ export async function DELETE(
     .eq("tournament_id", tournamentId)
     .eq("player_id", playerIdNum);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return new NextResponse(null, { status: 204 });
 }
@@ -65,8 +61,7 @@ export async function PATCH(
     );
   }
 
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("tournament_registrations")
@@ -76,9 +71,7 @@ export async function PATCH(
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return errorResponse(error);
 
   return NextResponse.json(data);
 }
