@@ -76,6 +76,7 @@
     "players": "{{count}} hráčov",
     "groupMatches": "{{count}} skupinových zápasov",
     "playoffMatches": "{{count}} playoff zápasov",
+    "grandFinalPlayers": "8 hráčov (top 8)",
     "futureText": "Rozpis a skupiny budú čoskoro zverejnené"
   },
   "tournamentDetail": {
@@ -95,7 +96,13 @@
     "semiFinals": "Semifinále",
     "thirdPlace": "3. miesto",
     "final": "Finále",
-    "advanced": "Postupujúci"
+    "advanced": "Postupujúci",
+    "grandFinalTitle": "Grand Final · Season 2 Šampiónsky Večer",
+    "grandFinal": "GRAND FINAL",
+    "playersGrandFinal": "{{count}} hráčov (top 8)",
+    "grandFinalQfFormat": "ŠF: {{game}} · first to {{legs}} legs",
+    "grandFinalSfFormat": "SF & 3.: {{game}} · first to {{legs}} legs",
+    "grandFinalFinalFormat": "Finále: {{game}} · first to {{legs}} legs"
   },
   "about": {
     "title": "O nás",
@@ -105,7 +112,7 @@
     "teams": "Tímy",
     "season": "Sezóna",
     "venues": "Miesta",
-    "leagueOrg": "Organizácia ligy",
+    "organizers": "Organizátori turnaja",
     "contact": "Kontakt",
     "email": "Email",
     "phone": "Telefón",
@@ -115,14 +122,10 @@
     "website": "Webová stránka",
     "discord": "Discord",
     "telegram": "Telegram",
-    "commissioner": "Komisár ligy",
-    "commissionerBio": "Zakladateľ a hlavný organizátor od roku 2020.",
-    "tournamentDirector": "Riaditeľ turnaja",
-    "tournamentDirectorBio": "Koordinuje všetky turnajové rozvrhy a pavúky.",
-    "headReferee": "Hlavný rozhodca",
-    "headRefereeBio": "Zabezpečuje fair play a dodržiavanie pravidiel na všetkých zápasoch.",
-    "communications": "Komunikácia",
-    "communicationsBio": "Zodpovedá za oznámenia ligy, sociálne siete a tlač."
+    "organizer": "Organizátor",
+    "organizerBio1": "Komisár ligy a hlavný organizátor.",
+    "organizerBio2": "Riaditeľ turnaja a koordinácia.",
+    "organizerBio3": "Hlavný rozhodca a dohľad nad zápasmi."
   },
   "hud": {
     "orbitHint": "ŤAHAJ · SCROLLUJ",

@@ -67,11 +67,30 @@ export default function TournamentsListPage() {
                           sx={{
                             color: isPast ? colors.text.primary : colors.text.muted,
                             fontWeight: 700,
-                            fontSize: "0.95rem",
+                            fontSize: tData.groups.length === 0 ? "0.85rem" : "0.95rem",
                           }}
                         >
-                          {t("common.week", { week: tData.week })}
+                          {tData.groups.length === 0
+                            ? t("tournamentDetail.grandFinalTitle")
+                            : t("common.week", { week: tData.week })}
                         </Typography>
+                        {tData.groups.length === 0 && (
+                          <Typography
+                            sx={{
+                              color: colors.goldText,
+                              fontSize: "0.55rem",
+                              fontWeight: 900,
+                              letterSpacing: 2,
+                              bgcolor: `${colors.gold}20`,
+                              px: 0.75,
+                              py: 0.25,
+                              borderRadius: 0.5,
+                              lineHeight: 1,
+                            }}
+                          >
+                            {t("tournamentDetail.grandFinal")}
+                          </Typography>
+                        )}
                         <Typography
                           sx={{
                             color: colors.text.subtle,
@@ -96,9 +115,12 @@ export default function TournamentsListPage() {
                       </Box>
                       {isPast && (
                         <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem", mt: 0.15 }}>
-                          {t("tournamentsList.players", { count: tData.groups.reduce((sum, g) => sum + g.players.length, 0) })}
-                          {" · "}
-                          {t("tournamentsList.groupMatches", { count: tData.groups.reduce((sum, g) => sum + g.matches.length / 2, 0) })}
+                          {tData.groups.length === 0
+                            ? t("tournamentsList.grandFinalPlayers")
+                            : t("tournamentsList.players", { count: tData.groups.reduce((sum, g) => sum + g.players.length, 0) })}
+                          {tData.groups.length > 0 && (
+                            <>{" · "}{t("tournamentsList.groupMatches", { count: tData.groups.reduce((sum, g) => sum + g.matches.length / 2, 0) })}</>
+                          )}
                           {" · "}
                           {t("tournamentsList.playoffMatches", { count: tData.playoffs.reduce((sum, r) => sum + r.matches.length / 2, 0) })}
                           {" · "}

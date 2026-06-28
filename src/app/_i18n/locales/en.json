@@ -75,6 +75,7 @@
     "players": "{{count}} players",
     "groupMatches": "{{count}} group matches",
     "playoffMatches": "{{count}} playoff matches",
+    "grandFinalPlayers": "8 players (top 8)",
     "futureText": "Schedule and groups will be released soon"
   },
   "tournamentDetail": {
@@ -94,7 +95,13 @@
     "semiFinals": "Semi-Finals",
     "thirdPlace": "3rd Place",
     "final": "Final",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "grandFinalTitle": "Grand Final · Season 2 Champion Night",
+    "grandFinal": "GRAND FINAL",
+    "playersGrandFinal": "{{count}} players (top 8)",
+    "grandFinalQfFormat": "QF: {{game}} · first to {{legs}} legs",
+    "grandFinalSfFormat": "SF & 3rd: {{game}} · first to {{legs}} legs",
+    "grandFinalFinalFormat": "Final: {{game}} · first to {{legs}} legs"
   },
   "about": {
     "title": "About",
@@ -104,7 +111,7 @@
     "teams": "Teams",
     "season": "Season",
     "venues": "Venues",
-    "leagueOrg": "League Organization",
+    "organizers": "Tournament Organizers",
     "contact": "Contact",
     "email": "Email",
     "phone": "Phone",
@@ -114,14 +121,10 @@
     "website": "Website",
     "discord": "Discord",
     "telegram": "Telegram",
-    "commissioner": "League Commissioner",
-    "commissionerBio": "Founder and head organizer since 2020.",
-    "tournamentDirector": "Tournament Director",
-    "tournamentDirectorBio": "Coordinates all tournament schedules and brackets.",
-    "headReferee": "Head Referee",
-    "headRefereeBio": "Ensures fair play and rules compliance across all matches.",
-    "communications": "Communications",
-    "communicationsBio": "Handles league announcements, social media, and press."
+    "organizer": "Organizer",
+    "organizerBio1": "League commissioner and primary organizer.",
+    "organizerBio2": "Tournament director and bracket coordination.",
+    "organizerBio3": "Head referee and match supervision."
   },
   "hud": {
     "orbitHint": "DRAG · SCROLL",

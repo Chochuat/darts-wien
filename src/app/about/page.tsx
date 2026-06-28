@@ -18,11 +18,10 @@ import Section from "@/app/_components/ui/section";
 import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
 
-const teamMembers = [
-  { name: "Markus Richter", roleKey: "commissioner", bioKey: "commissionerBio" },
-  { name: "Julia Berger", roleKey: "tournamentDirector", bioKey: "tournamentDirectorBio" },
-  { name: "David Steiner", roleKey: "headReferee", bioKey: "headRefereeBio" },
-  { name: "Sarah Weiss", roleKey: "communications", bioKey: "communicationsBio" },
+const organizers = [
+  { name: "Patrik Barcal", roleKey: "organizer", bioKey: "organizerBio1" },
+  { name: "Erik Beňo", roleKey: "organizer", bioKey: "organizerBio2" },
+  { name: "Dodo Kepke", roleKey: "organizer", bioKey: "organizerBio3" },
 ];
 
 export default function AboutPage() {
@@ -83,10 +82,10 @@ export default function AboutPage() {
 
         <Box sx={{ px: 0.5 }}>
           <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.95rem", letterSpacing: 1, mb: 1.5 }}>
-            {t("about.leagueOrg")}
+            {t("about.organizers")}
           </Typography>
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 1.5 }}>
-            {teamMembers.map((m) => (
+            {organizers.map((m) => (
               <Box
                 key={m.name}
                 sx={{

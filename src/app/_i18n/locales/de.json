@@ -75,6 +75,7 @@
     "players": "{{count}} Spieler",
     "groupMatches": "{{count}} Gruppenspiele",
     "playoffMatches": "{{count}} Playoff-Spiele",
+    "grandFinalPlayers": "8 Spieler (Top 8)",
     "futureText": "Spielplan und Gruppen werden bald veröffentlicht"
   },
   "tournamentDetail": {
@@ -94,7 +95,13 @@
     "semiFinals": "Halbfinale",
     "thirdPlace": "3. Platz",
     "final": "Finale",
-    "advanced": "Qualifiziert"
+    "advanced": "Qualifiziert",
+    "grandFinalTitle": "Grand Final · Saison 2 Champion Night",
+    "grandFinal": "GRAND FINAL",
+    "playersGrandFinal": "{{count}} Spieler (Top 8)",
+    "grandFinalQfFormat": "VF: {{game}} · first to {{legs}} Legs",
+    "grandFinalSfFormat": "HF & 3.: {{game}} · first to {{legs}} Legs",
+    "grandFinalFinalFormat": "Finale: {{game}} · first to {{legs}} Legs"
   },
   "about": {
     "title": "Über uns",
@@ -104,7 +111,7 @@
     "teams": "Teams",
     "season": "Saison",
     "venues": "Spielorte",
-    "leagueOrg": "Liga-Organisation",
+    "organizers": "Turnier-Organisatoren",
     "contact": "Kontakt",
     "email": "E-Mail",
     "phone": "Telefon",
@@ -114,14 +121,10 @@
     "website": "Webseite",
     "discord": "Discord",
     "telegram": "Telegram",
-    "commissioner": "Ligaleiter",
-    "commissionerBio": "Gründer und Hauptorganisator seit 2020.",
-    "tournamentDirector": "Turnierdirektor",
-    "tournamentDirectorBio": "Koordiniert alle Turnierpläne und -sets.",
-    "headReferee": "Chefschiedsrichter",
-    "headRefereeBio": "Sorgt für Fairplay und Regelkonformität bei allen Spielen.",
-    "communications": "Kommunikation",
-    "communicationsBio": "Verantwortlich für Ankündigungen, soziale Medien und Presse."
+    "organizer": "Organisator",
+    "organizerBio1": "Ligaleiter und Hauptorganisator.",
+    "organizerBio2": "Turnierdirektor und Koordination.",
+    "organizerBio3": "Chefschiedsrichter und Spielaufsicht."
   },
   "hud": {
     "orbitHint": "ZIEHEN · SCROLLEN",

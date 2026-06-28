@@ -13,7 +13,7 @@ import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import SectionHeading from "@/app/_components/ui/section-heading";
 import PageLayout from "@/app/_components/ui/page-layout";
-import { computeGroupStandings, GROUP_FORMAT, PLAYOFF_FORMAT } from "@/app/_components/tournaments/data";
+import { computeGroupStandings, GROUP_FORMAT, PLAYOFF_FORMAT, GRAND_FINAL_FORMAT } from "@/app/_components/tournaments/data";
 import type { TournamentEntry } from "@/app/_components/tournaments/data";
 
 function cell(label: string | number, opts?: { color?: string; bold?: boolean }) {
@@ -196,6 +196,7 @@ function FinalStandingsRow({ s, i }: { s: TournamentEntry["finalStandings"][numb
 export default function TournamentDetail({ tournament }: { tournament: TournamentEntry }) {
   const [expandedMatches, setExpandedMatches] = useState<Record<string, boolean>>({});
   const { t } = useTranslation();
+  const isGrandFinal = tournament.groups.length === 0;
 
   const toggleMatches = (groupName: string) => {
     setExpandedMatches((prev) => ({
@@ -221,17 +222,38 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
             <EmojiEvents sx={{ color: colors.gold, fontSize: "1.8rem" }} />
             <Box>
-              <Typography
-                sx={{
-                  color: colors.text.primary,
-                  fontWeight: 800,
-                  fontSize: { xs: "1.35rem", md: "1.75rem" },
-                  letterSpacing: 1,
-                  lineHeight: 1.1,
-                }}
-              >
-                {t("common.week", { week: tournament.week })}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                <Typography
+                  sx={{
+                    color: colors.text.primary,
+                    fontWeight: 800,
+                    fontSize: { xs: "1.35rem", md: "1.75rem" },
+                    letterSpacing: 1,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {isGrandFinal
+                    ? t("tournamentDetail.grandFinalTitle")
+                    : t("common.week", { week: tournament.week })}
+                </Typography>
+                {isGrandFinal && (
+                  <Typography
+                    sx={{
+                      color: colors.goldText,
+                      fontSize: "0.55rem",
+                      fontWeight: 900,
+                      letterSpacing: 2,
+                      bgcolor: `${colors.gold}20`,
+                      px: 1,
+                      py: 0.35,
+                      borderRadius: 1,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {t("tournamentDetail.grandFinal")}
+                  </Typography>
+                )}
+              </Box>
               <Typography sx={{ color: colors.text.subtle, fontSize: "0.75rem", fontWeight: 600, mt: 0.15 }}>
                 {tournament.date}
               </Typography>
@@ -246,11 +268,15 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
               </Typography>
             </Box>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {t("tournamentDetail.players", { count: tournament.groups.reduce((s, g) => s + g.players.length, 0) })}
+              {isGrandFinal
+                ? t("tournamentDetail.playersGrandFinal", { count: 8 })
+                : t("tournamentDetail.players", { count: tournament.groups.reduce((s, g) => s + g.players.length, 0) })}
             </Typography>
-            <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {t("tournamentDetail.groupMatches", { count: tournament.groups.reduce((s, g) => s + g.matches.length / 2, 0) })}
-            </Typography>
+            {!isGrandFinal && (
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
+                {t("tournamentDetail.groupMatches", { count: tournament.groups.reduce((s, g) => s + g.matches.length / 2, 0) })}
+              </Typography>
+            )}
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
               {t("tournamentDetail.playoffMatches", { count: tournament.playoffs.reduce((s, r) => s + r.matches.length / 2, 0) })}
             </Typography>
@@ -271,34 +297,54 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
               borderColor: `${colors.accent}15`,
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-              <Box
-                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.accent, flexShrink: 0 }}
-              />
-              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                {t("tournamentDetail.groupsFormat", { game: GROUP_FORMAT.game, legs: GROUP_FORMAT.legs, maxThrows: GROUP_FORMAT.maxThrows })}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-              <Box
-                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }}
-              />
-              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                {t("tournamentDetail.playoffsFormat", { game: PLAYOFF_FORMAT.game, legs: PLAYOFF_FORMAT.legs, maxThrows: PLAYOFF_FORMAT.maxThrows })}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-              <Box
-                sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.green, flexShrink: 0 }}
-              />
-              <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
-                {t("tournamentDetail.rules")}
-              </Typography>
-            </Box>
+            {isGrandFinal ? (
+              <>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.grandFinalQfFormat", { game: GRAND_FINAL_FORMAT.quarterfinal.game, legs: GRAND_FINAL_FORMAT.quarterfinal.legs })}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.grandFinalSfFormat", { game: GRAND_FINAL_FORMAT.semifinal.game, legs: GRAND_FINAL_FORMAT.semifinal.legs })}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.bronze, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.grandFinalFinalFormat", { game: GRAND_FINAL_FORMAT.final.game, legs: GRAND_FINAL_FORMAT.final.legs })}
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.accent, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.groupsFormat", { game: GROUP_FORMAT.game, legs: GROUP_FORMAT.legs, maxThrows: GROUP_FORMAT.maxThrows })}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.gold, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.playoffsFormat", { game: PLAYOFF_FORMAT.game, legs: PLAYOFF_FORMAT.legs, maxThrows: PLAYOFF_FORMAT.maxThrows })}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: colors.green, flexShrink: 0 }} />
+                  <Typography sx={{ color: colors.text.secondary, fontSize: "0.7rem", fontWeight: 600 }}>
+                    {t("tournamentDetail.rules")}
+                  </Typography>
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
 
-        {/* Groups */}
+        {/* Groups — hide for Grand Final */}
+        {!isGrandFinal && (
         <Box sx={{ px: 0.5, mb: 3 }}>
           <SectionHeading icon={<Groups />} label={t("tournamentDetail.groups")} />
 
@@ -402,6 +448,7 @@ export default function TournamentDetail({ tournament }: { tournament: Tournamen
             })}
           </Box>
         </Box>
+        )}
 
         {/* Playoffs */}
         <Box sx={{ px: 0.5, mb: 3 }}>
