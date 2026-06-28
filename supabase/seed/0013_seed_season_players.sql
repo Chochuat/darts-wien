@@ -1,0 +1,21 @@
+-- Seed: season_players
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 1);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 2);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 3);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 4);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 5);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 6);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 7);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 8);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 9);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 10);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 11);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 12);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 13);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 14);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 15);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 16);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 17);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 18);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 19);
+INSERT INTO public.season_players (season_id, player_id) VALUES (1, 20);
