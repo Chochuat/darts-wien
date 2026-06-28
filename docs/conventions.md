@@ -83,6 +83,7 @@
 - **Draw:** Based on current standings. Only players who accepted the Facebook event (confirmed attendance) are part of the draw.
 - Match results are generated deterministically based on player rank (index in `standingsData`): lower rank = stronger player always wins against higher rank. Sets lost depend on rank difference.
 - Group composition uses snake draft with a week-based rotation for variety.
+- **Tournament lifecycle:** `registration` → `ready` (generate groups/matches) → `in_progress` → `completed` (auto-closed when all matches have results). Matches have their own status: `pending` (generated, ready to play) → `completed` (result filled) or `no_show` (walkover).
 - **Group phase:** Top 2 from each group auto-advance (3+ groups) or top 4 from each (2 groups). For 3 groups of 5: 6 players advance, remaining 2 spots filled by best 3rd-place players. Tiebreaker: head-to-head → leg diff → legs won → legs lost → 180s.
 - **Scoring:** Group win=2pts. Playoffs: QF win=3/loss=1, SF win=4/loss=2, Final win=10/ru=7, 3rd win=5/loss=3. 180 bonus = 5pts each.
 - **Game formats:**
@@ -91,9 +92,9 @@
   - Grand Final: QF first to 4, SF & 3rd first to 5, Final first to 6, 501 Double Out
 - **Starting a game:** Bull challenge — one dart closest to bullseye throws first.
 - **Simultaneous games:** 3 darts available, so 3 games run simultaneously.
-- Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final.
+- Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final. Two-group bracket: 1A v 4B / 2A v 3B / 1B v 4A / 2B v 3A.
 - Final standings sort by: winner → finalist → semi-finalists → quarter-finalists, then by points.
-- Future tournaments are static entries with `status: "future"`, empty groups/playoffs, and a locked UI state.
+- Future tournaments use lifecycle states; `tournaments.status` in DB is `'registration'` until generated, then `'ready'`, then `'in_progress'`, then `'completed'`.
 
 ## Testing
 
