@@ -15,7 +15,7 @@ const theme = createTheme({
   },
 });
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -31,3 +31,5 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     </AppRouterCacheProvider>
   );
 }
+
+export default Providers;

@@ -11,7 +11,7 @@ import PageLayout from "@/app/_components/ui/page-layout";
 import { useTournaments, useTournamentDetail } from "@/lib/hooks/use-tournaments";
 import TournamentDetail from "@/app/_components/tournaments/tournament-detail";
 
-export default function TournamentPage() {
+const TournamentPage = () => {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
   const weekNum = parseInt(slug, 10);
@@ -101,3 +101,5 @@ export default function TournamentPage() {
 
   return <TournamentDetail detail={detail} summary={tournamentSummary} />;
 }
+
+export default TournamentPage;

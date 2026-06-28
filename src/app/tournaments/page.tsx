@@ -14,7 +14,7 @@ import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
 import { useTournaments } from "@/lib/hooks/use-tournaments";
 
-export default function TournamentsListPage() {
+const TournamentsListPage = () => {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useTournaments();
 
@@ -49,8 +49,8 @@ export default function TournamentsListPage() {
       <Section>
         <PageHeader
           icon={<EmojiEvents />}
-          title={t("tournamentsList.title")}
           subtitle={t("tournamentsList.subtitle", { count: tournaments.length, completed: tournaments.filter((t) => t.status === "completed").length })}
+          title={t("tournamentsList.title")}
         />
 
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1.5 }}>
@@ -61,9 +61,9 @@ export default function TournamentsListPage() {
 
             return (
               <Card
-                key={tData.id}
                 borderColor={isCompleted ? colors.accent4d : "#27272a"}
                 hoverBorderColor={isCompleted ? colors.accent : "#52525b"}
+                key={tData.id}
               >
                 <Link
                   href={clickable ? `/tournaments/${tData.weekNumber}` : ""}
@@ -103,8 +103,7 @@ export default function TournamentsListPage() {
                             ? t("tournamentDetail.grandFinalTitle")
                             : t("common.week", { week: tData.weekNumber })}
                         </Typography>
-                        {isGrandFinal && (
-                          <Typography
+                        {isGrandFinal ? <Typography
                             sx={{
                               color: colors.goldText,
                               fontSize: "0.55rem",
@@ -118,8 +117,7 @@ export default function TournamentsListPage() {
                             }}
                           >
                             {t("tournamentDetail.grandFinal")}
-                          </Typography>
-                        )}
+                          </Typography> : null}
                         <Typography
                           sx={{
                             color: colors.text.subtle,
@@ -129,8 +127,7 @@ export default function TournamentsListPage() {
                         >
                           {tData.date}
                         </Typography>
-                        {isCompleted && tData.winner && (
-                          <Typography
+                        {isCompleted && tData.winner ? <Typography
                             sx={{
                               color: colors.goldText,
                               fontSize: "0.7rem",
@@ -139,17 +136,14 @@ export default function TournamentsListPage() {
                             }}
                           >
                             {t("common.winner", { name: tData.winner.name })}
-                          </Typography>
-                        )}
+                          </Typography> : null}
                       </Box>
                       {isCompleted ? (
                         <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem", mt: 0.15 }}>
                           {isGrandFinal
                             ? t("tournamentsList.grandFinalPlayers")
                             : t("tournamentsList.players", { count: tData.playerCount })}
-                          {!isGrandFinal && (
-                            <>{" · "}{t("tournamentsList.groupMatches", { count: tData.groupMatchCount })}</>
-                          )}
+                          {!isGrandFinal ? <>{" · "}{t("tournamentsList.groupMatches", { count: tData.groupMatchCount })}</> : null}
                           {" · "}
                           {t("tournamentsList.playoffMatches", { count: tData.playoffMatchCount })}
                           {" · "}
@@ -173,15 +167,13 @@ export default function TournamentsListPage() {
                       )}
                     </Box>
 
-                    {isCompleted && (
-                      <ArrowForward
+                    {isCompleted ? <ArrowForward
                         sx={{
                           color: colors.accent,
                           fontSize: "1.1rem",
                           flexShrink: 0,
                         }}
-                      />
-                    )}
+                      /> : null}
                   </Box>
                 </Link>
               </Card>
@@ -192,3 +184,5 @@ export default function TournamentsListPage() {
     </PageLayout>
   );
 }
+
+export default TournamentsListPage;

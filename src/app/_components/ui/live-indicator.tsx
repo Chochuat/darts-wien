@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 
-export default function LiveIndicator() {
+const LiveIndicator = () => {
   const { t } = useTranslation();
 
   return (
@@ -27,3 +27,5 @@ export default function LiveIndicator() {
     </Box>
   );
 }
+
+export default LiveIndicator;

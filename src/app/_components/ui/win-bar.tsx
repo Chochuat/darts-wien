@@ -8,7 +8,7 @@ interface WinBarProps {
   color: string;
 }
 
-export default function WinBar({ wins, played, color }: WinBarProps) {
+const WinBar = ({ wins, played, color }: WinBarProps) => {
   const pct = played > 0 ? (wins / played) * 100 : 0;
 
   return (
@@ -24,3 +24,5 @@ export default function WinBar({ wins, played, color }: WinBarProps) {
     </Box>
   );
 }
+
+export default WinBar;

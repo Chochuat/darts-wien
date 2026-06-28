@@ -7,7 +7,7 @@ interface SectionHeadingProps {
   label: string;
 }
 
-export default function SectionHeading({ icon, label }: SectionHeadingProps) {
+const SectionHeading = ({ icon, label }: SectionHeadingProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>
       <Box sx={{ color: colors.accent, fontSize: "1.1rem", display: "flex" }}>
@@ -19,3 +19,5 @@ export default function SectionHeading({ icon, label }: SectionHeadingProps) {
     </Box>
   );
 }
+
+export default SectionHeading;

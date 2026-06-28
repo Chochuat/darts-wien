@@ -25,7 +25,7 @@ import Badge180 from "@/app/_components/ui/badge-180";
 import { usePlayerBySlug } from "@/lib/hooks/use-players";
 import type { PlayerMatchPerspective } from "@/lib/validation";
 
-function MatchHistoryRow({ match }: { match: PlayerMatchPerspective }) {
+const MatchHistoryRow = ({ match }: { match: PlayerMatchPerspective }) => {
   const isWin = match.result === "W";
   const { t } = useTranslation();
 
@@ -90,7 +90,7 @@ function MatchHistoryRow({ match }: { match: PlayerMatchPerspective }) {
         >
           {match.score}
         </Typography>
-        {match.one80 > 0 && <Badge180 />}
+        {match.one80 > 0 ? <Badge180 /> : null}
         <Box
           sx={{
             bgcolor: isWin ? `${colors.green}12` : `${colors.red}12`,
@@ -117,7 +117,7 @@ function MatchHistoryRow({ match }: { match: PlayerMatchPerspective }) {
   );
 }
 
-export default function PlayerMatchesPage() {
+const PlayerMatchesPage = () => {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
   const { data, isLoading, isError } = usePlayerBySlug(slug);
@@ -184,7 +184,7 @@ export default function PlayerMatchesPage() {
                 >
                   {player.name}
                 </Typography>
-                {player.pos === 1 && <EmojiEvents sx={{ color: colors.gold, fontSize: "1.2rem" }} />}
+                {player.pos === 1 ? <EmojiEvents sx={{ color: colors.gold, fontSize: "1.2rem" }} /> : null}
               </Box>
             </Box>
           </Box>
@@ -338,3 +338,5 @@ export default function PlayerMatchesPage() {
     </PageLayout>
   );
 }
+
+export default PlayerMatchesPage;

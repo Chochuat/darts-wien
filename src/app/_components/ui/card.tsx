@@ -7,7 +7,7 @@ interface CardProps {
   hoverBorderColor?: string;
 }
 
-export default function Card({ children, borderColor, hoverBorderColor }: CardProps) {
+const Card = ({ children, borderColor, hoverBorderColor }: CardProps) => {
   return (
     <Box
       sx={{
@@ -28,3 +28,5 @@ export default function Card({ children, borderColor, hoverBorderColor }: CardPr
     </Box>
   );
 }
+
+export default Card;

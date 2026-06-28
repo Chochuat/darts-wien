@@ -12,7 +12,7 @@ import {
 import { useGame } from "./game-context";
 import { useTranslation } from "react-i18next";
 
-export default function NameDialog() {
+const NameDialog = () => {
   const { state, closeKeypad, setPlayerName } = useGame();
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -25,11 +25,11 @@ export default function NameDialog() {
 
   return (
     <Dialog
-      key={state.keypadOpen ? "name-dialog-open" : "name-dialog-closed"}
-      open={state.keypadOpen}
-      onClose={closeKeypad}
-      maxWidth="xs"
       fullWidth
+      key={state.keypadOpen ? "name-dialog-open" : "name-dialog-closed"}
+      maxWidth="xs"
+      onClose={closeKeypad}
+      open={state.keypadOpen}
       slotProps={{
         paper: {
           sx: {
@@ -56,12 +56,11 @@ export default function NameDialog() {
         <TextField
           autoFocus
           fullWidth
-          placeholder={t("keyboard.title")}
-          value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleConfirm();
           }}
+          placeholder={t("keyboard.title")}
           slotProps={{
             htmlInput: {
               maxLength: 12,
@@ -87,6 +86,7 @@ export default function NameDialog() {
               fontFamily: '"Georgia", serif',
             },
           }}
+          value={name}
         />
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 3, gap: 1, justifyContent: "center" }}>
@@ -103,9 +103,8 @@ export default function NameDialog() {
           {t("keyboard.cancel")}
         </Button>
         <Button
-          onClick={handleConfirm}
           disabled={!name.trim()}
-          variant="contained"
+          onClick={handleConfirm}
           sx={{
             fontFamily: '"Georgia", serif',
             color: "#e8d5a3",
@@ -118,6 +117,7 @@ export default function NameDialog() {
             "&:hover": { backgroundColor: "#2a7a2a" },
             "&.Mui-disabled": { opacity: 0.4, color: "#e8d5a3" },
           }}
+          variant="contained"
         >
           {t("keyboard.confirm")}
         </Button>
@@ -125,3 +125,5 @@ export default function NameDialog() {
     </Dialog>
   );
 }
+
+export default NameDialog;

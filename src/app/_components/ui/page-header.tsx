@@ -8,7 +8,7 @@ interface PageHeaderProps {
   subtitle: string;
 }
 
-export default function PageHeader({ icon, title, subtitle }: PageHeaderProps) {
+const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.3, px: 0.5 }}>
@@ -41,3 +41,5 @@ export default function PageHeader({ icon, title, subtitle }: PageHeaderProps) {
     </>
   );
 }
+
+export default PageHeader;

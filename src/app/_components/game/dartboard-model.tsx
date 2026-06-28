@@ -44,7 +44,7 @@ function getNumberTexture(num: number): THREE.CanvasTexture {
   return texture;
 }
 
-function Wedge({
+const Wedge = ({
   innerR,
   outerR,
   color,
@@ -54,7 +54,7 @@ function Wedge({
   outerR: number;
   color: string;
   index: number;
-}) {
+}) => {
   const a0 = wedgeCenterAngle(index) - WEDGE_HALF;
   return (
     <mesh position={[0, 0, Z_L]}>
@@ -83,18 +83,18 @@ function PieRing({
   for (let s = 0; s < 20; s++) {
     wedges.push(
       <Wedge
-        key={s}
-        innerR={innerR}
-        outerR={outerR}
         color={s % 2 === 0 ? c1 : c2}
         index={s}
+        innerR={innerR}
+        key={s}
+        outerR={outerR}
       />,
     );
   }
   return wedges;
 }
 
-function FullRing({ ir, orr, col }: { ir: number; orr: number; col: string }) {
+const FullRing = ({ ir, orr, col }: { ir: number; orr: number; col: string }) => {
   return (
     <mesh position={[0, 0, Z_L]}>
       <ringGeometry args={[ir, orr, 80]} />
@@ -107,7 +107,7 @@ function FullRing({ ir, orr, col }: { ir: number; orr: number; col: string }) {
   );
 }
 
-function NumberLabel({ index }: { index: number }) {
+const NumberLabel = ({ index }: { index: number }) => {
   const a = wedgeCenterAngle(index);
   const x = Math.cos(a) * NUMBER_RADIUS;
   const y = Math.sin(a) * NUMBER_RADIUS;
@@ -118,30 +118,32 @@ function NumberLabel({ index }: { index: number }) {
       <planeGeometry args={[0.2, 0.2]} />
       <meshBasicMaterial
         map={texture}
-        transparent
         side={THREE.DoubleSide}
         toneMapped={false}
+        transparent
       />
     </mesh>
   );
 }
 
-export default function DartboardModel() {
+const DartboardModel = () => {
   const numbers = [];
   for (let i = 0; i < 20; i++) {
-    numbers.push(<NumberLabel key={i} index={i} />);
+    numbers.push(<NumberLabel index={i} key={i} />);
   }
 
   return (
     <group position={[0, 0.45, -0.42]}>
-      <FullRing ir={0.8} orr={BOARD_RADIUS} col="#0a0500" />
-      <PieRing innerR={0.72} outerR={0.8} c1="#cc2222" c2="#228822" />
-      <PieRing innerR={0.54} outerR={0.72} c1="#111111" c2="#f5ecd7" />
-      <PieRing innerR={0.46} outerR={0.54} c1="#cc2222" c2="#228822" />
-      <PieRing innerR={0.15} outerR={0.46} c1="#111111" c2="#f5ecd7" />
-      <FullRing ir={0.04} orr={0.15} col="#228822" />
-      <FullRing ir={0} orr={0.04} col="#cc2222" />
+      <FullRing col="#0a0500" ir={0.8} orr={BOARD_RADIUS} />
+      <PieRing c1="#cc2222" c2="#228822" innerR={0.72} outerR={0.8} />
+      <PieRing c1="#111111" c2="#f5ecd7" innerR={0.54} outerR={0.72} />
+      <PieRing c1="#cc2222" c2="#228822" innerR={0.46} outerR={0.54} />
+      <PieRing c1="#111111" c2="#f5ecd7" innerR={0.15} outerR={0.46} />
+      <FullRing col="#228822" ir={0.04} orr={0.15} />
+      <FullRing col="#cc2222" ir={0} orr={0.04} />
       {numbers}
     </group>
   );
 }
+
+export default DartboardModel;

@@ -14,7 +14,7 @@ import { useThree } from "@react-three/fiber";
 
 const WALL_X_POSITIONS = [-1.4, -0.7, 0, 0.7, 1.4, 2.1];
 
-function Wall() {
+const Wall = () => {
   return (
     <>
       <mesh position={[0.3, 0, -0.5]} receiveShadow>
@@ -31,7 +31,7 @@ function Wall() {
   );
 }
 
-function CameraFitter() {
+const CameraFitter = () => {
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
   const controls = useThree((s) => s.controls) as
@@ -59,22 +59,22 @@ function CameraFitter() {
   return null;
 }
 
-function SceneContents() {
+const SceneContents = () => {
   return (
     <>
-      <fog attach="fog" args={["#2a1508", 15, 50]} />
-      <ambientLight intensity={2.5} color="#3a2010" />
+      <fog args={["#2a1508", 15, 50]} attach="fog" />
+      <ambientLight color="#3a2010" intensity={2.5} />
       <directionalLight
-        position={[1, 2, 3]}
-        intensity={8}
-        color="#f5deb3"
         castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-near={0.3}
+        color="#f5deb3"
+        intensity={8}
+        position={[1, 2, 3]}
         shadow-camera-far={15}
+        shadow-camera-near={0.3}
+        shadow-mapSize-height={1024}
+        shadow-mapSize-width={1024}
       />
-      <pointLight position={[-1, 0.5, 1.5]} intensity={10} color="#d4a852" />
+      <pointLight color="#d4a852" intensity={10} position={[-1, 0.5, 1.5]} />
       <Wall />
       <DartboardModel />
       <Darts />
@@ -86,29 +86,31 @@ function SceneContents() {
   );
 }
 
-export default function GameCanvas() {
+const GameCanvas = () => {
   return (
     <Canvas
-      shadows="percentage"
+      camera={{ fov: 50, near: 0.1, far: 20, position: [0, 0.15, 5] }}
       gl={{
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.3,
       }}
-      camera={{ fov: 50, near: 0.1, far: 20, position: [0, 0.15, 5] }}
+      shadows="percentage"
     >
       <Suspense fallback={null}>
         <SceneContents />
       </Suspense>
       <CameraFitter />
       <OrbitControls
-        makeDefault
-        target={[0, -0.05, 0]}
         enableDamping
-        minDistance={3}
+        makeDefault
         maxDistance={5.5}
         maxPolarAngle={Math.PI * 0.65}
+        minDistance={3}
         rotateSpeed={-1}
+        target={[0, -0.05, 0]}
       />
     </Canvas>
   );
 }
+
+export default GameCanvas;

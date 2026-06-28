@@ -5,7 +5,7 @@ interface FormIndicatorProps {
   form: ("W" | "L")[];
 }
 
-export default function FormIndicator({ form }: FormIndicatorProps) {
+const FormIndicator = ({ form }: FormIndicatorProps) => {
   return (
     <Box sx={{ display: "flex", gap: 0.3, alignItems: "center" }}>
       {form.map((r, i) => (
@@ -24,3 +24,5 @@ export default function FormIndicator({ form }: FormIndicatorProps) {
     </Box>
   );
 }
+
+export default FormIndicator;

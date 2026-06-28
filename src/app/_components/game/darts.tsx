@@ -81,32 +81,32 @@ const flightMatB = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
 });
 
-function DartMeshParts({ flightGeo }: { flightGeo: THREE.BufferGeometry }) {
+const DartMeshParts = ({ flightGeo }: { flightGeo: THREE.BufferGeometry }) => {
   return (
     <group>
       {/* sharp steel point (front = -Z) */}
       <mesh position={[0, 0, -0.1]} rotation={[-Math.PI / 2, 0, 0]}>
         <coneGeometry args={[0.006, 0.06, 12]} />
-        <primitive object={steelMat} attach="material" />
+        <primitive attach="material" object={steelMat} />
       </mesh>
       {/* barrel: tapered knurled silver body */}
       <mesh position={[0, 0, -0.01]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.012, 0.014, 0.16, 16]} />
-        <primitive object={barrelMat} attach="material" />
+        <primitive attach="material" object={barrelMat} />
       </mesh>
       {/* dark shaft */}
       <mesh position={[0, 0, 0.13]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.0045, 0.0045, 0.12, 10]} />
-        <primitive object={shaftMat} attach="material" />
+        <primitive attach="material" object={shaftMat} />
       </mesh>
       {/* crossed kite-shaped flights with 3D thickness (back = +Z) */}
       <mesh position={[0, 0, 0.2]} rotation={[-Math.PI / 2, 0, 0]}>
-        <primitive object={flightGeo} attach="geometry" />
-        <primitive object={flightMat} attach="material" />
+        <primitive attach="geometry" object={flightGeo} />
+        <primitive attach="material" object={flightMat} />
       </mesh>
       <mesh position={[0, 0, 0.2]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-        <primitive object={flightGeo} attach="geometry" />
-        <primitive object={flightMatB} attach="material" />
+        <primitive attach="geometry" object={flightGeo} />
+        <primitive attach="material" object={flightMatB} />
       </mesh>
     </group>
   );
@@ -121,7 +121,7 @@ const aimMat = new THREE.MeshBasicMaterial({
   depthTest: false,
 });
 
-export default function Darts() {
+const Darts = () => {
   const { state, dartLanded, inputRef } = useGame();
   const flightGeo = useFlightShape();
   const meshRefs = useRef<(THREE.Group | null)[]>([]);
@@ -290,10 +290,12 @@ export default function Darts() {
           <DartMeshParts flightGeo={flightGeo} />
         </group>
       ))}
-      <mesh ref={aimRef} position={[0, 0, BOARD_FACE_Z + 0.004]} visible={false} renderOrder={50}>
+      <mesh position={[0, 0, BOARD_FACE_Z + 0.004]} ref={aimRef} renderOrder={50} visible={false}>
         <ringGeometry args={[0.018, 0.03, 24]} />
-        <primitive object={aimMat} attach="material" />
+        <primitive attach="material" object={aimMat} />
       </mesh>
     </>
   );
 }
+
+export default Darts;

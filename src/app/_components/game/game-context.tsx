@@ -96,7 +96,7 @@ interface GameContextValue {
 
 const GameContext = createContext<GameContextValue | null>(null);
 
-export function GameProvider({ children }: { children: ReactNode }) {
+export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const inputRef = useRef<FlightInput>({
     impulses: [],

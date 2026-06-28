@@ -137,7 +137,7 @@ function getNextBtnTexture(label: string): THREE.CanvasTexture {
   return tex;
 }
 
-export default function GameResult() {
+const GameResult = () => {
   const { state, dismissResult } = useGame();
   const { t } = useTranslation();
   const popup = getPopup();
@@ -188,33 +188,35 @@ export default function GameResult() {
         <planeGeometry args={[PANEL_W, PANEL_H]} />
         <meshBasicMaterial
           map={texture ?? undefined}
-          transparent
           side={THREE.DoubleSide}
           toneMapped={false}
+          transparent
         />
       </mesh>
       <mesh
-        position={[0, 0.25 - PANEL_H / 2 + btnH / 2 + 0.08, PANEL_Z + 0.004]}
         onPointerDown={handleBtnDown}
-        onPointerOver={() => {
-          setBtnHover(true);
-          document.body.style.cursor = "pointer";
-        }}
         onPointerOut={() => {
           setBtnHover(false);
           document.body.style.cursor = "";
         }}
+        onPointerOver={() => {
+          setBtnHover(true);
+          document.body.style.cursor = "pointer";
+        }}
+        position={[0, 0.25 - PANEL_H / 2 + btnH / 2 + 0.08, PANEL_Z + 0.004]}
         renderOrder={33}
       >
         <planeGeometry args={[btnW, btnH]} />
         <meshBasicMaterial
           map={getNextBtnTexture(btnLabel)}
-          transparent
+          opacity={btnHover ? 1 : 0.95}
           side={THREE.DoubleSide}
           toneMapped={false}
-          opacity={btnHover ? 1 : 0.95}
+          transparent
         />
       </mesh>
     </group>
   );
 }
+
+export default GameResult;

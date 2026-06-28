@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import { colors } from "@/lib/design-tokens";
 
-export default function Badge180() {
+const Badge180 = () => {
   return (
     <Typography
       component="span"
@@ -22,3 +22,5 @@ export default function Badge180() {
     </Typography>
   );
 }
+
+export default Badge180;

@@ -21,7 +21,7 @@ import LiveIndicator from "@/app/_components/ui/live-indicator";
 import MatchRow from "@/app/_components/ui/match-row";
 import { useStandings } from "@/lib/hooks/use-standings";
 
-export default function StandingsView() {
+const StandingsView = () => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
   const { data, isLoading, isError } = useStandings(1);
@@ -114,7 +114,7 @@ export default function StandingsView() {
             const isOpen = expanded === p.name;
 
             return (
-              <Card key={p.slug} borderColor={borderForRank(p.pos)} hoverBorderColor={p.pos === 1 ? "#fde68a" : p.pos === 2 ? "#d4d4d8" : p.pos === 3 ? "#e8a75d" : colors.accent}>
+              <Card borderColor={borderForRank(p.pos)} hoverBorderColor={p.pos === 1 ? "#fde68a" : p.pos === 2 ? "#d4d4d8" : p.pos === 3 ? "#e8a75d" : colors.accent} key={p.slug}>
                 <Box onClick={() => toggle(p.name)} sx={{ cursor: "pointer" }}>
                   <Box
                     sx={{
@@ -142,9 +142,7 @@ export default function StandingsView() {
                         >
                           {p.name}
                         </Typography>
-                        {p.pos === 1 && (
-                          <EmojiEvents sx={{ color: colors.gold, fontSize: "1rem" }} />
-                        )}
+                        {p.pos === 1 ? <EmojiEvents sx={{ color: colors.gold, fontSize: "1rem" }} /> : null}
                       </Box>
 
                       <Box
@@ -157,10 +155,10 @@ export default function StandingsView() {
                         }}
                       >
                         <StatLabel label={t("tableHeaders.played")} value={p.played} />
-                        <StatLabel label={t("tableHeaders.wins")} value={p.wins} labelColor={colors.green} />
-                        <StatLabel label={t("tableHeaders.losses")} value={p.losses} labelColor={colors.red} />
+                        <StatLabel label={t("tableHeaders.wins")} labelColor={colors.green} value={p.wins} />
+                        <StatLabel label={t("tableHeaders.losses")} labelColor={colors.red} value={p.losses} />
                         <StatLabel label={t("tableHeaders.sets")} value={`${p.setsFor}:${p.setsAgainst}`} />
-                        {p.one80s > 0 && <StatLabel label="180s" value={p.one80s} labelColor={colors.accent} />}
+                        {p.one80s > 0 ? <StatLabel label="180s" labelColor={colors.accent} value={p.one80s} /> : null}
                         <FormIndicator form={p.form} />
                       </Box>
                     </Box>
@@ -263,3 +261,5 @@ export default function StandingsView() {
     </PageLayout>
   );
 }
+
+export default StandingsView;

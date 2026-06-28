@@ -10,7 +10,7 @@ import styles from "./game-page.module.css";
 
 const GameCanvas = dynamic(() => import("./game-canvas"), { ssr: false });
 
-export default function GamePage() {
+const GamePage = () => {
   return (
     <GameProvider>
       <Suspense fallback={null}>
@@ -23,3 +23,5 @@ export default function GamePage() {
     </GameProvider>
   );
 }
+
+export default GamePage;

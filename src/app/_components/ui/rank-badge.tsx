@@ -6,7 +6,7 @@ interface RankBadgeProps {
   position: number;
 }
 
-export default function RankBadge({ position }: RankBadgeProps) {
+const RankBadge = ({ position }: RankBadgeProps) => {
   return (
     <Box
       sx={{
@@ -32,3 +32,5 @@ export default function RankBadge({ position }: RankBadgeProps) {
     </Box>
   );
 }
+
+export default RankBadge;

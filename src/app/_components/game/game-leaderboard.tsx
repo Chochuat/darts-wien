@@ -114,7 +114,7 @@ function drawLb(
   texture.needsUpdate = true;
 }
 
-export default function GameLeaderboard() {
+const GameLeaderboard = () => {
   const { state } = useGame();
   const { t } = useTranslation();
   const lb = getLb();
@@ -140,11 +140,13 @@ export default function GameLeaderboard() {
         <planeGeometry args={[PANEL_W, PANEL_H]} />
         <meshBasicMaterial
           map={texture ?? undefined}
-          transparent
           side={THREE.DoubleSide}
           toneMapped={false}
+          transparent
         />
       </mesh>
     </group>
   );
 }
+
+export default GameLeaderboard;

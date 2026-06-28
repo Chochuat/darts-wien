@@ -109,7 +109,7 @@ function useOrbitBlock() {
   return { disable, enable };
 }
 
-function ArrowButton({ dir }: { dir: Direction }) {
+const ArrowButton = ({ dir }: { dir: Direction }) => {
   const { state, nudge } = useGame();
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useMemo(() => getArrowTexture(dir), [dir]);
@@ -167,10 +167,7 @@ function ArrowButton({ dir }: { dir: Direction }) {
 
   return (
     <mesh
-      ref={meshRef}
-      position={position}
       onPointerDown={handleDown}
-      onPointerUp={handleUp}
       onPointerOut={() => {
         enable();
         document.body.style.cursor = "";
@@ -178,26 +175,27 @@ function ArrowButton({ dir }: { dir: Direction }) {
       onPointerOver={() => {
         document.body.style.cursor = "pointer";
       }}
+      onPointerUp={handleUp}
+      position={position}
+      ref={meshRef}
       renderOrder={13}
     >
       <planeGeometry args={[BTN_SIZE, BTN_SIZE]} />
       <meshBasicMaterial
         map={texture}
-        transparent
+        opacity={state.isThrowing ? 1 : 0.45}
         side={THREE.DoubleSide}
         toneMapped={false}
-        opacity={state.isThrowing ? 1 : 0.45}
+        transparent
       />
     </mesh>
   );
 }
 
-function BackdropBlock() {
+const BackdropBlock = () => {
   const { disable, enable } = useOrbitBlock();
   return (
     <mesh
-      position={[PANEL_X, PANEL_Y, PANEL_Z - 0.002]}
-      receiveShadow
       onPointerDown={(e) => {
         e.stopPropagation();
         if (
@@ -208,8 +206,10 @@ function BackdropBlock() {
         }
         disable();
       }}
-      onPointerUp={() => enable()}
       onPointerOut={() => enable()}
+      onPointerUp={() => enable()}
+      position={[PANEL_X, PANEL_Y, PANEL_Z - 0.002]}
+      receiveShadow
     >
       <planeGeometry args={[PANEL_W + 0.06, PANEL_H + 0.06]} />
       <meshStandardMaterial color={DARK_BACK} roughness={0.85} />
@@ -217,7 +217,7 @@ function BackdropBlock() {
   );
 }
 
-function Hint({ text }: { text: string }) {
+const Hint = ({ text }: { text: string }) => {
   const tex = useMemo(() => {
     if (typeof document === "undefined") return null;
     const canvas = document.createElement("canvas");
@@ -236,18 +236,18 @@ function Hint({ text }: { text: string }) {
   }, [text]);
   return (
     <mesh
-      position={[PANEL_X, PANEL_Y - 0.33, PANEL_Z + 0.003]}
-      renderOrder={12}
       onPointerDown={(e) => {
         e.stopPropagation();
       }}
+      position={[PANEL_X, PANEL_Y - 0.33, PANEL_Z + 0.003]}
+      renderOrder={12}
     >
       <planeGeometry args={[PANEL_W * 0.95, 0.11]} />
       <meshBasicMaterial
         map={tex ?? undefined}
-        transparent
         side={THREE.DoubleSide}
         toneMapped={false}
+        transparent
       />
     </mesh>
   );
@@ -264,7 +264,7 @@ const KEY_MAP: Record<string, Direction> = {
   d: "right",
 };
 
-function KeyboardControls() {
+const KeyboardControls = () => {
   const { state, setHeld } = useGame();
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -293,7 +293,7 @@ function KeyboardControls() {
 
 const DEADZONE_PX = 24;
 
-function FullScreenTouchSteer() {
+const FullScreenTouchSteer = () => {
   const { state, setHeld } = useGame();
   const controls = useThree((s) => s.controls) as
     | { enabled: boolean }
@@ -369,7 +369,7 @@ function FullScreenTouchSteer() {
   return null;
 }
 
-export default function GameControls() {
+const GameControls = () => {
   const isTouch = useIsTouch();
   const { state } = useGame();
   const { t } = useTranslation();
@@ -400,3 +400,5 @@ export default function GameControls() {
     </group>
   );
 }
+
+export default GameControls;

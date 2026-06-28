@@ -24,7 +24,7 @@ const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] }
 
 export const SIDEBAR_WIDTH = 100;
 
-export default function Sidebar() {
+const Sidebar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -84,7 +84,7 @@ export default function Sidebar() {
           const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
           return (
-            <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>
+            <Link href={link.href} key={link.href} style={{ textDecoration: "none" }}>
               <Box
                 className={robotoCondensed.className}
                 sx={{
@@ -143,8 +143,8 @@ export default function Sidebar() {
       {/* Language settings */}
       <Box sx={{ width: "100%", px: 1.5, pb: 2 }}>
         <Box
-          onClick={() => setSettingsOpen(!settingsOpen)}
           className={robotoCondensed.className}
+          onClick={() => setSettingsOpen(!settingsOpen)}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -188,12 +188,12 @@ export default function Sidebar() {
               const isCurrent = lang === currentLang;
               return (
                 <Box
+                  className={robotoCondensed.className}
                   key={lang}
                   onClick={() => {
                     void i18n.changeLanguage(lang);
                     setSettingsOpen(false);
                   }}
-                  className={robotoCondensed.className}
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -224,3 +224,5 @@ export default function Sidebar() {
     </Box>
   );
 }
+
+export default Sidebar;

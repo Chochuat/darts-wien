@@ -155,7 +155,7 @@ function drawHud(
   texture.needsUpdate = true;
 }
 
-export default function GameHUD() {
+const GameHUD = () => {
   const { state, throwDarts, openKeypad } = useGame();
   const { t } = useTranslation();
   const buttonRect = useRef<ButtonRect>({ u0: 0, u1: 0, v0: 0, v1: 0 });
@@ -223,18 +223,18 @@ export default function GameHUD() {
         <meshBasicMaterial color="#2a1a0c" side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
       <mesh
-        position={[PANEL_X, PANEL_Y, PANEL_Z]}
         onClick={handleClick}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
+        position={[PANEL_X, PANEL_Y, PANEL_Z]}
         renderOrder={10}
       >
         <planeGeometry args={[PANEL_W, PANEL_H]} />
         <meshBasicMaterial
           map={texture ?? undefined}
-          transparent
           side={THREE.DoubleSide}
           toneMapped={false}
+          transparent
         />
       </mesh>
       <DragHint opacity={hintOpacity} text={t("leaderboard.dragHint")} />
@@ -242,7 +242,7 @@ export default function GameHUD() {
   );
 }
 
-function DragHint({ opacity, text }: { opacity: number; text: string }) {
+const DragHint = ({ opacity, text }: { opacity: number; text: string }) => {
   const tex = useMemo(() => {
     if (typeof document === "undefined" || opacity <= 0) return null;
     const canvas = document.createElement("canvas");
@@ -266,9 +266,9 @@ function DragHint({ opacity, text }: { opacity: number; text: string }) {
       <planeGeometry args={[0.7, 0.13]} />
       <meshBasicMaterial
         map={tex}
-        transparent
         side={THREE.DoubleSide}
         toneMapped={false}
+        transparent
       />
     </mesh>
   );
@@ -305,3 +305,5 @@ function roundRect(
   ctx.arcTo(x, y, x + w, y, radius);
   ctx.closePath();
 }
+
+export default GameHUD;

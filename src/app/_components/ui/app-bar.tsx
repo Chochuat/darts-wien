@@ -14,7 +14,7 @@ import type { SupportedLanguage } from "@/app/_i18n/i18n";
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
-export default function AppBar() {
+const AppBar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
 
@@ -66,8 +66,8 @@ export default function AppBar() {
         </Link>
 
         <Box
-          onClick={cycleLang}
           className={robotoCondensed.className}
+          onClick={cycleLang}
           sx={{
             color: "rgba(255,255,255,0.5)",
             fontSize: "0.7rem",
@@ -91,7 +91,7 @@ export default function AppBar() {
           const isActive = pathname === tab.href || (tab.href !== "/" && pathname.startsWith(tab.href + "/"));
 
           return (
-            <Link key={tab.href} href={tab.href} style={{ textDecoration: "none" }}>
+            <Link href={tab.href} key={tab.href} style={{ textDecoration: "none" }}>
               <Box
                 className={robotoCondensed.className}
                 sx={{
@@ -126,3 +126,5 @@ export default function AppBar() {
     </Box>
   );
 }
+
+export default AppBar;

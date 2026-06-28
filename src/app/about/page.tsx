@@ -24,13 +24,13 @@ const organizers = [
   { name: "Dodo Kepke", roleKey: "organizer", bioKey: "organizerBio3" },
 ];
 
-export default function AboutPage() {
+const AboutPage = () => {
   const { t } = useTranslation();
 
   return (
     <PageLayout>
       <Section>
-        <PageHeader icon={<Info />} title={t("about.title")} subtitle={t("about.subtitle")} />
+        <PageHeader icon={<Info />} subtitle={t("about.subtitle")} title={t("about.title")} />
 
         <Box sx={{ px: 0.5, mb: 3 }}>
           <Typography sx={{ color: colors.text.secondary, fontSize: "0.85rem", lineHeight: 1.7, mb: 1.5 }}>
@@ -159,13 +159,13 @@ export default function AboutPage() {
             }}
           >
             <iframe
-              src="https://www.openstreetmap.org/export/embed.html?bbox=16.3500%2C48.1900%2C16.4000%2C48.2200&layer=mapnik&marker=48.2050%2C16.3750"
-              width="100%"
               height="220"
-              style={{ border: 0, display: "block" }}
-              title="Darts Wien Venue Map"
               loading="lazy"
               referrerPolicy="no-referrer"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=16.3500%2C48.1900%2C16.4000%2C48.2200&layer=mapnik&marker=48.2050%2C16.3750"
+              style={{ border: 0, display: "block" }}
+              title="Darts Wien Venue Map"
+              width="100%"
             />
           </Box>
         </Box>
@@ -214,3 +214,5 @@ export default function AboutPage() {
     </PageLayout>
   );
 }
+
+export default AboutPage;

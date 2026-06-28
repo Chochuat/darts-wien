@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import i18n, { resolveLanguage } from "@/app/_i18n/i18n";
 
-export default function LocaleProvider() {
+const LocaleProvider = () => {
   const params = useSearchParams();
   const initialised = useRef(false);
 
@@ -19,3 +19,5 @@ export default function LocaleProvider() {
 
   return null;
 }
+
+export default LocaleProvider;

@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { colors, borderRadius } from "@/lib/design-tokens";
 
-export default function Section({ children }: { children: React.ReactNode }) {
+const Section = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
@@ -17,3 +17,5 @@ export default function Section({ children }: { children: React.ReactNode }) {
     </Box>
   );
 }
+
+export default Section;

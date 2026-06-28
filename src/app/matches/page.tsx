@@ -93,7 +93,7 @@ const inputSx = {
   "& .MuiInputBase-input::placeholder": { color: colors.text.subtle, opacity: 1 },
 };
 
-export default function AllMatchesPage() {
+const AllMatchesPage = () => {
   const [player, setPlayer] = useState("");
   const [result, setResult] = useState("");
   const [scoreQ, setScoreQ] = useState("");
@@ -159,32 +159,32 @@ export default function AllMatchesPage() {
   return (
     <PageLayout>
       <Section>
-        <PageHeader icon={<TrackChanges />} title={t("matchesPage.title")} subtitle={t("matchesPage.subtitle", { count: data?.total ?? 0 })} />
+        <PageHeader icon={<TrackChanges />} subtitle={t("matchesPage.subtitle", { count: data?.total ?? 0 })} title={t("matchesPage.title")} />
 
         {/* Filters — single row */}
         <Box sx={{ px: 0.5, mb: 2 }}>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
               <ToggleButtonGroup
-                value={result}
                 exclusive
                 onChange={(_, v) => setResult(v ?? "")}
                 size="small"
+                value={result}
               >
-                <ToggleButton value="W" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }}>
+                <ToggleButton sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }} value="W">
                   <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.win")}
                 </ToggleButton>
-                <ToggleButton value="L" sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff", "&:hover": { bgcolor: colors.red } } }}>
+                <ToggleButton sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff", "&:hover": { bgcolor: colors.red } } }} value="L">
                   <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.loss")}
                 </ToggleButton>
               </ToggleButtonGroup>
 
             <TextField
-              placeholder={t("matchesPage.searchPlaceholder")}
-              value={quickQ}
               onChange={(e) => setQuickQ(e.target.value)}
+              placeholder={t("matchesPage.searchPlaceholder")}
               size="small"
               slotProps={{ input: { startAdornment: <Search sx={{ fontSize: "0.85rem", mr: 0.5, color: colors.text.muted }} /> } }}
               sx={{ minWidth: 220, flex: { xs: 1, md: "none" }, ...inputSx }}
+              value={quickQ}
             />
 
             <Box
@@ -210,26 +210,21 @@ export default function AllMatchesPage() {
               )}
             </Box>
 
-            {hasFilters && (
-              <Typography
+            {hasFilters ? <Typography
                 onClick={clearAll}
                 sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 600, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
               >
                 {t("common.clearAll")}
-              </Typography>
-            )}
+              </Typography> : null}
           </Box>
 
           <Collapse in={showFilters} timeout={250}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", mt: 1.5 }}>
               <Autocomplete
-                options={playerNames}
-                value={player}
+                inputValue={player}
                 onChange={(_, v) => setPlayer(v ?? "")}
                 onInputChange={(_, v) => { if (!v) setPlayer(""); }}
-                inputValue={player}
-                size="small"
-                sx={{ minWidth: 180, maxWidth: 240 }}
+                options={playerNames}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -237,14 +232,17 @@ export default function AllMatchesPage() {
                     sx={inputSx}
                   />
                 )}
+                size="small"
+                sx={{ minWidth: 180, maxWidth: 240 }}
+                value={player}
               />
 
               <TextField
-                placeholder={t("matchesPage.filterScore")}
-                value={scoreQ}
                 onChange={(e) => setScoreQ(e.target.value)}
+                placeholder={t("matchesPage.filterScore")}
                 size="small"
                 sx={{ minWidth: 130, ...inputSx }}
+                value={scoreQ}
               />
             </Box>
           </Collapse>
@@ -304,7 +302,7 @@ export default function AllMatchesPage() {
                       }}
                     >
                       <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
-                      {m.one80 > 0 && <Badge180 />}
+                      {m.one80 > 0 ? <Badge180 /> : null}
                       {" "}
                       <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {m.opponent}</Box>
                     </Typography>
@@ -333,12 +331,11 @@ export default function AllMatchesPage() {
           )}
         </Card>
 
-        {totalPages > 1 && (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        {totalPages > 1 ? <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
             <Pagination
               count={totalPages}
-              page={safePage}
               onChange={(_, p) => setPage(p)}
+              page={safePage}
               size="small"
               sx={{
                 "& .MuiPaginationItem-root": {
@@ -355,9 +352,10 @@ export default function AllMatchesPage() {
                 },
               }}
             />
-          </Box>
-        )}
+          </Box> : null}
       </Section>
     </PageLayout>
   );
 }
+
+export default AllMatchesPage;

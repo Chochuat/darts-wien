@@ -78,7 +78,7 @@ function cell(label: string | number, opts?: { color?: string; bold?: boolean })
   );
 }
 
-function SetsDiff({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: number }) {
+const SetsDiff = ({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: number }) => {
   const diff = setsFor - setsAgainst;
   return (
     <Typography
@@ -96,7 +96,7 @@ function SetsDiff({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: numb
   );
 }
 
-function PlayoffMatch({
+const PlayoffMatch = ({
   m1,
   m2,
   resultKey,
@@ -106,7 +106,7 @@ function PlayoffMatch({
   m2: PerspectiveMatch;
   resultKey: string;
   winnerStyle: "accent" | "gold" | "bronze";
-}) {
+}) => {
   const scoreColor = winnerStyle === "gold" ? colors.goldText : colors.accent;
   const scoreWeight = winnerStyle === "gold" ? 900 : 800;
 
@@ -115,18 +115,18 @@ function PlayoffMatch({
       <Box sx={{ flex: 1, textAlign: "right", minWidth: 0 }}>
         {winnerStyle === "gold" ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
-            {m1.result === "W" && <EmojiEvents sx={{ color: colors.gold, fontSize: "0.75rem", flexShrink: 0 }} />}
+            {m1.result === "W" ? <EmojiEvents sx={{ color: colors.gold, fontSize: "0.75rem", flexShrink: 0 }} /> : null}
             <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {m1.playerName}
             </Typography>
-            {m1.one80 > 0 && <Badge180 />}
+            {m1.one80 > 0 ? <Badge180 /> : null}
           </Box>
         ) : (
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
             <Typography sx={{ color: m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {m1.playerName}
             </Typography>
-            {m1.one80 > 0 && <Badge180 />}
+            {m1.one80 > 0 ? <Badge180 /> : null}
           </Box>
         )}
       </Box>
@@ -137,13 +137,13 @@ function PlayoffMatch({
         <Typography sx={{ color: winnerStyle === "gold" && m2.result !== "W" ? colors.text.secondary : m2.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: winnerStyle === "gold" ? (m2.result !== "W" ? 500 : 700) : m2.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {m2.playerName}
         </Typography>
-        {m2.one80 > 0 && <Badge180 />}
+        {m2.one80 > 0 ? <Badge180 /> : null}
       </Box>
     </Box>
   );
 }
 
-function PlayoffRound({
+const PlayoffRound = ({
   roundName,
   roundLabel,
   allPlayoffEntries,
@@ -157,7 +157,7 @@ function PlayoffRound({
   color: string;
   borderColor: string;
   bgcolor: string;
-}) {
+}) => {
   const pairs: { m1: PerspectiveMatch; m2: PerspectiveMatch }[] = [];
   for (let i = 0; i < allPlayoffEntries.length; i += 2) {
     const m1 = allPlayoffEntries[i];
@@ -181,7 +181,7 @@ function PlayoffRound({
   );
 }
 
-function FinalStandingsRow({ s, i }: { s: ApiFinalStandingEntry; i: number }) {
+const FinalStandingsRow = ({ s, i }: { s: ApiFinalStandingEntry; i: number }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.5, borderBottom: "1px solid #f0f0f0", gap: 0.5, bgcolor: i === 0 ? `${colors.gold}12` : i === 1 ? `${colors.silver}12` : i === 2 ? `${colors.bronze}12` : i === 3 ? `${colors.accent}06` : "transparent" }}>
       <Box sx={{ width: 22, textAlign: "center", flexShrink: 0 }}>
@@ -207,19 +207,19 @@ function FinalStandingsRow({ s, i }: { s: ApiFinalStandingEntry; i: number }) {
       {cell(s.losses, { color: colors.red })}
       {cell(`${s.setsFor}:${s.setsAgainst}`)}
       {cell(s.one80s, { color: colors.accent })}
-      <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
+      <SetsDiff setsAgainst={s.setsAgainst} setsFor={s.setsFor} />
       {cell(s.totalPoints, { bold: true })}
     </Box>
   );
 }
 
-export default function TournamentDetail({
+const TournamentDetail = ({
   detail,
   summary,
 }: {
   detail: TournamentDetailResponse;
   summary: TournamentSummary;
-}) {
+}) => {
   const [expandedMatches, setExpandedMatches] = useState<Record<string, boolean>>({});
   const { t } = useTranslation();
   const isGrandFinal = summary.type === "grand_final";
@@ -259,8 +259,7 @@ export default function TournamentDetail({
                     ? t("tournamentDetail.grandFinalTitle")
                     : t("common.week", { week: summary.weekNumber })}
                 </Typography>
-                {isGrandFinal && (
-                  <Typography
+                {isGrandFinal ? <Typography
                     sx={{
                       color: colors.goldText,
                       fontSize: "0.55rem",
@@ -274,8 +273,7 @@ export default function TournamentDetail({
                     }}
                   >
                     {t("tournamentDetail.grandFinal")}
-                  </Typography>
-                )}
+                  </Typography> : null}
               </Box>
               <Typography sx={{ color: colors.text.subtle, fontSize: "0.75rem", fontWeight: 600, mt: 0.15 }}>
                 {summary.date}
@@ -295,11 +293,9 @@ export default function TournamentDetail({
                 ? t("tournamentDetail.playersGrandFinal", { count: 8 })
                 : t("tournamentDetail.players", { count: summary.playerCount })}
             </Typography>
-            {!isGrandFinal && (
-              <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
+            {!isGrandFinal ? <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
                 {t("tournamentDetail.groupMatches", { count: summary.groupMatchCount })}
-              </Typography>
-            )}
+              </Typography> : null}
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
               {t("tournamentDetail.playoffMatches", { count: summary.playoffMatchCount })}
             </Typography>
@@ -367,8 +363,7 @@ export default function TournamentDetail({
         </Box>
 
         {/* Groups — hide for Grand Final */}
-        {!isGrandFinal && (
-        <Box sx={{ px: 0.5, mb: 3 }}>
+        {!isGrandFinal ? <Box sx={{ px: 0.5, mb: 3 }}>
           <SectionHeading icon={<Groups />} label={t("tournamentDetail.groups")} />
 
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
@@ -414,7 +409,7 @@ export default function TournamentDetail({
                           {cell(s.losses, { color: colors.red })}
                           {cell(`${s.setsFor}:${s.setsAgainst}`)}
                           {cell(s.one80s, { color: colors.accent })}
-                          <SetsDiff setsFor={s.setsFor} setsAgainst={s.setsAgainst} />
+                          <SetsDiff setsAgainst={s.setsAgainst} setsFor={s.setsFor} />
                           {cell(s.points, { bold: true })}
                         </Box>
                       );
@@ -437,7 +432,7 @@ export default function TournamentDetail({
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.playerName}
                           </Typography>
-            {m.one80 > 0 && <Badge180 />}
+            {m.one80 > 0 ? <Badge180 /> : null}
                           <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", flexShrink: 0 }}>{t("common.vs")}</Typography>
                           <Typography sx={{ color: colors.text.secondary, fontSize: "0.75rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {m.opponent}
@@ -453,8 +448,7 @@ export default function TournamentDetail({
               );
             })}
           </Box>
-        </Box>
-        )}
+        </Box> : null}
 
         {/* Playoffs */}
         <Box sx={{ px: 0.5, mb: 3 }}>
@@ -462,54 +456,54 @@ export default function TournamentDetail({
 
           <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 1.5, md: 2 }, alignItems: { md: "flex-start" }, justifyContent: { md: "center" } }}>
             <PlayoffRound
-              roundName="Quarter-Finals"
-              roundLabel={t("tournamentDetail.quarterFinals")}
               allPlayoffEntries={detail.playoffs.find((r) => r.name === "Quarter-Finals")?.matches.flatMap((m) => {
                 const p1 = toPerspective(m, m.player1.name);
                 const p2 = toPerspective(m, m.player2.name);
                 return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
               }) ?? []}
-              color={colors.accent}
-              borderColor={`${colors.accent}15`}
               bgcolor={`${colors.accent}06`}
+              borderColor={`${colors.accent}15`}
+              color={colors.accent}
+              roundLabel={t("tournamentDetail.quarterFinals")}
+              roundName="Quarter-Finals"
             />
             <PlayoffRound
-              roundName="Semi-Finals"
-              roundLabel={t("tournamentDetail.semiFinals")}
               allPlayoffEntries={detail.playoffs.find((r) => r.name === "Semi-Finals")?.matches.flatMap((m) => {
                 const p1 = toPerspective(m, m.player1.name);
                 const p2 = toPerspective(m, m.player2.name);
                 return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
               }) ?? []}
-              color={colors.accent}
-              borderColor={`${colors.accent}25`}
               bgcolor={`${colors.accent}0a`}
+              borderColor={`${colors.accent}25`}
+              color={colors.accent}
+              roundLabel={t("tournamentDetail.semiFinals")}
+              roundName="Semi-Finals"
             />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, flex: 1, maxWidth: { md: 300 } }}>
               <PlayoffRound
-                roundName="3rd Place"
-                roundLabel={t("tournamentDetail.thirdPlace")}
                 allPlayoffEntries={detail.playoffs.find((r) => r.name === "3rd Place")?.matches.flatMap((m) => {
                   const p1 = toPerspective(m, m.player1.name);
                   const p2 = toPerspective(m, m.player2.name);
                   return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
                 }) ?? []}
-                color={colors.bronze}
-                borderColor={`${colors.bronze}30`}
                 bgcolor={`${colors.bronze}12`}
+                borderColor={`${colors.bronze}30`}
+                color={colors.bronze}
+                roundLabel={t("tournamentDetail.thirdPlace")}
+                roundName="3rd Place"
               />
               <PlayoffRound
-                roundName="Final"
-                roundLabel={t("tournamentDetail.final")}
                 allPlayoffEntries={detail.playoffs.find((r) => r.name === "Final")?.matches.flatMap((m) => {
                   const p1 = toPerspective(m, m.player1.name);
                   const p2 = toPerspective(m, m.player2.name);
                   return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
                 }) ?? []}
-                color={colors.goldText}
-                borderColor={colors.gold}
                 bgcolor={`${colors.gold}15`}
+                borderColor={colors.gold}
+                color={colors.goldText}
+                roundLabel={t("tournamentDetail.final")}
+                roundName="Final"
               />
             </Box>
           </Box>
@@ -531,7 +525,7 @@ export default function TournamentDetail({
             </Box>
 
             {detail.finalStandings.map((s, i) => (
-              <FinalStandingsRow key={s.player.name} s={s} i={i} />
+              <FinalStandingsRow i={i} key={s.player.name} s={s} />
             ))}
           </Box>
         </Box>
@@ -539,3 +533,5 @@ export default function TournamentDetail({
     </PageLayout>
   );
 }
+
+export default TournamentDetail;

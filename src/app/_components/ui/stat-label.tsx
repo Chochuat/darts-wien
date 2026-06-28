@@ -8,7 +8,7 @@ interface StatLabelProps {
   labelColor?: string;
 }
 
-export default function StatLabel({ label, value, labelColor }: StatLabelProps) {
+const StatLabel = ({ label, value, labelColor }: StatLabelProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.3 }}>
       <Typography
@@ -26,3 +26,5 @@ export default function StatLabel({ label, value, labelColor }: StatLabelProps) 
     </Box>
   );
 }
+
+export default StatLabel;

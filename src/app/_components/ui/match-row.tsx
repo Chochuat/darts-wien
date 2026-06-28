@@ -9,7 +9,7 @@ import { colors } from "@/lib/design-tokens";
 import Badge180 from "@/app/_components/ui/badge-180";
 import type { StandingRecentMatch } from "@/lib/validation";
 
-export default function MatchRow({ match }: { match: StandingRecentMatch }) {
+const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
   const isWin = match.result === "W";
   const { t } = useTranslation();
 
@@ -58,7 +58,7 @@ export default function MatchRow({ match }: { match: StandingRecentMatch }) {
         >
           {match.score}
         </Typography>
-        {match.one80 > 0 && <Badge180 />}
+        {match.one80 > 0 ? <Badge180 /> : null}
       </Box>
 
       <Typography
@@ -74,3 +74,5 @@ export default function MatchRow({ match }: { match: StandingRecentMatch }) {
     </Box>
   );
 }
+
+export default MatchRow;
