@@ -18,6 +18,8 @@ const theme = createTheme({
 
 /**
  * Application providers wrapper.
+ * @param root0
+ * @param root0.children
  */
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient());

@@ -12,6 +12,8 @@ import type { StandingRecentMatch } from "@/lib/validation";
 
 /**
  * Single match row display.
+ * @param root0
+ * @param root0.match
  */
 const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
   const isWin = match.result === "W";

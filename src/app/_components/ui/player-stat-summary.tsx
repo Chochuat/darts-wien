@@ -20,6 +20,8 @@ interface StatBox {
 
 /**
  * PlayerDesktopStats component.
+ * @param root0
+ * @param root0.stats
  */
 export const PlayerDesktopStats = ({ stats }: { stats: StatBox[] }) => {
   return (
@@ -40,6 +42,8 @@ export const PlayerDesktopStats = ({ stats }: { stats: StatBox[] }) => {
 
 /**
  * PlayerMobileStats component.
+ * @param root0
+ * @param root0.stats
  */
 export const PlayerMobileStats = ({ stats }: { stats: StatBox[] }) => {
   return (

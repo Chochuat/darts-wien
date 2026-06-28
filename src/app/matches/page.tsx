@@ -26,6 +26,10 @@ interface MatchDisplay {
   id: number;
 }
 
+/**
+ *
+ * @param m
+ */
 function toDisplayEntries(m: ApiMatchRow): [MatchDisplay, MatchDisplay] {
   const p1Score = m.legsPlayer1 ?? 0;
   const p2Score = m.legsPlayer2 ?? 0;
@@ -37,6 +41,15 @@ function toDisplayEntries(m: ApiMatchRow): [MatchDisplay, MatchDisplay] {
 
 const PLAYERS_PER_PAGE = 20;
 
+/**
+ *
+ * @param match
+ * @param filters
+ * @param filters.player
+ * @param filters.result
+ * @param filters.scoreQ
+ * @param filters.quickQ
+ */
 function matchFilter(match: MatchDisplay, filters: { player: string; result: string; scoreQ: string; quickQ: string }) {
   if (filters.player && match.playerName !== filters.player) return false;
   if (filters.result && match.result !== filters.result) return false;

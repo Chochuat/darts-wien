@@ -25,6 +25,9 @@ interface LbResources {
   texture: THREE.CanvasTexture;
 }
 let lbResources: LbResources | null = null;
+/**
+ *
+ */
 function getLb(): LbResources | null {
   if (lbResources) return lbResources;
   if (typeof document === "undefined") return null;
@@ -41,6 +44,15 @@ function getLb(): LbResources | null {
 
 const PODIUM_COLORS = [GOLD, SILVER, BRONZE];
 
+/**
+ *
+ * @param res
+ * @param entries
+ * @param loading
+ * @param tTitle
+ * @param tLoading
+ * @param tEmpty
+ */
 function drawLb(
   res: LbResources,
   entries: LeaderboardEntry[],

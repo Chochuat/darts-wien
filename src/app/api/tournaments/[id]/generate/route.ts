@@ -4,8 +4,9 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles POST requests to generate tournament groups and matches.
- *
  * @param req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function POST(
   req: NextRequest,

@@ -17,6 +17,8 @@ const metadata: Metadata = {
 
 /**
  * Root application layout with providers.
+ * @param root0
+ * @param root0.children
  */
 const RootLayout = ({
   children,

@@ -14,6 +14,10 @@ interface MatchListParams {
   limit?: number;
 }
 
+/**
+ *
+ * @param params
+ */
 function buildQueryString(params: MatchListParams): string {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -25,6 +29,10 @@ function buildQueryString(params: MatchListParams): string {
   return qs ? `?${qs}` : "";
 }
 
+/**
+ *
+ * @param params
+ */
 async function fetchMatches(params: MatchListParams) {
   const qs = buildQueryString(params);
   const res = await fetch(`/api/matches${qs}`);
@@ -33,6 +41,10 @@ async function fetchMatches(params: MatchListParams) {
   return ApiMatchesResponse.parse(data);
 }
 
+/**
+ *
+ * @param id
+ */
 async function fetchMatchDetail(id: number) {
   const res = await fetch(`/api/matches/${id}`);
   if (!res.ok) throw new Error(`Failed to fetch match: ${res.status}`);
@@ -42,7 +54,6 @@ async function fetchMatchDetail(id: number) {
 
 /**
  * Fetches match data by query parameters.
- *
  * @param params - Query parameters for filtering matches.
  */
 export function useMatches(params: MatchListParams = {}) {
@@ -55,7 +66,6 @@ export function useMatches(params: MatchListParams = {}) {
 
 /**
  * Fetches a single match by its ID.
- *
  * @param id - The match ID.
  */
 export function useMatchDetail(id: number) {

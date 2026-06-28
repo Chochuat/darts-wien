@@ -5,8 +5,9 @@ import { MatchNoShowUpdate } from "@/lib/validation";
 
 /**
  * Handles PATCH requests to mark a match as no-show.
- *
  * @param req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function PATCH(
   req: NextRequest,

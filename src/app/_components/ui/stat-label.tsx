@@ -11,6 +11,10 @@ interface StatLabelProps {
 
 /**
  * Statistic label with value.
+ * @param root0
+ * @param root0.label
+ * @param root0.value
+ * @param root0.labelColor
  */
 const StatLabel = ({ label, value, labelColor }: StatLabelProps) => {
   return (

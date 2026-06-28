@@ -4,6 +4,8 @@ import { colors, borderRadius } from "@/lib/design-tokens";
 
 /**
  * Generic section wrapper.
+ * @param root0
+ * @param root0.children
  */
 const Section = ({ children }: { children: React.ReactNode }) => {
   return (

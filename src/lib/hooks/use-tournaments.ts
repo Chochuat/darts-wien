@@ -8,6 +8,10 @@ import {
   ApiRegistrationEntry,
 } from "@/lib/validation";
 
+/**
+ *
+ * @param seasonId
+ */
 async function fetchTournaments(seasonId?: number) {
   const qs = seasonId ? `?seasonId=${seasonId}` : "";
   const res = await fetch(`/api/tournaments${qs}`);
@@ -19,6 +23,10 @@ async function fetchTournaments(seasonId?: number) {
   };
 }
 
+/**
+ *
+ * @param id
+ */
 async function fetchTournamentDetail(id: number) {
   const res = await fetch(`/api/tournaments/${id}`);
   if (!res.ok)
@@ -27,6 +35,10 @@ async function fetchTournamentDetail(id: number) {
   return TournamentDetailResponse.parse(data);
 }
 
+/**
+ *
+ * @param tournamentId
+ */
 async function fetchRegistrations(tournamentId: number) {
   const res = await fetch(`/api/tournaments/${tournamentId}/registrations`);
   if (!res.ok)
@@ -41,7 +53,6 @@ async function fetchRegistrations(tournamentId: number) {
 
 /**
  * Fetches tournaments, optionally filtered by season.
- *
  * @param seasonId - The season ID to filter by.
  */
 export function useTournaments(seasonId?: number) {
@@ -54,7 +65,6 @@ export function useTournaments(seasonId?: number) {
 
 /**
  * Fetches a single tournament by its ID.
- *
  * @param id - The tournament ID.
  */
 export function useTournamentDetail(id: number) {
@@ -67,7 +77,6 @@ export function useTournamentDetail(id: number) {
 
 /**
  * Fetches registrations for a specific tournament.
- *
  * @param tournamentId - The tournament ID.
  */
 export function useTournamentRegistrations(tournamentId: number) {

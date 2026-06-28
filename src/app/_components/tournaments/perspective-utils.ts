@@ -13,7 +13,6 @@ export interface PerspectiveMatch {
 
 /**
  * toPerspective component.
- *
  * @param m - The match row.
  * @param forPlayerName - The player name to calculate perspective for.
  */
@@ -42,7 +41,6 @@ export function toPerspective(
 
 /**
  * groupMatchesFromPerspective component.
- *
  * @param g - The tournament group.
  */
 export function groupMatchesFromPerspective(

@@ -45,6 +45,20 @@ interface MatchFiltersProps {
 
 /**
  * MatchFilters component.
+ * @param root0
+ * @param root0.player
+ * @param root0.result
+ * @param root0.scoreQ
+ * @param root0.quickQ
+ * @param root0.showFilters
+ * @param root0.playerNames
+ * @param root0.hasFilters
+ * @param root0.onPlayerChange
+ * @param root0.onResultChange
+ * @param root0.onScoreQChange
+ * @param root0.onQuickQChange
+ * @param root0.onToggleFilters
+ * @param root0.onClearAll
  */
 export const MatchFilters = ({
   player, result, scoreQ, quickQ, showFilters, playerNames, hasFilters,

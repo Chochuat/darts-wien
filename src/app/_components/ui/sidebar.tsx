@@ -24,8 +24,7 @@ export const SIDEBAR_WIDTH = 100;
 
 /**
  * Sidebar component that provides main navigation links.
- * 
- * @returns {JSX.Element} The rendered Sidebar component.
+ * @returns The rendered Sidebar component.
  */
 const Sidebar = () => {
   const pathname = usePathname();

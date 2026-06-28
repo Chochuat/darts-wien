@@ -9,6 +9,8 @@ interface RankBadgeProps {
 
 /**
  * Rank position badge (1st, 2nd, 3rd).
+ * @param root0
+ * @param root0.position
  */
 const RankBadge = ({ position }: RankBadgeProps) => {
   return (

@@ -19,6 +19,9 @@ import type { StandingPlayer } from "@/lib/validation";
 
 /**
  * StandingsHeaderSummary component.
+ * @param root0
+ * @param root0.players
+ * @param root0.totalMatches
  */
 export const StandingsHeaderSummary = ({ players, totalMatches }: { players: StandingPlayer[]; totalMatches: number }) => {
   const { t } = useTranslation();
@@ -45,6 +48,10 @@ export const StandingsHeaderSummary = ({ players, totalMatches }: { players: Sta
 
 /**
  * StandingsPlayerCard component.
+ * @param root0
+ * @param root0.p
+ * @param root0.isOpen
+ * @param root0.onToggle
  */
 export const StandingsPlayerCard = ({
   p,

@@ -11,6 +11,8 @@ import type { PlayerMatchPerspective } from "@/lib/validation";
 
 /**
  * MatchHistoryRow component.
+ * @param root0
+ * @param root0.match
  */
 export const MatchHistoryRow = ({ match }: { match: PlayerMatchPerspective }) => {
   const isWin = match.result === "W";

@@ -20,6 +20,14 @@ interface MatchListRowProps {
 
 /**
  * MatchListRow component.
+ * @param root0
+ * @param root0.playerName
+ * @param root0.opponent
+ * @param root0.score
+ * @param root0.result
+ * @param root0.date
+ * @param root0.one80
+ * @param root0.index
  */
 export const MatchListRow = ({ playerName, opponent, score, result, date, one80, index }: MatchListRowProps) => {
   const isWin = result === "W";

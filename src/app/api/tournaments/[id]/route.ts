@@ -4,8 +4,9 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for a single tournament by ID.
- *
  * @param _req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function GET(
   _req: NextRequest,
@@ -260,8 +261,9 @@ export async function GET(
 
 /**
  * Handles PATCH requests to update a tournament.
- *
  * @param req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function PATCH(
   req: NextRequest,

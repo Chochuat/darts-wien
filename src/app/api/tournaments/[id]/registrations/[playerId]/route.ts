@@ -4,8 +4,9 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles DELETE requests to remove a tournament registration.
- *
  * @param _req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function DELETE(
   _req: NextRequest,
@@ -56,8 +57,9 @@ export async function DELETE(
 
 /**
  * Handles PATCH requests to update a player's check-in status.
- *
  * @param req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function PATCH(
   req: NextRequest,

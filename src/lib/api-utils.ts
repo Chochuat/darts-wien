@@ -11,7 +11,6 @@ export async function getSupabase() {
 
 /**
  * Parses a string into a number, returning null if invalid.
- *
  * @param value - The string to parse.
  */
 export function parseNumericParam(value: string): number | null {
@@ -22,7 +21,6 @@ export function parseNumericParam(value: string): number | null {
 
 /**
  * Parses a numeric query param, returning an error response if invalid.
- *
  * @param value - The string value to parse.
  * @param label - Human-readable name for error messages.
  */
@@ -44,7 +42,6 @@ id: number } | NextResponse {
 
 /**
  * Creates a JSON error response from an unknown error value.
- *
  * @param error - The error to convert.
  * @param status - The HTTP status code (default 500).
  */
@@ -56,7 +53,6 @@ export function errorResponse(error: unknown, status = 500) {
 
 /**
  * Creates a 400 validation error response with the given issues.
- *
  * @param issues - The validation issues to return.
  */
 export function validationError(issues: unknown) {

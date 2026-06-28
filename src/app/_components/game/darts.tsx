@@ -30,6 +30,9 @@ interface FlightState {
   hvel: THREE.Vector2;
 }
 
+/**
+ *
+ */
 function useFlightShape() {
   return useMemo(() => {
     const s = new THREE.Shape();

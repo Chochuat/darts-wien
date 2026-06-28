@@ -4,8 +4,9 @@ import { getSupabase } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for a player's details (stats + matches).
- *
  * @param _req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function GET(
   _req: NextRequest,

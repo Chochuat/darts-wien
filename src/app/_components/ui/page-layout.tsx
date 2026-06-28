@@ -6,6 +6,8 @@ import Sidebar from "@/app/_components/ui/sidebar";
 
 /**
  * Page layout wrapper with max width and padding.
+ * @param root0
+ * @param root0.children
  */
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (

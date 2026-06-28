@@ -33,6 +33,11 @@ const initialState: GameState = {
   leaderboardDirtyKey: 0,
 };
 
+/**
+ *
+ * @param state
+ * @param action
+ */
 function reducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "THROW_START": {
@@ -97,7 +102,11 @@ interface GameContextValue {
 const GameContext = createContext<GameContextValue | null>(null);
 
 
-/** Game state provider component. */
+/**
+ * Game state provider component.
+ * @param root0
+ * @param root0.children
+ */
 export const GameProvider = ({ children }: { /** Child React nodes. */
 children: ReactNode }) => {
   /** Application state and dispatch. */
@@ -185,7 +194,6 @@ children: ReactNode }) => {
 
 /**
  * Returns the game context value.
- *
  * @throws {Error} if used outside of GameProvider.
  */
 export function useGame(): GameContextValue {

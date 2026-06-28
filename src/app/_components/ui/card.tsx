@@ -10,6 +10,10 @@ interface CardProps {
 
 /**
  * Generic card wrapper component.
+ * @param root0
+ * @param root0.children
+ * @param root0.borderColor
+ * @param root0.hoverBorderColor
  */
 const Card = ({ children, borderColor, hoverBorderColor }: CardProps) => {
   return (

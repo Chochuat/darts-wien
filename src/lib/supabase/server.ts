@@ -6,7 +6,6 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 /**
  * Creates a Supabase server client using the provided cookie store.
- *
  * @param cookieStore - The cookie store from next/headers.
  */
 export const createClient = (cookieStore: Awaited<ReturnType<typeof cookies>>) => {

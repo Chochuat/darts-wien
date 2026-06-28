@@ -21,6 +21,9 @@ interface PopupResources {
   texture: THREE.CanvasTexture;
 }
 let popupResources: PopupResources | null = null;
+/**
+ *
+ */
 function getPopup(): PopupResources | null {
   if (popupResources) return popupResources;
   if (typeof document === "undefined") return null;
@@ -45,6 +48,17 @@ interface DrawParams {
   ptsShort: string;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.canvas
+ * @param root0.ctx
+ * @param root0.texture
+ * @param root0.playerName
+ * @param root0.resultScore
+ * @param root0.beReadyText
+ * @param root0.ptsShort
+ */
 function drawPopup({
   canvas,
   ctx,
@@ -101,6 +115,10 @@ function drawPopup({
 
 let nextBtnTex: THREE.CanvasTexture | null = null;
 let nextBtnLabel: string | null = null;
+/**
+ *
+ * @param label
+ */
 function getNextBtnTexture(label: string): THREE.CanvasTexture {
   if (typeof document === "undefined") return new THREE.CanvasTexture();
   if (nextBtnTex && nextBtnLabel === label) return nextBtnTex;

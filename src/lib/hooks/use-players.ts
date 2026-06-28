@@ -23,6 +23,9 @@ interface PlayerResponse {
   matches: PlayerMatchPerspective[];
 }
 
+/**
+ *
+ */
 async function fetchPlayers(): Promise<PlayersResponse> {
   const res = await fetch("/api/players");
   if (!res.ok) throw new Error(`Failed to fetch players: ${res.status}`);
@@ -30,6 +33,10 @@ async function fetchPlayers(): Promise<PlayersResponse> {
   return { players: data.players.map((p: unknown) => PlayerSummary.parse(p)) };
 }
 
+/**
+ *
+ * @param slug
+ */
 async function fetchPlayerBySlug(slug: string): Promise<PlayerResponse> {
   const res = await fetch(`/api/players/${encodeURIComponent(slug)}`);
   if (!res.ok) throw new Error(`Failed to fetch player: ${res.status}`);
@@ -37,6 +44,10 @@ async function fetchPlayerBySlug(slug: string): Promise<PlayerResponse> {
   return { ...data, matches: data.matches.map((m: unknown) => PlayerMatchPerspective.parse(m)) };
 }
 
+/**
+ *
+ * @param slug
+ */
 async function fetchPlayerMatches(slug: string): Promise<PlayerMatchPerspective[]> {
   const res = await fetch(`/api/players/${encodeURIComponent(slug)}/matches`);
   if (!res.ok) throw new Error(`Failed to fetch player matches: ${res.status}`);
@@ -58,7 +69,6 @@ export function usePlayers() {
 
 /**
  * Fetches a single player by their slug.
- *
  * @param slug - The player slug.
  */
 export function usePlayerBySlug(slug: string) {
@@ -71,7 +81,6 @@ export function usePlayerBySlug(slug: string) {
 
 /**
  * Fetches matches for a specific player by their slug.
- *
  * @param slug - The player slug.
  */
 export function usePlayerMatches(slug: string) {

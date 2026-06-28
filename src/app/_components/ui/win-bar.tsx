@@ -11,6 +11,10 @@ interface WinBarProps {
 
 /**
  * Win percentage progress bar.
+ * @param root0
+ * @param root0.wins
+ * @param root0.played
+ * @param root0.color
  */
 const WinBar = ({ wins, played, color }: WinBarProps) => {
   const pct = played > 0 ? (wins / played) * 100 : 0;

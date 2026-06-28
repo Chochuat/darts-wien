@@ -30,6 +30,9 @@ let hudResources: HudResources | null = null;
 const HUD_CW = 512;
 const HUD_CH = Math.round((HUD_CW / PANEL_W) * PANEL_H);
 
+/**
+ *
+ */
 function getHud(): HudResources | null {
   if (hudResources) return hudResources;
   if (typeof document === "undefined") return null;
@@ -64,6 +67,16 @@ interface HudTexts {
   missLabel: string;
 }
 
+/**
+ *
+ * @param res
+ * @param cw
+ * @param ch
+ * @param state
+ * @param buttonRect
+ * @param buttonRect.current
+ * @param texts
+ */
 function drawHud(
   res: HudResources,
   cw: number,
@@ -278,6 +291,14 @@ const DragHint = ({ opacity, text }: { opacity: number; text: string }) => {
   );
 }
 
+/**
+ *
+ * @param ctx
+ * @param cx
+ * @param cy
+ * @param w
+ * @param h
+ */
 function labelBack(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -292,6 +313,15 @@ function labelBack(
   ctx.restore();
 }
 
+/**
+ *
+ * @param ctx
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @param r
+ */
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,

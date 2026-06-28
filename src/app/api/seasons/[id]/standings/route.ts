@@ -5,8 +5,9 @@ import type { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/l
 
 /**
  * Handles GET requests for season standings.
- *
  * @param _req - The incoming request.
+ * @param root0
+ * @param root0.params
  */
 export async function GET(
   _req: NextRequest,

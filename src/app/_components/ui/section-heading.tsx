@@ -10,6 +10,9 @@ interface SectionHeadingProps {
 
 /**
  * Section heading with optional icon.
+ * @param root0
+ * @param root0.icon
+ * @param root0.label
  */
 const SectionHeading = ({ icon, label }: SectionHeadingProps) => {
   return (

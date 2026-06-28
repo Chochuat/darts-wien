@@ -11,6 +11,10 @@ interface PageHeaderProps {
 
 /**
  * Page header with title and optional back button.
+ * @param root0
+ * @param root0.icon
+ * @param root0.title
+ * @param root0.subtitle
  */
 const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
   return (

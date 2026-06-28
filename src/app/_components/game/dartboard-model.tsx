@@ -17,6 +17,10 @@ const PUB_FONT = '"Georgia", serif';
 
 let numberTextureCache: Map<number, THREE.CanvasTexture> | null = null;
 
+/**
+ *
+ * @param num
+ */
 function getNumberTexture(num: number): THREE.CanvasTexture {
   if (typeof document === "undefined") {
     return new THREE.CanvasTexture();
@@ -68,6 +72,14 @@ const Wedge = ({
   );
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.innerR
+ * @param root0.outerR
+ * @param root0.c1
+ * @param root0.c2
+ */
 function PieRing({
   innerR,
   outerR,

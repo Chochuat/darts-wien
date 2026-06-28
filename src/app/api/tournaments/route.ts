@@ -4,7 +4,6 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for tournament listings.
- *
  * @param req - The incoming request.
  */
 export async function GET(req: NextRequest) {
@@ -73,7 +72,6 @@ export async function GET(req: NextRequest) {
 
 /**
  * Handles POST requests to create a new tournament.
- *
  * @param req - The incoming request.
  */
 export async function POST(req: NextRequest) {

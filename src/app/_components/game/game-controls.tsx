@@ -20,6 +20,10 @@ const DARK_BACK = "#1a0c04";
 
 let arrowCache: Partial<Record<Direction, THREE.CanvasTexture>> | null = null;
 
+/**
+ *
+ * @param dir
+ */
 function getArrowTexture(dir: Direction): THREE.CanvasTexture {
   if (typeof document === "undefined") return new THREE.CanvasTexture();
   if (!arrowCache) arrowCache = {};
@@ -75,6 +79,9 @@ function getArrowTexture(dir: Direction): THREE.CanvasTexture {
   return tex;
 }
 
+/**
+ *
+ */
 function useIsTouch(): boolean {
   const [isTouch, setIsTouch] = useState(false);
   useEffect(() => {
@@ -88,6 +95,9 @@ function useIsTouch(): boolean {
   return isTouch;
 }
 
+/**
+ *
+ */
 function useOrbitBlock() {
   const controlsValue = useThree((s) => s.controls) as
     | { enabled: boolean }

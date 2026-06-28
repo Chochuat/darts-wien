@@ -8,6 +8,8 @@ interface FormIndicatorProps {
 
 /**
  * Shows form indicator (win/loss streak).
+ * @param root0
+ * @param root0.form
  */
 const FormIndicator = ({ form }: FormIndicatorProps) => {
   return (

@@ -10,9 +10,10 @@ import type { ApiFinalStandingEntry } from "@/lib/validation";
 
 /**
  * cell component.
- * 
  * @param label - The text or number to display in the cell.
  * @param opts - Optional formatting properties (color, bold).
+ * @param opts.color
+ * @param opts.bold
  * @returns A Typography component representing a table cell.
  */
 export function cell(label: string | number, opts?: { color?: string; bold?: boolean }) {
@@ -34,7 +35,6 @@ export function cell(label: string | number, opts?: { color?: string; bold?: boo
 
 /**
  * SetsDiff component.
- * 
  * @param props - Component properties.
  * @param props.setsFor - Sets won.
  * @param props.setsAgainst - Sets lost.
@@ -59,7 +59,6 @@ export const SetsDiff = ({ setsFor, setsAgainst }: { setsFor: number; setsAgains
 
 /**
  * PlayoffMatch component.
- * 
  * @param props - Component properties.
  * @param props.m1 - Match details for player 1.
  * @param props.m2 - Match details for player 2.
@@ -115,7 +114,6 @@ export const PlayoffMatch = ({
 
 /**
  * PlayoffRound component.
- * 
  * @param props - Component properties.
  * @param props.roundName - The internal name of the round (e.g., "Final", "3rd Place").
  * @param props.roundLabel - The display label for the round.
@@ -164,7 +162,6 @@ export const PlayoffRound = ({
 
 /**
  * FinalStandingsRow component.
- * 
  * @param props - Component properties.
  * @param props.s - The final standing entry data.
  * @param props.i - The index/position in the standings (0-based).
