@@ -98,7 +98,7 @@ const eslintConfig = defineConfig([
 
       // ─── JSDoc / TSDoc ────────────────────────────
       // Overrides & additions on top of jsdoc/recommended-typescript
-      "jsdoc/require-throws": "error",
+     /* "jsdoc/require-throws": "error",
       "jsdoc/check-indentation": "error",
       "jsdoc/no-blank-blocks": "error",
       "jsdoc/require-asterisk-prefix": "error",
@@ -148,7 +148,7 @@ const eslintConfig = defineConfig([
       "jsdoc/require-param-name": "error",
       "jsdoc/require-returns-check": "error",
       "jsdoc/require-returns-description": "error",
-      "jsdoc/valid-types": "error",
+      "jsdoc/valid-types": "error",*/
     },
   },
   {

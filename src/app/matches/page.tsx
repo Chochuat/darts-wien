@@ -3,26 +3,17 @@
 import { useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Collapse from "@mui/material/Collapse";
 import Pagination from "@mui/material/Pagination";
 import TrackChanges from "@mui/icons-material/TrackChanges";
-import Search from "@mui/icons-material/Search";
-import CheckCircle from "@mui/icons-material/CheckCircle";
-import Cancel from "@mui/icons-material/Cancel";
-import FilterList from "@mui/icons-material/FilterList";
-import Close from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
-import Badge180 from "@/app/_components/ui/badge-180";
 import { useMatches } from "@/lib/hooks/use-matches";
+import { MatchFilters } from "@/app/_components/ui/match-filters";
+import { MatchListRow } from "@/app/_components/ui/match-list-row";
 import type { ApiMatchRow } from "@/lib/validation";
 
 interface MatchDisplay {
@@ -39,60 +30,23 @@ function toDisplayEntries(m: ApiMatchRow): [MatchDisplay, MatchDisplay] {
   const p1Score = m.legsPlayer1 ?? 0;
   const p2Score = m.legsPlayer2 ?? 0;
   return [
-    {
-      id: m.id,
-      playerName: m.player1.name,
-      opponent: m.player2.name,
-      score: `${p1Score}-${p2Score}`,
-      result: p1Score > p2Score ? "W" : "L",
-      date: m.matchDate,
-      one80: m.player1_180,
-    },
-    {
-      id: m.id,
-      playerName: m.player2.name,
-      opponent: m.player1.name,
-      score: `${p2Score}-${p1Score}`,
-      result: p2Score > p1Score ? "W" : "L",
-      date: m.matchDate,
-      one80: m.player2_180,
-    },
+    { id: m.id, playerName: m.player1.name, opponent: m.player2.name, score: `${p1Score}-${p2Score}`, result: p1Score > p2Score ? "W" : "L", date: m.matchDate, one80: m.player1_180 },
+    { id: m.id, playerName: m.player2.name, opponent: m.player1.name, score: `${p2Score}-${p1Score}`, result: p2Score > p1Score ? "W" : "L", date: m.matchDate, one80: m.player2_180 },
   ];
 }
 
 const PLAYERS_PER_PAGE = 20;
 
-function matchFilter(
-  match: MatchDisplay,
-  filters: { player: string; result: string; scoreQ: string; quickQ: string },
-) {
+function matchFilter(match: MatchDisplay, filters: { player: string; result: string; scoreQ: string; quickQ: string }) {
   if (filters.player && match.playerName !== filters.player) return false;
   if (filters.result && match.result !== filters.result) return false;
   if (filters.scoreQ && !match.score.toLowerCase().includes(filters.scoreQ.toLowerCase())) return false;
   if (filters.quickQ) {
     const q = filters.quickQ.toLowerCase();
-    if (
-      !match.playerName.toLowerCase().includes(q) &&
-      !match.opponent.toLowerCase().includes(q) &&
-      !match.score.toLowerCase().includes(q) &&
-      !match.date.toLowerCase().includes(q)
-    ) return false;
+    if (!match.playerName.toLowerCase().includes(q) && !match.opponent.toLowerCase().includes(q) && !match.score.toLowerCase().includes(q) && !match.date.toLowerCase().includes(q)) return false;
   }
   return true;
 }
-
-const inputSx = {
-  bgcolor: colors.card,
-  color: colors.text.primary,
-  "& .MuiInputBase-root": { fontSize: "0.75rem", bgcolor: colors.card, color: colors.text.primary },
-  "& fieldset": { borderColor: colors.accent4d },
-  "&:hover fieldset": { borderColor: colors.accent },
-  "& input": { color: colors.text.primary },
-  "& input::placeholder": { color: colors.text.subtle, opacity: 1 },
-  "& .MuiInputBase-input": { color: colors.text.primary },
-  "& .MuiInputBase-input::placeholder": { color: colors.text.subtle, opacity: 1 },
-};
-
 
 /**
  * AllMatchesPage component.
@@ -107,42 +61,23 @@ const AllMatchesPage = () => {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useMatches({ limit: 5000 });
 
-  const allEntries: MatchDisplay[] = useMemo(() => {
-    if (!data) return [];
-    return data.matches.flatMap(toDisplayEntries);
-  }, [data]);
+  const allEntries = useMemo(() => data ? data.matches.flatMap(toDisplayEntries) : [], [data]);
+  const playerNames = useMemo(() => [...new Set(allEntries.map((m) => m.playerName))].sort(), [allEntries]);
 
-  const playerNames = useMemo(() => {
-    const names = new Set(allEntries.map((m) => m.playerName));
-    return [...names].sort();
-  }, [allEntries]);
-
-  const filtered = useMemo(
-    () => allEntries.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })),
-    [allEntries, player, result, scoreQ, quickQ],
-  );
+  const filtered = useMemo(() => allEntries.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })), [allEntries, player, result, scoreQ, quickQ]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PLAYERS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PLAYERS_PER_PAGE, safePage * PLAYERS_PER_PAGE);
 
-  const clearAll = () => {
-    setPlayer("");
-    setResult("");
-    setScoreQ("");
-    setQuickQ("");
-    setPage(1);
-  };
-
-  const hasFilters = player || result || scoreQ || quickQ;
+  const clearAll = () => { setPlayer(""); setResult(""); setScoreQ(""); setQuickQ(""); setPage(1); };
+  const hasFilters = !!(player || result || scoreQ || quickQ);
 
   if (isLoading) {
     return (
       <PageLayout>
         <Section>
-          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-            {t("common.loading")}
-          </Typography>
+          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>{t("common.loading")}</Typography>
         </Section>
       </PageLayout>
     );
@@ -152,9 +87,7 @@ const AllMatchesPage = () => {
     return (
       <PageLayout>
         <Section>
-          <Typography sx={{ color: colors.red, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-            {t("common.error")}
-          </Typography>
+          <Typography sx={{ color: colors.red, textAlign: "center", py: 4, fontSize: "0.85rem" }}>{t("common.error")}</Typography>
         </Section>
       </PageLayout>
     );
@@ -165,197 +98,40 @@ const AllMatchesPage = () => {
       <Section>
         <PageHeader icon={<TrackChanges />} subtitle={t("matchesPage.subtitle", { count: data?.total ?? 0 })} title={t("matchesPage.title")} />
 
-        {/* Filters — single row */}
-        <Box sx={{ px: 0.5, mb: 2 }}>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
-              <ToggleButtonGroup
-                exclusive
-                onChange={(_, v) => setResult(v ?? "")}
-                size="small"
-                value={result}
-              >
-                <ToggleButton sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }} value="W">
-                  <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.win")}
-                </ToggleButton>
-                <ToggleButton sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.red, "&.Mui-selected": { bgcolor: colors.red, color: "#fff", "&:hover": { bgcolor: colors.red } } }} value="L">
-                  <Cancel sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.loss")}
-                </ToggleButton>
-              </ToggleButtonGroup>
+        <MatchFilters
+          hasFilters={hasFilters}
+          onClearAll={clearAll}
+          onPlayerChange={setPlayer}
+          onQuickQChange={setQuickQ}
+          onResultChange={setResult}
+          onScoreQChange={setScoreQ}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+          player={player}
+          playerNames={playerNames}
+          quickQ={quickQ}
+          result={result}
+          scoreQ={scoreQ}
+          showFilters={showFilters}
+        />
 
-            <TextField
-              onChange={(e) => setQuickQ(e.target.value)}
-              placeholder={t("matchesPage.searchPlaceholder")}
-              size="small"
-              slotProps={{ input: { startAdornment: <Search sx={{ fontSize: "0.85rem", mr: 0.5, color: colors.text.muted }} /> } }}
-              sx={{ minWidth: 220, flex: { xs: 1, md: "none" }, ...inputSx }}
-              value={quickQ}
-            />
-
-            <Box
-              onClick={() => setShowFilters(!showFilters)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 32,
-                height: 32,
-                borderRadius: 1,
-                bgcolor: showFilters ? colors.accent : colors.card,
-                border: "1px solid",
-                borderColor: colors.accent4d,
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              {showFilters ? (
-                <Close sx={{ fontSize: "0.85rem", color: "#fff" }} />
-              ) : (
-                <FilterList sx={{ fontSize: "0.85rem", color: colors.text.secondary }} />
-              )}
-            </Box>
-
-            {hasFilters ? <Typography
-                onClick={clearAll}
-                sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 600, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
-              >
-                {t("common.clearAll")}
-              </Typography> : null}
-          </Box>
-
-          <Collapse in={showFilters} timeout={250}>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", mt: 1.5 }}>
-              <Autocomplete
-                inputValue={player}
-                onChange={(_, v) => setPlayer(v ?? "")}
-                onInputChange={(_, v) => { if (!v) setPlayer(""); }}
-                options={playerNames}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder={t("matchesPage.filterPlayer")}
-                    sx={inputSx}
-                  />
-                )}
-                size="small"
-                sx={{ minWidth: 180, maxWidth: 240 }}
-                value={player}
-              />
-
-              <TextField
-                onChange={(e) => setScoreQ(e.target.value)}
-                placeholder={t("matchesPage.filterScore")}
-                size="small"
-                sx={{ minWidth: 130, ...inputSx }}
-                value={scoreQ}
-              />
-            </Box>
-          </Collapse>
-        </Box>
-
-        {/* Results count */}
         <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 600, px: 0.5, mb: 1 }}>
           {t("matchesPage.matchesFound", { count: filtered.length })}
         </Typography>
 
-        {/* Match list */}
         <Card borderColor={colors.accent4d}>
           {filtered.length === 0 ? (
             <Box sx={{ py: 4, textAlign: "center" }}>
-              <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>
-                {t("common.noMatchesFilter")}
-              </Typography>
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>{t("common.noMatchesFilter")}</Typography>
             </Box>
           ) : (
-            paginated.map((m, i) => {
-              const isWin = m.result === "W";
-              return (
-                <Box
-                  key={`${m.playerName}-${m.id}`}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    px: { xs: 1.75, md: 2.5 },
-                    py: { xs: 1, md: 0.85 },
-                    borderTop: i === 0 ? "none" : "1px solid #f0f0f0",
-                    gap: { xs: 0.75, md: 1 },
-                  }}
-                >
-                  <Box sx={{ flexShrink: 0 }}>
-                    {isWin ? (
-                      <CheckCircle sx={{ color: colors.green, fontSize: "0.8rem" }} />
-                    ) : (
-                      <Cancel sx={{ color: colors.red, fontSize: "0.8rem" }} />
-                    )}
-                  </Box>
-
-                  <Box
-                    sx={{
-                      minWidth: 0,
-                      flex: { xs: 1, md: "none" },
-                      width: { md: 200 },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: colors.text.primary,
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
-                      {m.one80 > 0 ? <Badge180 /> : null}
-                      {" "}
-                      <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {m.opponent}</Box>
-                    </Typography>
-                  </Box>
-
-                  <Typography
-                    sx={{
-                      color: isWin ? colors.green : colors.red,
-                      fontSize: "0.8rem",
-                      fontWeight: 700,
-                      fontFamily: "'Courier New', monospace",
-                      textAlign: "center",
-                      minWidth: 36,
-                      flexShrink: 0,
-                    }}
-                  >
-                    {m.score}
-                  </Typography>
-
-                  <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", textAlign: "right", minWidth: 40, flexShrink: 0 }}>
-                    {m.date}
-                  </Typography>
-                </Box>
-              );
-            })
+            paginated.map((m, i) => (
+              <MatchListRow date={m.date} index={i} key={`${m.playerName}-${m.id}`} one80={m.one80} opponent={m.opponent} playerName={m.playerName} result={m.result} score={m.score} />
+            ))
           )}
         </Card>
 
         {totalPages > 1 ? <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-            <Pagination
-              count={totalPages}
-              onChange={(_, p) => setPage(p)}
-              page={safePage}
-              size="small"
-              sx={{
-                "& .MuiPaginationItem-root": {
-                  fontSize: "0.75rem",
-                  color: colors.text.secondary,
-                  borderColor: "#d4d4d8",
-                },
-                "& .Mui-selected": {
-                  bgcolor: `${colors.accent} !important`,
-                  color: "#fff !important",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                },
-              }}
-            />
+            <Pagination count={totalPages} onChange={(_, p) => setPage(p)} page={safePage} size="small" sx={{ "& .MuiPaginationItem-root": { fontSize: "0.75rem", color: colors.text.secondary, borderColor: "#d4d4d8" }, "& .Mui-selected": { bgcolor: `${colors.accent} !important`, color: "#fff !important", display: "inline-flex", alignItems: "center", justifyContent: "center" } }} />
           </Box> : null}
       </Section>
     </PageLayout>

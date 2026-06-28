@@ -186,7 +186,7 @@ children: ReactNode }) => {
 /**
  * Returns the game context value.
  *
- * @throws Error - If used outside of GameProvider.
+ * @throws {Error} if used outside of GameProvider.
  */
 export function useGame(): GameContextValue {
   const ctx = useContext(GameContext);
