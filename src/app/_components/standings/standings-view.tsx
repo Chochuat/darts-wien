@@ -21,6 +21,10 @@ import LiveIndicator from "@/app/_components/ui/live-indicator";
 import MatchRow from "@/app/_components/ui/match-row";
 import { useStandings } from "@/lib/hooks/use-standings";
 
+
+/**
+ * Standings table view with stats and form.
+ */
 const StandingsView = () => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();

@@ -117,6 +117,10 @@ const MatchHistoryRow = ({ match }: { match: PlayerMatchPerspective }) => {
   );
 }
 
+
+/**
+ * Player match history page.
+ */
 const PlayerMatchesPage = () => {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;

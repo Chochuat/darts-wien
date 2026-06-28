@@ -3,22 +3,35 @@ import { NextResponse } from "next/server";
 import { getSupabase, errorResponse, validationError } from "@/lib/api-utils";
 import { MatchResultUpdate } from "@/lib/validation";
 
+/**
+ * Handles PATCH requests to update a match result.
+ *
+ * @param req - The incoming request.
+ */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const matchId = Number(id);
   if (Number.isNaN(matchId)) {
     return NextResponse.json({ error: "Invalid match ID" }, { status: 400 });
   }
 
+  
   const body = await req.json();
+  
   const parsed = MatchResultUpdate.safeParse(body);
   if (!parsed.success) return validationError(parsed.error.issues);
 
+  
   const supabase = await getSupabase();
 
+  
   const { data: match, error: findError } = await supabase
     .from("matches")
     .select("id, tournament_id, season_id, match_type, status")
@@ -36,6 +49,7 @@ export async function PATCH(
     );
   }
 
+  
   const { data, error } = await supabase
     .from("matches")
     .update({

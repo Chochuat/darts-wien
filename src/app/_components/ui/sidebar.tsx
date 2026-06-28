@@ -22,8 +22,16 @@ import type { SupportedLanguage } from "@/app/_i18n/i18n";
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
-export const SIDEBAR_WIDTH = 100;
+export 
+/**
+ * SIDEBAR_WIDTH component.
+ */
+const SIDEBAR_WIDTH = 100;
 
+
+/**
+ * Sidebar navigation.
+ */
 const Sidebar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();

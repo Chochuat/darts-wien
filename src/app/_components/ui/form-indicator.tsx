@@ -5,6 +5,10 @@ interface FormIndicatorProps {
   form: ("W" | "L")[];
 }
 
+
+/**
+ * Shows form indicator (win/loss streak).
+ */
 const FormIndicator = ({ form }: FormIndicatorProps) => {
   return (
     <Box sx={{ display: "flex", gap: 0.3, alignItems: "center" }}>

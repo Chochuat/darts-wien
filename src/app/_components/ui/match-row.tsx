@@ -9,6 +9,10 @@ import { colors } from "@/lib/design-tokens";
 import Badge180 from "@/app/_components/ui/badge-180";
 import type { StandingRecentMatch } from "@/lib/validation";
 
+
+/**
+ * Single match row display.
+ */
 const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
   const isWin = match.result === "W";
   const { t } = useTranslation();

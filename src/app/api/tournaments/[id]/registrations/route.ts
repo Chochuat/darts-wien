@@ -2,18 +2,29 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
 
+/**
+ * Handles GET requests for tournament registrations.
+ *
+ * @param _req - The incoming request.
+ */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
+  
   const supabase = await getSupabase();
 
+  
   const { data: registrations, error } = await supabase
     .from("tournament_registrations")
     .select("player_id, checked_in, created_at")
@@ -21,16 +32,20 @@ export async function GET(
 
   if (error) return errorResponse(error);
 
+  
   const playerIds = registrations.map((r) => r.player_id);
+  
   const { data: players } = await supabase
     .from("players")
     .select("id, name, slug")
     .in("id", playerIds);
 
+  
   const playerMap = new Map(
     (players ?? []).map((p) => [p.id, p]),
   );
 
+  
   const entries = registrations.map((r) => ({
     player: playerMap.get(r.player_id) ?? { id: r.player_id, name: "Unknown", slug: "unknown" },
     checkedIn: r.checked_in,
@@ -40,25 +55,38 @@ export async function GET(
   return NextResponse.json({ registrations: entries });
 }
 
+/**
+ * Handles POST requests to register a player for a tournament.
+ *
+ * @param req - The incoming request.
+ */
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
+  
   const body = await req.json();
+  
   const { playerId } = body;
 
   if (!playerId) {
     return NextResponse.json({ error: "playerId is required" }, { status: 400 });
   }
 
+  
   const supabase = await getSupabase();
 
+  
   const { data, error } = await supabase
     .from("tournament_registrations")
     .insert({ tournament_id: tournamentId, player_id: playerId })

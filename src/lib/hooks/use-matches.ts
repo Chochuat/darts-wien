@@ -40,6 +40,11 @@ async function fetchMatchDetail(id: number) {
   return ApiMatchRow.parse(data);
 }
 
+/**
+ * Fetches match data by query parameters.
+ *
+ * @param params - Query parameters for filtering matches.
+ */
 export function useMatches(params: MatchListParams = {}) {
   return useQuery({
     queryKey: queryKeys.match.list(params as Record<string, string | number | undefined>),
@@ -48,6 +53,11 @@ export function useMatches(params: MatchListParams = {}) {
   });
 }
 
+/**
+ * Fetches a single match by its ID.
+ *
+ * @param id - The match ID.
+ */
 export function useMatchDetail(id: number) {
   return useQuery({
     queryKey: queryKeys.match.detail(id),

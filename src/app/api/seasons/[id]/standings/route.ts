@@ -3,18 +3,29 @@ import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
 import type { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/lib/validation";
 
+/**
+ * Handles GET requests for season standings.
+ *
+ * @param _req - The incoming request.
+ */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const seasonId = Number(id);
   if (Number.isNaN(seasonId)) {
     return NextResponse.json({ error: "Invalid season ID" }, { status: 400 });
   }
 
+  
   const supabase = await getSupabase();
 
+  
   const { data: season, error: seasonError } = await supabase
     .from("seasons")
     .select("id, name, is_active")
@@ -25,6 +36,7 @@ export async function GET(
     return NextResponse.json({ error: "Season not found" }, { status: 404 });
   }
 
+  
   const { data: matches, error: matchError } = await supabase
     .from("matches")
     .select(
@@ -37,29 +49,41 @@ export async function GET(
 
   if (matchError) return errorResponse(matchError);
 
+  
   const { data: players, error: playerError } = await supabase
     .from("players")
     .select("id, name, slug");
 
   if (playerError) return errorResponse(playerError);
 
+  
   const playerMap = new Map(players.map((p) => [p.id, p]));
 
+  
   const statsMap = new Map<
     number,
     {
+      
       played: number;
+      
       wins: number;
+      
       losses: number;
+      
       setsFor: number;
+      
       setsAgainst: number;
+      
       one80s: number;
+      
       recentResults: ("W" | "L")[];
+      
       recentMatches: StandingRecentMatch[];
     }
   >();
 
-  for (const p of players) {
+  for (
+  const p of players) {
     statsMap.set(p.id, {
       played: 0,
       wins: 0,
@@ -72,10 +96,15 @@ export async function GET(
     });
   }
 
-  for (const m of matches) {
+  for (
+  const m of matches) {
+    
     const p1Stats = statsMap.get(m.player1_id)!;
+    
     const p2Stats = statsMap.get(m.player2_id)!;
+    
     const p2 = playerMap.get(m.player2_id);
+    
     const p1 = playerMap.get(m.player1_id);
 
     p1Stats.played++;
@@ -98,6 +127,7 @@ export async function GET(
     }
 
     if (p2 && p1Stats.recentMatches.length < 5) {
+      
       const won = m.legs_player1 > m.legs_player2;
       p1Stats.recentResults.push(won ? "W" : "L");
       p1Stats.recentMatches.push({
@@ -110,6 +140,7 @@ export async function GET(
     }
 
     if (p1 && p2Stats.recentMatches.length < 5) {
+      
       const won = m.legs_player2 > m.legs_player1;
       p2Stats.recentResults.push(won ? "W" : "L");
       p2Stats.recentMatches.push({
@@ -122,6 +153,7 @@ export async function GET(
     }
   }
 
+  
   const sortedPlayers = [...statsMap.entries()]
     .map(([playerId, stats]) => ({
       playerId,
@@ -136,17 +168,23 @@ export async function GET(
       recentMatches: stats.recentMatches,
     }))
     .sort((a, b) => {
+      
       const ptDiff = b.points - a.points;
       if (ptDiff !== 0) return ptDiff;
+      
       const setsDiffA = a.setsFor - a.setsAgainst;
+      
       const setsDiffB = b.setsFor - b.setsAgainst;
+      
       const sdDiff = setsDiffB - setsDiffA;
       if (sdDiff !== 0) return sdDiff;
       return b.wins - a.wins;
     });
 
+  
   const standingPlayers: StandingPlayer[] = sortedPlayers.map(
     (entry, index) => {
+      
       const player = playerMap.get(entry.playerId)!;
       return {
         pos: index + 1,
@@ -166,6 +204,7 @@ export async function GET(
     },
   );
 
+  
   const response: StandingsResponse = {
     season: {
       id: season.id,

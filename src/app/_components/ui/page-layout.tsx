@@ -3,6 +3,10 @@ import { colors } from "@/lib/design-tokens";
 import AppBar from "@/app/_components/ui/app-bar";
 import Sidebar from "@/app/_components/ui/sidebar";
 
+
+/**
+ * Page layout wrapper with max width and padding.
+ */
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>

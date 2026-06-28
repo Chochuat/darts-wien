@@ -2,17 +2,28 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
 
+/**
+ * Handles POST requests to generate tournament groups and matches.
+ *
+ * @param req - The incoming request.
+ */
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
+  
   const body = await req.json();
+  
   const { generationType } = body;
 
   if (!generationType) {
@@ -22,8 +33,10 @@ export async function POST(
     );
   }
 
+  
   const supabase = await getSupabase();
 
+  
   const { error } = await supabase
     .from("tournaments")
     .update({

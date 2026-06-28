@@ -137,6 +137,10 @@ function getNextBtnTexture(label: string): THREE.CanvasTexture {
   return tex;
 }
 
+
+/**
+ * Game result display overlay.
+ */
 const GameResult = () => {
   const { state, dismissResult } = useGame();
   const { t } = useTranslation();

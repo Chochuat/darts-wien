@@ -1,3 +1,5 @@
+
+/** JSON value type used by Supabase. */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {
@@ -43,4 +45,5 @@ export interface PostgisPolygon {
   coordinates: number[][][];
 }
 
+/** PostGIS geometry union type. */
 export type PostgisGeometry = PostgisPoint | PostgisPolygon;

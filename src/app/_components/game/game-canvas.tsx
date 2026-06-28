@@ -86,6 +86,10 @@ const SceneContents = () => {
   );
 }
 
+
+/**
+ * Three.js canvas with game scene setup.
+ */
 const GameCanvas = () => {
   return (
     <Canvas

@@ -24,6 +24,10 @@ const organizers = [
   { name: "Dodo Kepke", roleKey: "organizer", bioKey: "organizerBio3" },
 ];
 
+
+/**
+ * About page.
+ */
 const AboutPage = () => {
   const { t } = useTranslation();
 

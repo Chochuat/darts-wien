@@ -11,6 +11,10 @@ import PageLayout from "@/app/_components/ui/page-layout";
 import { useTournaments, useTournamentDetail } from "@/lib/hooks/use-tournaments";
 import TournamentDetail from "@/app/_components/tournaments/tournament-detail";
 
+
+/**
+ * TournamentPage component.
+ */
 const TournamentPage = () => {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;

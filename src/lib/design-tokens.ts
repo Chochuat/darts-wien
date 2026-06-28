@@ -1,4 +1,8 @@
-export const colors = {
+export 
+/**
+ * colors component.
+ */
+const colors = {
   background: "#000",
   surface: "#e8e8e8",
   card: "#f7f7f7",
@@ -22,7 +26,11 @@ export const colors = {
   },
 } as const;
 
-export const borderRadius = {
+export 
+/**
+ * borderRadius component.
+ */
+const borderRadius = {
   sm: 4,
   md: 6,
   lg: 8,
@@ -30,7 +38,11 @@ export const borderRadius = {
   xxl: 20,
 } as const;
 
-export const spacing = {
+export 
+/**
+ * spacing component.
+ */
+const spacing = {
   xs: 4,
   sm: 8,
   md: 12,
@@ -39,6 +51,11 @@ export const spacing = {
   xxl: 32,
 } as const;
 
+/**
+ * Returns a border color for a given rank position.
+ *
+ * @param pos - The rank position (1-based).
+ */
 export const borderForRank = (pos: number): string => {
   if (pos === 1) return colors.gold;
   if (pos === 2) return colors.silver;
@@ -46,12 +63,22 @@ export const borderForRank = (pos: number): string => {
   return colors.accent4d;
 };
 
+/**
+ * Returns a background color for a rank badge.
+ *
+ * @param pos - The rank position (1-based).
+ */
 export const rankBadgeBg = (pos: number): string => {
   if (pos === 1) return colors.accent;
   if (pos <= 3) return colors.accent15;
   return "#f4f4f5";
 };
 
+/**
+ * Returns a text color for a rank badge.
+ *
+ * @param pos - The rank position (1-based).
+ */
 export const rankBadgeColor = (pos: number): string => {
   if (pos === 1) return "#fff";
   if (pos <= 3) return colors.accent;

@@ -1,4 +1,8 @@
-export const queryKeys = {
+export 
+/**
+ * queryKeys component.
+ */
+const queryKeys = {
   season: {
     all: ["seasons"] as const,
     standings: (seasonId: number) => ["seasons", seasonId, "standings"] as const,

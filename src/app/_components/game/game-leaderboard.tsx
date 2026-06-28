@@ -114,6 +114,10 @@ function drawLb(
   texture.needsUpdate = true;
 }
 
+
+/**
+ * Live leaderboard during gameplay.
+ */
 const GameLeaderboard = () => {
   const { state } = useGame();
   const { t } = useTranslation();

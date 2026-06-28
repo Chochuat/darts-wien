@@ -14,6 +14,10 @@ import type { SupportedLanguage } from "@/app/_i18n/i18n";
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
+
+/**
+ * Application navigation bar.
+ */
 const AppBar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();

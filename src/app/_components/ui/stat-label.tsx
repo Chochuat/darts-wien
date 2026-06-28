@@ -8,6 +8,10 @@ interface StatLabelProps {
   labelColor?: string;
 }
 
+
+/**
+ * Statistic label with value.
+ */
 const StatLabel = ({ label, value, labelColor }: StatLabelProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.3 }}>

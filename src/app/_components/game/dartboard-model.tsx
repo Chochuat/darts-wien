@@ -126,6 +126,10 @@ const NumberLabel = ({ index }: { index: number }) => {
   );
 }
 
+
+/**
+ * 3D dartboard model for the game scene.
+ */
 const DartboardModel = () => {
   const numbers = [];
   for (let i = 0; i < 20; i++) {

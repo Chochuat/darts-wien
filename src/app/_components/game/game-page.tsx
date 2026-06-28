@@ -10,6 +10,10 @@ import styles from "./game-page.module.css";
 
 const GameCanvas = dynamic(() => import("./game-canvas"), { ssr: false });
 
+
+/**
+ * Main game page layout and orchestration.
+ */
 const GamePage = () => {
   return (
     <GameProvider>

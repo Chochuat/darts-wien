@@ -39,6 +39,11 @@ async function fetchRegistrations(tournamentId: number) {
   };
 }
 
+/**
+ * Fetches tournaments, optionally filtered by season.
+ *
+ * @param seasonId - The season ID to filter by.
+ */
 export function useTournaments(seasonId?: number) {
   return useQuery({
     queryKey: queryKeys.tournament.list(seasonId),
@@ -47,6 +52,11 @@ export function useTournaments(seasonId?: number) {
   });
 }
 
+/**
+ * Fetches a single tournament by its ID.
+ *
+ * @param id - The tournament ID.
+ */
 export function useTournamentDetail(id: number) {
   return useQuery({
     queryKey: queryKeys.tournament.detail(id),
@@ -55,6 +65,11 @@ export function useTournamentDetail(id: number) {
   });
 }
 
+/**
+ * Fetches registrations for a specific tournament.
+ *
+ * @param tournamentId - The tournament ID.
+ */
 export function useTournamentRegistrations(tournamentId: number) {
   return useQuery({
     queryKey: queryKeys.tournament.registrations(tournamentId),

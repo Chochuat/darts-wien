@@ -2,16 +2,56 @@ import { z } from "zod";
 
 // ─── Primitives ──────────────────────────────────────────────
 
-export const positiveInt = z.number().int().min(0);
-export const positiveSmallInt = z.number().int().min(0).max(32767);
-export const playerId = z.number().int().positive();
-export const seasonId = z.number().int().positive();
-export const tournamentId = z.number().int().positive();
-export const groupId = z.number().int().positive();
-export const matchId = z.number().int().positive();
-export const nonEmptyName = z.string().min(1).max(255);
-export const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date YYYY-MM-DD");
-export const timestamptz = z.string().datetime({ offset: true });
+export 
+/**
+ * positiveInt component.
+ */
+const positiveInt = z.number().int().min(0);
+export 
+/**
+ * positiveSmallInt component.
+ */
+const positiveSmallInt = z.number().int().min(0).max(32767);
+export 
+/**
+ * playerId component.
+ */
+const playerId = z.number().int().positive();
+export 
+/**
+ * seasonId component.
+ */
+const seasonId = z.number().int().positive();
+export 
+/**
+ * tournamentId.
+ */
+const tournamentId = z.number().int().positive();
+export 
+/**
+ * groupId component.
+ */
+const groupId = z.number().int().positive();
+export 
+/**
+ * matchId component.
+ */
+const matchId = z.number().int().positive();
+export 
+/**
+ * nonEmptyName component.
+ */
+const nonEmptyName = z.string().min(1).max(255);
+export 
+/**
+ * dateString component.
+ */
+const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date YYYY-MM-DD");
+export 
+/**
+ * timestamptz component.
+ */
+const timestamptz = z.string().datetime({ offset: true });
 
 // ─── Seasons ──────────────────────────────────────────────────
 
@@ -22,16 +62,32 @@ const seasonColumns = {
   is_active: z.boolean().default(false),
 };
 
-export const SeasonRow = z.object({
+export 
+/**
+ * SeasonRow component.
+ */
+const SeasonRow = z.object({
   id: z.number().int().positive(),
   ...seasonColumns,
   created_at: timestamptz,
 });
+
+/**
+ * SeasonRow component.
+ */
 export type SeasonRow = z.infer<typeof SeasonRow>;
 
-export const SeasonInsert = z.object({
+export 
+/**
+ * SeasonInsert component.
+ */
+const SeasonInsert = z.object({
   ...seasonColumns,
 });
+
+/**
+ * SeasonInsert component.
+ */
 export type SeasonInsert = z.infer<typeof SeasonInsert>;
 
 // ─── Players ──────────────────────────────────────────────────
@@ -40,24 +96,48 @@ const playerColumns = {
   name: nonEmptyName,
 };
 
-export const PlayerRow = z.object({
+export 
+/**
+ * PlayerRow component.
+ */
+const PlayerRow = z.object({
   id: playerId,
   ...playerColumns,
   slug: z.string().min(1),
   created_at: timestamptz,
 });
+
+/**
+ * PlayerRow component.
+ */
 export type PlayerRow = z.infer<typeof PlayerRow>;
 
-export const PlayerInsert = z.object({
+export 
+/**
+ * PlayerInsert component.
+ */
+const PlayerInsert = z.object({
   ...playerColumns,
 });
+
+/**
+ * PlayerInsert component.
+ */
 export type PlayerInsert = z.infer<typeof PlayerInsert>;
 
-export const PlayerSummary = z.object({
+export 
+/**
+ * PlayerSummary component.
+ */
+const PlayerSummary = z.object({
   id: playerId,
   name: nonEmptyName,
   slug: z.string().min(1),
 });
+
+/**
+ * PlayerSummary component.
+ */
 export type PlayerSummary = z.infer<typeof PlayerSummary>;
 
 // ─── Season Players ───────────────────────────────────────────
@@ -67,22 +147,50 @@ const seasonPlayerColumns = {
   player_id: playerId,
 };
 
-export const SeasonPlayerRow = z.object({
+export 
+/**
+ * SeasonPlayerRow component.
+ */
+const SeasonPlayerRow = z.object({
   id: z.number().int().positive(),
   ...seasonPlayerColumns,
 });
+
+/**
+ * SeasonPlayerRow component.
+ */
 export type SeasonPlayerRow = z.infer<typeof SeasonPlayerRow>;
 
-export const SeasonPlayerInsert = z.object({
+export 
+/**
+ * SeasonPlayerInsert component.
+ */
+const SeasonPlayerInsert = z.object({
   ...seasonPlayerColumns,
 });
+
+/**
+ * SeasonPlayerInsert component.
+ */
 export type SeasonPlayerInsert = z.infer<typeof SeasonPlayerInsert>;
 
 // ─── Tournament lifecycle ─────────────────────────────────────
 
-export const tournamentStatus = z.enum(["registration", "ready", "in_progress", "completed"]);
-export const tournamentType = z.enum(["regular", "grand_final"]);
-export const generationType = z.string().min(1);
+export 
+/**
+ * tournamentStatus.
+ */
+const tournamentStatus = z.enum(["registration", "ready", "in_progress", "completed"]);
+export 
+/**
+ * tournamentType.
+ */
+const tournamentType = z.enum(["regular", "grand_final"]);
+export 
+/**
+ * generationType component.
+ */
+const generationType = z.string().min(1);
 
 // ─── Tournaments ──────────────────────────────────────────────
 
@@ -97,11 +205,19 @@ const tournamentColumns = {
   winner_player_id: playerId.nullable().default(null),
 };
 
-export const TournamentRow = z.object({
+export 
+/**
+ * TournamentRow component.
+ */
+const TournamentRow = z.object({
   id: tournamentId,
   ...tournamentColumns,
   created_at: timestamptz,
 });
+
+/**
+ * TournamentRow component.
+ */
 export type TournamentRow = z.infer<typeof TournamentRow>;
 
 const tournamentInsertBase = z.object({
@@ -112,13 +228,29 @@ const tournamentInsertBase = z.object({
   num_groups: z.number().int().min(2).max(4).nullable().default(null),
 });
 
-export const TournamentInsert = tournamentInsertBase.refine(
+export 
+/**
+ * TournamentInsert component.
+ */
+const TournamentInsert = tournamentInsertBase.refine(
   (t) => t.type === "grand_final" ? t.num_groups === null : true,
   { message: "num_groups must be null for grand_final" },
 );
+
+/**
+ * TournamentInsert component.
+ */
 export type TournamentInsert = z.infer<typeof TournamentInsert>;
 
-export const TournamentUpdate = tournamentInsertBase.partial();
+export 
+/**
+ * TournamentUpdate component.
+ */
+const TournamentUpdate = tournamentInsertBase.partial();
+
+/**
+ * TournamentUpdate component.
+ */
 export type TournamentUpdate = z.infer<typeof TournamentUpdate>;
 
 // ─── Tournament Registrations ─────────────────────────────────
@@ -129,42 +261,86 @@ const registrationColumns = {
   checked_in: z.boolean().default(false),
 };
 
-export const TournamentRegistrationRow = z.object({
+export 
+/**
+ * TournamentRegistrationRow component.
+ */
+const TournamentRegistrationRow = z.object({
   id: z.number().int().positive(),
   ...registrationColumns,
   created_at: timestamptz,
 });
+
+/**
+ * TournamentRegistrationRow component.
+ */
 export type TournamentRegistrationRow = z.infer<typeof TournamentRegistrationRow>;
 
-export const TournamentRegistrationInsert = z.object({
+export 
+/**
+ * TournamentRegistrationInsert component.
+ */
+const TournamentRegistrationInsert = z.object({
   tournament_id: tournamentId,
   player_id: playerId,
 });
+
+/**
+ * TournamentRegistrationInsert component.
+ */
 export type TournamentRegistrationInsert = z.infer<typeof TournamentRegistrationInsert>;
 
-export const TournamentRegistrationUpdate = z.object({
+export 
+/**
+ * TournamentRegistrationUpdate component.
+ */
+const TournamentRegistrationUpdate = z.object({
   checked_in: z.boolean(),
 });
+
+/**
+ * TournamentRegistrationUpdate component.
+ */
 export type TournamentRegistrationUpdate = z.infer<typeof TournamentRegistrationUpdate>;
 
 // ─── Tournament Groups ────────────────────────────────────────
 
-export const groupLabel = z.enum(["A", "B", "C", "D"]);
+export 
+/**
+ * groupLabel component.
+ */
+const groupLabel = z.enum(["A", "B", "C", "D"]);
 
 const tournamentGroupColumns = {
   tournament_id: tournamentId,
   label: groupLabel,
 };
 
-export const TournamentGroupRow = z.object({
+export 
+/**
+ * TournamentGroupRow component.
+ */
+const TournamentGroupRow = z.object({
   id: groupId,
   ...tournamentGroupColumns,
 });
+
+/**
+ * TournamentGroupRow component.
+ */
 export type TournamentGroupRow = z.infer<typeof TournamentGroupRow>;
 
-export const TournamentGroupInsert = z.object({
+export 
+/**
+ * TournamentGroupInsert component.
+ */
+const TournamentGroupInsert = z.object({
   ...tournamentGroupColumns,
 });
+
+/**
+ * TournamentGroupInsert component.
+ */
 export type TournamentGroupInsert = z.infer<typeof TournamentGroupInsert>;
 
 // ─── Tournament Group Players ─────────────────────────────────
@@ -174,22 +350,50 @@ const tournamentGroupPlayerColumns = {
   player_id: playerId,
 };
 
-export const TournamentGroupPlayerRow = z.object({
+export 
+/**
+ * TournamentGroupPlayerRow component.
+ */
+const TournamentGroupPlayerRow = z.object({
   id: z.number().int().positive(),
   ...tournamentGroupPlayerColumns,
 });
+
+/**
+ * TournamentGroupPlayerRow component.
+ */
 export type TournamentGroupPlayerRow = z.infer<typeof TournamentGroupPlayerRow>;
 
-export const TournamentGroupPlayerInsert = z.object({
+export 
+/**
+ * TournamentGroupPlayerInsert component.
+ */
+const TournamentGroupPlayerInsert = z.object({
   ...tournamentGroupPlayerColumns,
 });
+
+/**
+ * TournamentGroupPlayerInsert component.
+ */
 export type TournamentGroupPlayerInsert = z.infer<typeof TournamentGroupPlayerInsert>;
 
 // ─── Match lifecycle ──────────────────────────────────────────
 
-export const matchStatus = z.enum(["pending", "completed", "no_show"]);
-export const matchType = z.enum(["league", "tournament_group", "tournament_playoff"]);
-export const roundName = z.enum(["Quarter-Finals", "Semi-Finals", "3rd Place", "Final"]);
+export 
+/**
+ * matchStatus component.
+ */
+const matchStatus = z.enum(["pending", "completed", "no_show"]);
+export 
+/**
+ * matchType component.
+ */
+const matchType = z.enum(["league", "tournament_group", "tournament_playoff"]);
+export 
+/**
+ * roundName component.
+ */
+const roundName = z.enum(["Quarter-Finals", "Semi-Finals", "3rd Place", "Final"]);
 
 // ─── Matches (unified, one row per match) ─────────────────────
 
@@ -213,7 +417,11 @@ const matchColumns = {
   match_date: dateString,
 };
 
-export const MatchRow = z.object({
+export 
+/**
+ * Single match row display.
+ */
+const MatchRow = z.object({
   id: matchId,
   ...matchColumns,
   created_at: timestamptz,
@@ -248,9 +456,17 @@ export const MatchRow = z.object({
   },
   { message: "legs/no_show_player_id combination does not match status" },
 );
+
+/**
+ * Single match row display.
+ */
 export type MatchRow = z.infer<typeof MatchRow>;
 
-export const MatchInsert = z.object({
+export 
+/**
+ * MatchInsert component.
+ */
+const MatchInsert = z.object({
   ...matchColumns,
 }).refine(
   (m) => m.player1_id !== m.player2_id,
@@ -283,11 +499,19 @@ export const MatchInsert = z.object({
   },
   { message: "legs/no_show_player_id combination does not match status" },
 );
+
+/**
+ * MatchInsert component.
+ */
 export type MatchInsert = z.infer<typeof MatchInsert>;
 
 // ─── Match result update (API: PATCH /api/matches/[id]) ───────
 
-export const MatchResultUpdate = z.object({
+export 
+/**
+ * MatchResultUpdate component.
+ */
+const MatchResultUpdate = z.object({
   legs_player1: positiveSmallInt,
   legs_player2: positiveSmallInt,
   player1_180: positiveSmallInt.optional().default(0),
@@ -299,13 +523,25 @@ export const MatchResultUpdate = z.object({
   (m) => m.legs_player1 > 0 || m.legs_player2 > 0,
   { message: "at least one player must have won a leg" },
 );
+
+/**
+ * MatchResultUpdate component.
+ */
 export type MatchResultUpdate = z.infer<typeof MatchResultUpdate>;
 
 // ─── Match no-show (API: PATCH /api/matches/[id]/no-show) ────
 
-export const MatchNoShowUpdate = z.object({
+export 
+/**
+ * MatchNoShowUpdate component.
+ */
+const MatchNoShowUpdate = z.object({
   no_show_player_id: playerId,
 });
+
+/**
+ * MatchNoShowUpdate component.
+ */
 export type MatchNoShowUpdate = z.infer<typeof MatchNoShowUpdate>;
 
 // ─── Tournament Final Standings ───────────────────────────────
@@ -326,55 +562,115 @@ const finalStandingColumns = {
   total_points: positiveSmallInt.default(0),
 };
 
-export const TournamentFinalStandingRow = z.object({
+export 
+/**
+ * TournamentFinalStandingRow component.
+ */
+const TournamentFinalStandingRow = z.object({
   id: z.number().int().positive(),
   ...finalStandingColumns,
 });
+
+/**
+ * TournamentFinalStandingRow component.
+ */
 export type TournamentFinalStandingRow = z.infer<typeof TournamentFinalStandingRow>;
 
-export const TournamentFinalStandingInsert = z.object({
+export 
+/**
+ * TournamentFinalStandingInsert component.
+ */
+const TournamentFinalStandingInsert = z.object({
   ...finalStandingColumns,
 });
+
+/**
+ * TournamentFinalStandingInsert component.
+ */
 export type TournamentFinalStandingInsert = z.infer<typeof TournamentFinalStandingInsert>;
 
 // ─── Game Throw (existing) ───────────────────────────────────
 
-export const GameThrowRow = z.object({
+export 
+/**
+ * GameThrowRow component.
+ */
+const GameThrowRow = z.object({
   id: z.number().int().positive(),
   name: nonEmptyName,
   throw: z.number().int().min(0),
   created_at: timestamptz,
 });
+
+/**
+ * GameThrowRow component.
+ */
 export type GameThrowRow = z.infer<typeof GameThrowRow>;
 
-export const GameThrowInsert = z.object({
+export 
+/**
+ * GameThrowInsert component.
+ */
+const GameThrowInsert = z.object({
   name: nonEmptyName,
   throw: z.number().int().min(0),
 });
+
+/**
+ * GameThrowInsert component.
+ */
 export type GameThrowInsert = z.infer<typeof GameThrowInsert>;
 
 // ─── API: Tournament generate ─────────────────────────────────
 
-export const TournamentGenerateBody = z.object({
+export 
+/**
+ * TournamentGenerateBody component.
+ */
+const TournamentGenerateBody = z.object({
   generation_type: generationType,
 });
+
+/**
+ * TournamentGenerateBody component.
+ */
 export type TournamentGenerateBody = z.infer<typeof TournamentGenerateBody>;
 
 // ─── API: Registration request bodies ─────────────────────────
 
-export const RegistrationAddBody = z.object({
+export 
+/**
+ * RegistrationAddBody component.
+ */
+const RegistrationAddBody = z.object({
   player_id: playerId,
 });
+
+/**
+ * RegistrationAddBody component.
+ */
 export type RegistrationAddBody = z.infer<typeof RegistrationAddBody>;
 
-export const RegistrationCheckinBody = z.object({
+export 
+/**
+ * RegistrationCheckinBody component.
+ */
+const RegistrationCheckinBody = z.object({
   checked_in: z.boolean(),
 });
+
+/**
+ * RegistrationCheckinBody component.
+ */
 export type RegistrationCheckinBody = z.infer<typeof RegistrationCheckinBody>;
 
 // ─── API: Match list query params (coerced) ───────────────────
 
-export const MatchListQuery = z.object({
+export 
+/**
+ * MatchListQuery component.
+ */
+const MatchListQuery = z.object({
   season_id: z.coerce.number().int().positive().optional(),
   player_id: z.coerce.number().int().positive().optional(),
   match_type: matchType.optional(),
@@ -383,29 +679,53 @@ export const MatchListQuery = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
+
+/**
+ * MatchListQuery component.
+ */
 export type MatchListQuery = z.infer<typeof MatchListQuery>;
 
 // ─── API: Tournament list query params ────────────────────────
 
-export const TournamentListQuery = z.object({
+export 
+/**
+ * TournamentListQuery component.
+ */
+const TournamentListQuery = z.object({
   season_id: z.coerce.number().int().positive().optional(),
 });
+
+/**
+ * TournamentListQuery component.
+ */
 export type TournamentListQuery = z.infer<typeof TournamentListQuery>;
 
 // ─── Recent match for standings expanded view ─────────────────
 
-export const StandingRecentMatch = z.object({
+export 
+/**
+ * StandingRecentMatch component.
+ */
+const StandingRecentMatch = z.object({
   opponent: nonEmptyName,
   score: z.string().min(1),
   result: z.enum(["W", "L"]),
   date: dateString,
   one80: positiveSmallInt.default(0),
 });
+
+/**
+ * StandingRecentMatch component.
+ */
 export type StandingRecentMatch = z.infer<typeof StandingRecentMatch>;
 
 // ─── API: Season standings response ───────────────────────────
 
-export const StandingPlayer = z.object({
+export 
+/**
+ * StandingPlayer component.
+ */
+const StandingPlayer = z.object({
   pos: z.number().int().min(1),
   playerId: playerId,
   name: nonEmptyName,
@@ -420,9 +740,17 @@ export const StandingPlayer = z.object({
   form: z.array(z.enum(["W", "L"])),
   recentMatches: z.array(StandingRecentMatch).default([]),
 });
+
+/**
+ * StandingPlayer component.
+ */
 export type StandingPlayer = z.infer<typeof StandingPlayer>;
 
-export const StandingsResponse = z.object({
+export 
+/**
+ * StandingsResponse component.
+ */
+const StandingsResponse = z.object({
   season: z.object({
     id: seasonId,
     name: nonEmptyName,
@@ -430,11 +758,19 @@ export const StandingsResponse = z.object({
   }),
   players: z.array(StandingPlayer),
 });
+
+/**
+ * StandingsResponse component.
+ */
 export type StandingsResponse = z.infer<typeof StandingsResponse>;
 
 // ─── API: Player match perspective ────────────────────────────
 
-export const PlayerMatchPerspective = z.object({
+export 
+/**
+ * PlayerMatchPerspective component.
+ */
+const PlayerMatchPerspective = z.object({
   id: matchId,
   opponentName: nonEmptyName,
   opponentSlug: z.string().min(1),
@@ -448,11 +784,19 @@ export const PlayerMatchPerspective = z.object({
   roundName: roundName.nullable().optional(),
   groupLabel: groupLabel.nullable().optional(),
 });
+
+/**
+ * PlayerMatchPerspective component.
+ */
 export type PlayerMatchPerspective = z.infer<typeof PlayerMatchPerspective>;
 
 // ─── API: Tournament summary ──────────────────────────────────
 
-export const TournamentSummary = z.object({
+export 
+/**
+ * TournamentSummary component.
+ */
+const TournamentSummary = z.object({
   id: tournamentId,
   weekNumber: z.number().int().min(1).max(16),
   date: dateString,
@@ -465,11 +809,19 @@ export const TournamentSummary = z.object({
   playoffMatchCount: positiveSmallInt,
   total180s: positiveSmallInt,
 });
+
+/**
+ * TournamentSummary component.
+ */
 export type TournamentSummary = z.infer<typeof TournamentSummary>;
 
 // ─── API: Group standing row ──────────────────────────────────
 
-export const GroupStandingRow = z.object({
+export 
+/**
+ * GroupStandingRow component.
+ */
+const GroupStandingRow = z.object({
   player: PlayerSummary,
   pos: z.number().int().min(1),
   played: positiveSmallInt,
@@ -480,11 +832,19 @@ export const GroupStandingRow = z.object({
   points: positiveSmallInt,
   one80s: positiveSmallInt,
 });
+
+/**
+ * GroupStandingRow component.
+ */
 export type GroupStandingRow = z.infer<typeof GroupStandingRow>;
 
 // ─── API: Tournament match row ────────────────────────────────
 
-export const ApiMatchRow = z.object({
+export 
+/**
+ * ApiMatchRow component.
+ */
+const ApiMatchRow = z.object({
   id: matchId,
   matchType: matchType,
   status: matchStatus,
@@ -504,29 +864,53 @@ export const ApiMatchRow = z.object({
   roundName: roundName.nullable().optional(),
   sortOrder: z.number().int().min(0).nullable().optional(),
 });
+
+/**
+ * ApiMatchRow component.
+ */
 export type ApiMatchRow = z.infer<typeof ApiMatchRow>;
 
 // ─── API: Tournament group (detail) ───────────────────────────
 
-export const ApiTournamentGroup = z.object({
+export 
+/**
+ * ApiTournamentGroup component.
+ */
+const ApiTournamentGroup = z.object({
   label: groupLabel,
   players: z.array(PlayerSummary),
   standings: z.array(GroupStandingRow),
   matches: z.array(ApiMatchRow),
 });
+
+/**
+ * ApiTournamentGroup component.
+ */
 export type ApiTournamentGroup = z.infer<typeof ApiTournamentGroup>;
 
 // ─── API: Playoff round ──────────────────────────────────────
 
-export const ApiPlayoffRound = z.object({
+export 
+/**
+ * ApiPlayoffRound component.
+ */
+const ApiPlayoffRound = z.object({
   name: roundName,
   matches: z.array(ApiMatchRow),
 });
+
+/**
+ * ApiPlayoffRound component.
+ */
 export type ApiPlayoffRound = z.infer<typeof ApiPlayoffRound>;
 
 // ─── API: Final standing entry ───────────────────────────────
 
-export const ApiFinalStandingEntry = z.object({
+export 
+/**
+ * ApiFinalStandingEntry component.
+ */
+const ApiFinalStandingEntry = z.object({
   pos: z.number().int().min(1),
   player: PlayerSummary,
   played: positiveSmallInt,
@@ -540,38 +924,74 @@ export const ApiFinalStandingEntry = z.object({
   totalPoints: positiveSmallInt,
   one80s: positiveSmallInt,
 });
+
+/**
+ * ApiFinalStandingEntry component.
+ */
 export type ApiFinalStandingEntry = z.infer<typeof ApiFinalStandingEntry>;
 
 // ─── API: Tournament detail response ──────────────────────────
 
-export const TournamentDetailResponse = z.object({
+export 
+/**
+ * TournamentDetailResponse component.
+ */
+const TournamentDetailResponse = z.object({
   tournament: TournamentSummary,
   groups: z.array(ApiTournamentGroup),
   playoffs: z.array(ApiPlayoffRound),
   finalStandings: z.array(ApiFinalStandingEntry),
 });
+
+/**
+ * TournamentDetailResponse component.
+ */
 export type TournamentDetailResponse = z.infer<typeof TournamentDetailResponse>;
 
 // ─── API: Matches response (list) ─────────────────────────────
 
-export const ApiMatchesResponse = z.object({
+export 
+/**
+ * ApiMatchesResponse component.
+ */
+const ApiMatchesResponse = z.object({
   total: z.number().int().min(0),
   page: z.number().int().min(1),
   limit: z.number().int().min(1).max(5000),
   matches: z.array(ApiMatchRow),
 });
+
+/**
+ * ApiMatchesResponse component.
+ */
 export type ApiMatchesResponse = z.infer<typeof ApiMatchesResponse>;
 
 // ─── API: Registrations ──────────────────────────────────────
 
-export const ApiRegistrationEntry = z.object({
+export 
+/**
+ * ApiRegistrationEntry component.
+ */
+const ApiRegistrationEntry = z.object({
   player: PlayerSummary,
   checkedIn: z.boolean(),
   createdAt: timestamptz,
 });
+
+/**
+ * ApiRegistrationEntry component.
+ */
 export type ApiRegistrationEntry = z.infer<typeof ApiRegistrationEntry>;
 
-export const ApiRegistrationsResponse = z.object({
+export 
+/**
+ * ApiRegistrationsResponse component.
+ */
+const ApiRegistrationsResponse = z.object({
   registrations: z.array(ApiRegistrationEntry),
 });
+
+/**
+ * ApiRegistrationsResponse component.
+ */
 export type ApiRegistrationsResponse = z.infer<typeof ApiRegistrationsResponse>;

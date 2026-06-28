@@ -369,6 +369,10 @@ const FullScreenTouchSteer = () => {
   return null;
 }
 
+
+/**
+ * Game input controls (keyboard + touch).
+ */
 const GameControls = () => {
   const isTouch = useIsTouch();
   const { state } = useGame();

@@ -6,6 +6,10 @@ interface RankBadgeProps {
   position: number;
 }
 
+
+/**
+ * Rank position badge (1st, 2nd, 3rd).
+ */
 const RankBadge = ({ position }: RankBadgeProps) => {
   return (
     <Box

@@ -12,6 +12,10 @@ import {
 import { useGame } from "./game-context";
 import { useTranslation } from "react-i18next";
 
+
+/**
+ * Dialog for entering/confirming player name.
+ */
 const NameDialog = () => {
   const { state, closeKeypad, setPlayerName } = useGame();
   const { t } = useTranslation();

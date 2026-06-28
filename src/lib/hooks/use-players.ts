@@ -44,6 +44,10 @@ async function fetchPlayerMatches(slug: string): Promise<PlayerMatchPerspective[
   return data.map((m: unknown) => PlayerMatchPerspective.parse(m));
 }
 
+
+/**
+ * Fetches and returns player data.
+ */
 export function usePlayers() {
   return useQuery({
     queryKey: queryKeys.player.all,
@@ -52,6 +56,11 @@ export function usePlayers() {
   });
 }
 
+/**
+ * Fetches a single player by their slug.
+ *
+ * @param slug - The player slug.
+ */
 export function usePlayerBySlug(slug: string) {
   return useQuery({
     queryKey: queryKeys.player.bySlug(slug),
@@ -60,6 +69,11 @@ export function usePlayerBySlug(slug: string) {
   });
 }
 
+/**
+ * Fetches matches for a specific player by their slug.
+ *
+ * @param slug - The player slug.
+ */
 export function usePlayerMatches(slug: string) {
   return useQuery({
     queryKey: queryKeys.player.matches(slug),

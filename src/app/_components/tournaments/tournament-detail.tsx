@@ -213,6 +213,10 @@ const FinalStandingsRow = ({ s, i }: { s: ApiFinalStandingEntry; i: number }) =>
   );
 }
 
+
+/**
+ * Tournament detail view with groups, playoffs, and standings.
+ */
 const TournamentDetail = ({
   detail,
   summary,

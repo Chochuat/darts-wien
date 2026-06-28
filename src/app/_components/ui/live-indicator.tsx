@@ -3,6 +3,10 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 
+
+/**
+ * Live status indicator dot.
+ */
 const LiveIndicator = () => {
   const { t } = useTranslation();
 

@@ -6,11 +6,27 @@ import en from "./locales/en.json";
 import de from "./locales/de.json";
 import sk from "./locales/sk.json";
 
-export const SUPPORTED_LANGUAGES = ["en", "de", "sk"] as const;
-export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
-export const DEFAULT_LANGUAGE: SupportedLanguage = "sk";
+export 
+/**
+ * SUPPORTED_LANGUAGES component.
+ */
+const SUPPORTED_LANGUAGES = ["en", "de", "sk"] as const;
 
-export const LANG_LABELS: Record<SupportedLanguage, string> = {
+/**
+ * SupportedLanguage component.
+ */
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+export 
+/**
+ * DEFAULT_LANGUAGE component.
+ */
+const DEFAULT_LANGUAGE: SupportedLanguage = "sk";
+
+export 
+/**
+ * LANG_LABELS component.
+ */
+const LANG_LABELS: Record<SupportedLanguage, string> = {
   en: "EN",
   de: "DE",
   sk: "SK",
@@ -30,6 +46,11 @@ if (!i18n.isInitialized) {
   });
 }
 
+/**
+ * Resolves a language string to a supported language code.
+ *
+ * @param lang - The language code to resolve.
+ */
 export function resolveLanguage(lang: string | null): SupportedLanguage {
   if (lang && (SUPPORTED_LANGUAGES as readonly string[]).includes(lang)) {
     return lang as SupportedLanguage;

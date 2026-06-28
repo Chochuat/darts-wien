@@ -7,6 +7,10 @@ interface CardProps {
   hoverBorderColor?: string;
 }
 
+
+/**
+ * Generic card wrapper component.
+ */
 const Card = ({ children, borderColor, hoverBorderColor }: CardProps) => {
   return (
     <Box

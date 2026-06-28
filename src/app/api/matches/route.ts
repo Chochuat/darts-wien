@@ -2,18 +2,33 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
 
+/**
+ * Handles GET requests for match listings.
+ *
+ * @param req - The incoming request.
+ */
 export async function GET(req: NextRequest) {
+  
   const supabase = await getSupabase();
 
+  
   const { searchParams } = new URL(req.url);
+  
   const seasonId = searchParams.get("seasonId");
+  
   const playerId = searchParams.get("playerId");
+  
   const matchType = searchParams.get("matchType");
+  
   const result = searchParams.get("result");
+  
   const q = searchParams.get("q");
+  
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  
   const limit = Math.min(5000, Math.max(1, Number(searchParams.get("limit")) || 20));
 
+  
   let query = supabase
     .from("matches")
     .select(
@@ -33,26 +48,32 @@ export async function GET(req: NextRequest) {
     query = query.eq("match_type", matchType);
   }
 
+  
   const { data: matches, count, error } = await query
     .order("match_date", { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
 
   if (error) return errorResponse(error);
 
+  
   const allPlayerIds = new Set<number>();
-  for (const m of matches ?? []) {
+  for (
+  const m of matches ?? []) {
     allPlayerIds.add(m.player1_id);
     allPlayerIds.add(m.player2_id);
   }
 
+  
   const { data: players } = await supabase
     .from("players")
     .select("id, name, slug");
 
+  
   const playerMap = new Map(
     (players ?? []).map((p) => [p.id, { id: p.id, name: p.name, slug: p.slug }]),
   );
 
+  
   let resultRows = (matches ?? []).map((m) => ({
     id: m.id,
     matchType: m.match_type,
@@ -75,17 +96,23 @@ export async function GET(req: NextRequest) {
   }));
 
   if (playerId && result) {
+    
     const pid = Number(playerId);
     resultRows = resultRows.filter((m) => {
+      
       const isPlayer1 = m.player1.id === pid;
+      
       const legsFor = isPlayer1 ? m.legsPlayer1 : m.legsPlayer2;
+      
       const legsAgainst = isPlayer1 ? m.legsPlayer2 : m.legsPlayer1;
+      
       const won = legsFor != null && legsAgainst != null && legsFor > legsAgainst;
       return result === "W" ? won : !won;
     });
   }
 
   if (q) {
+    
     const lowerQ = q.toLowerCase();
     resultRows = resultRows.filter(
       (m) =>

@@ -11,6 +11,11 @@ async function fetchStandings(seasonId: number) {
   return StandingsResponse.parse(data);
 }
 
+/**
+ * Fetches standings for a given season.
+ *
+ * @param seasonId - The season ID.
+ */
 export function useStandings(seasonId: number) {
   return useQuery({
     queryKey: queryKeys.season.standings(seasonId),

@@ -7,6 +7,10 @@ interface SectionHeadingProps {
   label: string;
 }
 
+
+/**
+ * Section heading with optional icon.
+ */
 const SectionHeading = ({ icon, label }: SectionHeadingProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>

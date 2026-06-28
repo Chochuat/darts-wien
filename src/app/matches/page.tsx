@@ -93,6 +93,10 @@ const inputSx = {
   "& .MuiInputBase-input::placeholder": { color: colors.text.subtle, opacity: 1 },
 };
 
+
+/**
+ * AllMatchesPage component.
+ */
 const AllMatchesPage = () => {
   const [player, setPlayer] = useState("");
   const [result, setResult] = useState("");

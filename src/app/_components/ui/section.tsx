@@ -1,6 +1,10 @@
 import Box from "@mui/material/Box";
 import { colors, borderRadius } from "@/lib/design-tokens";
 
+
+/**
+ * Generic section wrapper.
+ */
 const Section = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box

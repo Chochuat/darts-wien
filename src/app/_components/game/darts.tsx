@@ -121,6 +121,10 @@ const aimMat = new THREE.MeshBasicMaterial({
   depthTest: false,
 });
 
+
+/**
+ * 3D dart models rendered in the game.
+ */
 const Darts = () => {
   const { state, dartLanded, inputRef } = useGame();
   const flightGeo = useFlightShape();

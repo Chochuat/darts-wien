@@ -1,6 +1,10 @@
 import Typography from "@mui/material/Typography";
 import { colors } from "@/lib/design-tokens";
 
+
+/**
+ * Badge indicating a 180 score.
+ */
 const Badge180 = () => {
   return (
     <Typography

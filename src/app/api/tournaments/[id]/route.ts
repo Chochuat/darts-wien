@@ -2,18 +2,29 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 import { getSupabase, errorResponse } from "@/lib/api-utils";
 
+/**
+ * Handles GET requests for a single tournament by ID.
+ *
+ * @param _req - The incoming request.
+ */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
+  
   const supabase = await getSupabase();
 
+  
   const { data: tournament, error: tError } = await supabase
     .from("tournaments")
     .select("*")
@@ -24,36 +35,47 @@ export async function GET(
     return NextResponse.json({ error: "Tournament not found" }, { status: 404 });
   }
 
+  
   const { data: groups } = await supabase
     .from("tournament_groups")
     .select("id, label")
     .eq("tournament_id", tournamentId);
 
+  
   const groupDetails = await Promise.all(
     (groups ?? []).map(async (g) => {
+      
       const { data: groupPlayers } = await supabase
         .from("tournament_group_players")
         .select("player_id")
         .eq("group_id", g.id);
 
+      
       const { data: playerDetails } = await supabase
         .from("players")
         .select("id, name, slug");
 
+      
       const playerMap = new Map(
         (playerDetails ?? []).map((p) => [p.id, p]),
       );
 
+      
       const players = (groupPlayers ?? [])
         .map((gp) => playerMap.get(gp.player_id))
-        .filter((p): p is { id: number; name: string; slug: string } => p != null);
+        .filter((p): p is { 
+        id: number; 
+        name: string; 
+        slug: string } => p != null);
 
+      
       const { data: groupMatches } = await supabase
         .from("matches")
         .select("*")
         .eq("tournament_group_id", g.id)
         .eq("match_type", "tournament_group");
 
+      
       const matches = (groupMatches ?? []).map((m) => ({
         id: m.id,
         matchType: m.match_type,
@@ -73,19 +95,30 @@ export async function GET(
         sortOrder: undefined,
       }));
 
+      
       const standings = (players ?? []).map((p) => {
+        
         const playerMatches = (groupMatches ?? []).filter(
           (m) => m.player1_id === p.id || m.player2_id === p.id,
         );
+        
         let wins = 0;
+        
         let losses = 0;
+        
         let setsFor = 0;
+        
         let setsAgainst = 0;
+        
         let one80s = 0;
 
-        for (const m of playerMatches) {
+        for (
+        const m of playerMatches) {
+          
           const isP1 = m.player1_id === p.id;
+          
           const legsFor = isP1 ? m.legs_player1 : m.legs_player2;
+          
           const legsAgainst = isP1 ? m.legs_player2 : m.legs_player1;
           if (legsFor != null && legsAgainst != null) {
             if (legsFor > legsAgainst) wins++;
@@ -108,6 +141,7 @@ export async function GET(
           one80s,
         };
       }).sort((a, b) => {
+        
         const ptDiff = b.points - a.points;
         if (ptDiff !== 0) return ptDiff;
         return b.setsFor - b.setsAgainst - (a.setsFor - a.setsAgainst);
@@ -122,6 +156,7 @@ export async function GET(
     }),
   );
 
+  
   const { data: playoffMatches } = await supabase
     .from("matches")
     .select("*")
@@ -129,15 +164,19 @@ export async function GET(
     .eq("match_type", "tournament_playoff")
     .order("sort_order");
 
+  
   const { data: allPlayers } = await supabase
     .from("players")
     .select("id, name, slug");
 
+  
   const playerMap = new Map(
     (allPlayers ?? []).map((p) => [p.id, p]),
   );
 
+  
   const roundOrder = ["Quarter-Finals", "Semi-Finals", "3rd Place", "Final"];
+  
   const playoffs = roundOrder.map((name) => ({
     name: name as "Quarter-Finals" | "Semi-Finals" | "3rd Place" | "Final",
     matches: (playoffMatches ?? [])
@@ -162,13 +201,16 @@ export async function GET(
       })),
   }));
 
+  
   const { data: finalStandings } = await supabase
     .from("tournament_final_standings")
     .select("*")
     .eq("tournament_id", tournamentId)
     .order("position");
 
+  
   const apiStandings = (finalStandings ?? []).map((fs) => {
+    
     const p = playerMap.get(fs.player_id);
     return {
       pos: fs.position,
@@ -186,10 +228,12 @@ export async function GET(
     };
   });
 
+  
   const winner = tournament.winner_player_id != null
     ? playerMap.get(tournament.winner_player_id) ?? null
     : null;
 
+  
   const response = {
     tournament: {
       id: tournament.id,
@@ -214,23 +258,36 @@ export async function GET(
   return NextResponse.json(response);
 }
 
+/**
+ * Handles PATCH requests to update a tournament.
+ *
+ * @param req - The incoming request.
+ */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { 
+  params: Promise<{ 
+  id: string }> },
 ) {
+  
   const { id } = await params;
+  
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
     return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
   }
 
+  
   const body = await req.json();
+  
   const supabase = await getSupabase();
 
+  
   const updates: Record<string, unknown> = {};
   if (body.date !== undefined) updates.date = body.date;
   if (body.numGroups !== undefined) updates.num_groups = body.numGroups;
 
+  
   const { data, error } = await supabase
     .from("tournaments")
     .update(updates)

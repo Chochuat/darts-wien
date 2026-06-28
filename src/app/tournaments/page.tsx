@@ -14,6 +14,10 @@ import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
 import { useTournaments } from "@/lib/hooks/use-tournaments";
 
+
+/**
+ * TournamentsListPage component.
+ */
 const TournamentsListPage = () => {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useTournaments();

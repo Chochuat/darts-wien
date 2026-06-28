@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 
-export const metadata: Metadata = {
+export 
+/**
+ * metadata component.
+ */
+const metadata: Metadata = {
   title: "darts-wien",
   description: "",
   icons: {
@@ -10,6 +14,10 @@ export const metadata: Metadata = {
   },
 };
 
+
+/**
+ * Root application layout with providers.
+ */
 const RootLayout = ({
   children,
 }: Readonly<{

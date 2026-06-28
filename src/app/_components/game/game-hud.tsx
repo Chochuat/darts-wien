@@ -155,6 +155,10 @@ function drawHud(
   texture.needsUpdate = true;
 }
 
+
+/**
+ * Game HUD overlay showing scores and info.
+ */
 const GameHUD = () => {
   const { state, throwDarts, openKeypad } = useGame();
   const { t } = useTranslation();
