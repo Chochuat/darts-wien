@@ -23,22 +23,23 @@ export default function TournamentsListPage() {
         <PageHeader
           icon={<EmojiEvents />}
           title={t("tournamentsList.title")}
-          subtitle={t("tournamentsList.subtitle", { count: tournaments.length, completed: tournaments.filter((t) => t.status === "past").length })}
+          subtitle={t("tournamentsList.subtitle", { count: tournaments.length, completed: tournaments.filter((t) => t.status === "completed").length })}
         />
 
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1.5 }}>
           {tournaments.map((tData) => {
-            const isPast = tData.status === "past";
+            const isCompleted = tData.status === "completed";
+            const clickable = isCompleted;
 
             return (
               <Card
                 key={tData.week}
-                borderColor={isPast ? colors.accent4d : "#27272a"}
-                hoverBorderColor={isPast ? colors.accent : "#52525b"}
+                borderColor={isCompleted ? colors.accent4d : "#27272a"}
+                hoverBorderColor={isCompleted ? colors.accent : "#52525b"}
               >
                 <Link
-                  href={isPast ? `/tournaments/${tData.week}` : ""}
-                  style={{ textDecoration: "none", display: "block", cursor: isPast ? "pointer" : "default" }}
+                  href={clickable ? `/tournaments/${tData.week}` : ""}
+                  style={{ textDecoration: "none", display: "block", cursor: clickable ? "pointer" : "default" }}
                 >
                   <Box
                     sx={{
@@ -49,7 +50,7 @@ export default function TournamentsListPage() {
                       gap: 1.5,
                     }}
                   >
-                    {isPast ? (
+                    {isCompleted ? (
                       <EmojiEvents
                         sx={{
                           color: colors.gold,
@@ -65,7 +66,7 @@ export default function TournamentsListPage() {
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexWrap: "wrap" }}>
                         <Typography
                           sx={{
-                            color: isPast ? colors.text.primary : colors.text.muted,
+                            color: isCompleted ? colors.text.primary : colors.text.muted,
                             fontWeight: 700,
                             fontSize: tData.groups.length === 0 ? "0.85rem" : "0.95rem",
                           }}
@@ -100,7 +101,7 @@ export default function TournamentsListPage() {
                         >
                           {tData.date}
                         </Typography>
-                        {isPast && tData.winner && (
+                        {isCompleted && tData.winner && (
                           <Typography
                             sx={{
                               color: colors.goldText,
@@ -113,7 +114,7 @@ export default function TournamentsListPage() {
                           </Typography>
                         )}
                       </Box>
-                      {isPast && (
+                      {isCompleted ? (
                         <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem", mt: 0.15 }}>
                           {tData.groups.length === 0
                             ? t("tournamentsList.grandFinalPlayers")
@@ -126,8 +127,7 @@ export default function TournamentsListPage() {
                           {" · "}
                           {[...tData.groups.flatMap((g) => g.matches), ...tData.playoffs.flatMap((r) => r.matches)].filter((m) => m.one80).length} 180s
                         </Typography>
-                      )}
-                      {!isPast && (
+                      ) : (
                         <Typography
                           sx={{
                             color: colors.text.subtle,
@@ -136,12 +136,16 @@ export default function TournamentsListPage() {
                             fontStyle: "italic",
                           }}
                         >
-                          {t("tournamentsList.futureText")}
+                          {tData.status === "registration"
+                            ? t("tournamentsList.registrationOpen")
+                            : tData.status === "ready"
+                            ? t("tournamentsList.readyText")
+                            : t("tournamentsList.inProgressText")}
                         </Typography>
                       )}
                     </Box>
 
-                    {isPast && (
+                    {isCompleted && (
                       <ArrowForward
                         sx={{
                           color: colors.accent,

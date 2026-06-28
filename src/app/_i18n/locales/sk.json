@@ -77,7 +77,10 @@
     "groupMatches": "{{count}} skupinových zápasov",
     "playoffMatches": "{{count}} playoff zápasov",
     "grandFinalPlayers": "8 hráčov (top 8)",
-    "futureText": "Rozpis a skupiny budú čoskoro zverejnené"
+    "futureText": "Rozpis a skupiny budú čoskoro zverejnené",
+    "registrationOpen": "Registrácia otvorená",
+    "readyText": "Skupiny pripravené",
+    "inProgressText": "Turnaj prebieha"
   },
   "tournamentDetail": {
     "winner": "Víťaz: {{name}}",

@@ -78,8 +78,8 @@ function PlayoffMatch({
   resultKey,
   winnerStyle,
 }: {
-  m1: { playerName: string; score: string; result: string; one80?: boolean };
-  m2: { playerName: string; score: string; result: string; one80?: boolean };
+  m1: { playerName: string; score: string; result: string; one80?: number };
+  m2: { playerName: string; score: string; result: string; one80?: number };
   resultKey: string;
   winnerStyle: "accent" | "gold" | "bronze";
 }) {
@@ -177,9 +177,6 @@ function FinalStandingsRow({ s, i }: { s: TournamentEntry["finalStandings"][numb
       <Box sx={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 0.5 }}>
         <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: i <= 2 ? 700 : 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {s.name}
-        </Typography>
-        <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: { xs: "none", sm: "block" } }}>
-          {s.team}
         </Typography>
       </Box>
       {cell(s.played)}

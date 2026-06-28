@@ -76,7 +76,10 @@
     "groupMatches": "{{count}} Gruppenspiele",
     "playoffMatches": "{{count}} Playoff-Spiele",
     "grandFinalPlayers": "8 Spieler (Top 8)",
-    "futureText": "Spielplan und Gruppen werden bald veröffentlicht"
+    "futureText": "Spielplan und Gruppen werden bald veröffentlicht",
+    "registrationOpen": "Anmeldung offen",
+    "readyText": "Gruppen bereit",
+    "inProgressText": "Turnier läuft"
   },
   "tournamentDetail": {
     "winner": "Sieger: {{name}}",

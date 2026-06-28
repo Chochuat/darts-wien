@@ -30,7 +30,13 @@ export default function TournamentPage() {
     );
   }
 
-  if (tournament.status === "future") {
+  if (tournament.status !== "completed") {
+    const statusLabel = tournament.status === "registration"
+      ? t("tournamentsList.registrationOpen")
+      : tournament.status === "ready"
+      ? t("tournamentsList.readyText")
+      : t("tournamentsList.inProgressText");
+
     return (
       <PageLayout>
         <Section>
@@ -43,7 +49,7 @@ export default function TournamentPage() {
               {tournament.date}
             </Typography>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem", fontStyle: "italic" }}>
-              {t("tournamentsList.futureText")}
+              {statusLabel}
             </Typography>
           </Box>
         </Section>

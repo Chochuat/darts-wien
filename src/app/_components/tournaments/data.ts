@@ -15,14 +15,13 @@ export interface TournamentPlayoffRound {
 export interface TournamentEntry {
   week: number;
   date: string;
-  status: "past" | "future";
+  status: "registration" | "ready" | "in_progress" | "completed";
   groups: TournamentGroup[];
   playoffs: TournamentPlayoffRound[];
   winner: string | null;
   finalStandings: {
     pos: number;
     name: string;
-    team: string;
     played: number;
     wins: number;
     losses: number;
@@ -50,10 +49,6 @@ function playerRank(name: string): number {
   return standingsData.findIndex((p) => p.name === name);
 }
 
-function playerTeam(name: string): string {
-  return standingsData.find((p) => p.name === name)?.team ?? "";
-}
-
 function generateMatch(
   p1: string,
   p2: string,
@@ -71,8 +66,6 @@ function generateMatch(
   const score1 = legsTarget;
   const score2 = Math.min(setsLoser, legsTarget - 1);
 
-  const team1 = playerTeam(p1);
-  const team2 = playerTeam(p2);
 
   // Deterministic 180: top-4 players sometimes hit one against close opponents
   const minRank = Math.min(r1, r2);
@@ -81,21 +74,19 @@ function generateMatch(
 
   const m1: MatchEntry = {
     playerName: p1,
-    team: team1,
     opponent: p2,
     score: `${score1}-${score2}`,
     result: p1Better ? "W" : "L",
     date,
-    one80: p1 === one80Match || undefined,
+    one80: (p1 === one80Match ? 1 : 0),
   };
   const m2: MatchEntry = {
     playerName: p2,
-    team: team2,
     opponent: p1,
     score: `${score2}-${score1}`,
     result: p1Better ? "L" : "W",
     date,
-    one80: p2 === one80Match || undefined,
+    one80: (p2 === one80Match ? 1 : 0),
   };
   return [m1, m2];
 }
@@ -384,7 +375,6 @@ function computeFinalStandings(
     return {
       pos: i + 1,
       name,
-      team: playerTeam(name),
       played: playerPMatches.length,
       wins,
       losses,
@@ -423,7 +413,7 @@ function createTournament(
   return {
     week,
     date,
-    status: "past" as const,
+    status: "completed" as const,
     groups,
     playoffs,
     winner,
@@ -523,7 +513,6 @@ function createGrandFinal(week: number, date: string): TournamentEntry {
     return {
       pos: i + 1,
       name: s.name,
-      team: playerTeam(s.name),
       played: playerPMatches.length,
       wins,
       losses,
@@ -537,7 +526,7 @@ function createGrandFinal(week: number, date: string): TournamentEntry {
   return {
     week,
     date,
-    status: "past" as const,
+    status: "completed" as const,
     groups: [],
     playoffs,
     winner,
@@ -587,7 +576,7 @@ export const tournaments: TournamentEntry[] = [
 ];
 
 export const allTournamentMatches: MatchEntry[] = tournaments
-  .filter((t) => t.status === "past")
+  .filter((t) => t.status === "completed")
   .flatMap((t) => [
     ...t.groups.flatMap((g) => g.matches),
     ...t.playoffs.flatMap((r) => r.matches),
@@ -619,7 +608,6 @@ export function computeGroupStandings(
       );
       return {
         name,
-        team: playerTeam(name),
         played: playerMatches.length,
         wins,
         losses,

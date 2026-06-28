@@ -238,7 +238,7 @@ export default function AllMatchesPage() {
                       }}
                     >
                       <Box component="span" sx={{ color: colors.text.primary }}>{m.playerName}</Box>
-                      {(m as { one80?: boolean }).one80 && (
+                      {(m as { one80?: number }).one80 && (
                         <Typography
                           component="span"
                           sx={{

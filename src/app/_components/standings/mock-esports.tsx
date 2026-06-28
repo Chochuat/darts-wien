@@ -121,15 +121,6 @@ export default function MockEsports() {
                         )}
                       </Box>
 
-                      <Typography
-                        sx={{
-                          color: colors.text.muted,
-                          fontSize: { xs: "0.6rem", md: "0.65rem" },
-                        }}
-                      >
-                        {p.team}
-                      </Typography>
-
                       <Box
                         sx={{
                           display: "flex",

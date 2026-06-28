@@ -189,9 +189,6 @@ export default function PlayerMatchesPage() {
                 </Typography>
                 {player.pos === 1 && <EmojiEvents sx={{ color: colors.gold, fontSize: "1.2rem" }} />}
               </Box>
-              <Typography sx={{ color: colors.text.muted, fontSize: "0.65rem", mt: 0.1 }}>
-                {player.team}
-              </Typography>
             </Box>
           </Box>
 
