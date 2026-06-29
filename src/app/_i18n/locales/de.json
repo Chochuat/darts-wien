@@ -59,8 +59,8 @@
     "filterScore": "Ergebnis (z.B. 3-0)",
     "matchesFound": "{{count}} Spiele gefunden",
     "date": "DATUM",
-    "opponent": "GEGNER",
-    "result": "ERGEBNIS",
+    "players": "SPIELER",
+    "score": "ERGEBNIS",
     "noMatchesRecorded": "Noch keine Spiele aufgezeichnet."
   },
   "playerPage": {

@@ -45,8 +45,9 @@ See `.env.example`. The admin Route Handlers require an additional server-only
 variable:
 
 ```
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+SUPABASE_SECRET_KEY=sb_secret_your-key-here
 ```
 
-Get it from Dashboard → Settings → API → `service_role` key. **Never** prefix
-this with `NEXT_PUBLIC_` — it bypasses RLS and must never reach the browser.
+Get it from **Dashboard → Settings → API Keys** → create a secret key
+(`sb_secret_...`). **Never** prefix this with `NEXT_PUBLIC_` — it bypasses
+RLS and must never reach the browser.

@@ -75,12 +75,12 @@
 
 ---
 
-## ADR-007: Service-Role Client for Admin Writes
+## ADR-007: Secret-Key Client for Admin Writes
 **Status:** Accepted  
 **Date:** 2026-06-29  
-**Context:** Admin write operations (group generation, bracket creation, match result recording) are complex multi-table transactions that are hard to express as RLS-permitted anon-key operations.  
-**Decision:** A server-only `createAdminClient()` in `src/lib/supabase/server-admin.ts` uses the `SUPABASE_SERVICE_ROLE_KEY` (never `NEXT_PUBLIC_`-prefixed) to bypass RLS. All admin Route Handlers use this client plus `requireAdmin()`/`requireScorekeeper()` guards that read the user's session from the cookie store. RLS policies remain tightened as defense-in-depth.  
-**Consequences:** Admin operations are atomic and unconstrained by RLS. Trade-off: the service-role key must never reach the browser; it's server-only and stored in `SUPABASE_SERVICE_ROLE_KEY` env var.
+**Context:** Admin write operations (group generation, bracket creation, match result recording) are complex multi-table transactions that are hard to express as RLS-permitted publishable-key operations.  
+**Decision:** A server-only `createAdminClient()` in `src/lib/supabase/server-admin.ts` uses the `SUPABASE_SECRET_KEY` (the `sb_secret_...` key, never `NEXT_PUBLIC_`-prefixed) to bypass RLS via the `service_role` Postgres role. All admin Route Handlers use this client plus `requireAdmin()`/`requireScorekeeper()` guards that read the user's session from the cookie store. RLS policies remain tightened as defense-in-depth.  
+**Consequences:** Admin operations are atomic and unconstrained by RLS. Trade-off: the secret key must never reach the browser; it's server-only and stored in `SUPABASE_SECRET_KEY` env var. Supabase's new `sb_secret_...` keys replace the legacy JWT-based `service_role` key and add browser-detection safeguards (HTTP 401 if used in a browser).
 
 ---
 

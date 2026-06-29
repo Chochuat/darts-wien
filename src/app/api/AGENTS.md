@@ -7,7 +7,7 @@
 
 ```
 api/
-├── admin/                              # Admin API routes (service-role client + auth guards)
+├── admin/                              # Admin API routes (secret-key client + auth guards)
 │   ├── auth/
 │   │   ├── login/route.ts              # POST (sign in with email+password)
 │   │   ├── signup/route.ts             # POST (create auth user + pending profile)
@@ -57,7 +57,7 @@ api/
 
 - Every handler is a named `export async function GET|POST|PATCH|DELETE`.
 - **Public routes** use `getSupabase()` (anon key, RLS-subject) from `@/lib/api-utils`.
-- **Admin routes** use `createAdminClient()` (service-role key, bypasses RLS) from `@/lib/supabase/server-admin` + `requireAdmin()` or `requireAdminOrScorekeeper()` guards. Always check with `isAuthError()` before proceeding.
+- **Admin routes** use `createAdminClient()` (secret key, bypasses RLS) from `@/lib/supabase/server-admin` + `requireAdmin()` or `requireAdminOrScorekeeper()` guards. Always check with `isAuthError()` before proceeding.
 - Parse request bodies and query params with the matching Zod schema from `@/lib/validation`. On failure, return `validationError(issues)` (HTTP 400).
 - Numeric path params: `Number(id)` then `Number.isNaN` guard → 400. The shared helper `requireNumericParam` exists for this.
 - Errors: use `errorResponse(error, status)` for unknown failures; return explicit `NextResponse.json({ error: "..." }, { status })` for known business-rule failures (404 not found, 409 wrong state).

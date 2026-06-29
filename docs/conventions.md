@@ -69,9 +69,9 @@
 
 - Browser client: `createClient()` from `@/lib/supabase/client` — use in Client Components / event handlers.
 - Server client: `createClient()` from `@/lib/supabase/server` — use in Server Components, Route Handlers, Server Actions.
-- Admin client: `createAdminClient()` from `@/lib/supabase/server-admin` — use in admin Route Handlers for write operations (bypasses RLS, server-only, uses `SUPABASE_SERVICE_ROLE_KEY`).
+- Admin client: `createAdminClient()` from `@/lib/supabase/server-admin` — use in admin Route Handlers for write operations (bypasses RLS, server-only, uses `SUPABASE_SECRET_KEY`).
 - Database types: define tables in `src/lib/supabase/types.ts` under the `Database` interface. PostGIS geometry types are re-exported from the same file.
-- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see ADR-005). Plus `SUPABASE_SERVICE_ROLE_KEY` (server-only, never `NEXT_PUBLIC_`-prefixed) for admin writes (see ADR-007).
+- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see ADR-005). Plus `SUPABASE_SECRET_KEY` (server-only, never `NEXT_PUBLIC_`-prefixed) for admin writes (see ADR-007).
 
 ### Admin Auth & RLS
 
@@ -79,7 +79,7 @@
 - Middleware (`src/middleware.ts`) gates `/admin/*` — redirects unauthenticated to `/admin/login`, unauthorized to `/admin/403`.
 - Auth guards: `requireAdmin()`, `requireAdminOrScorekeeper()`, `isAuthError()` from `@/lib/api-utils`. Always check the result with `isAuthError()` before proceeding.
 - RLS write policies check `EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role IN ('admin','scorekeeper'))`. Scorekeeper match-write is additionally scoped to `in_progress` tournaments.
-- Admin API routes live under `/api/admin/*` and use the service-role client + auth guards. Public API routes remain under `/api/*`.
+- Admin API routes live under `/api/admin/*` and use the secret-key client + auth guards. Public API routes remain under `/api/*`.
 - Self-signup creates `pending` profiles; admins promote via the Users screen (`/admin/users`).
 
 ### React Query

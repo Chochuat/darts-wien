@@ -147,7 +147,7 @@ npx vitest run --coverage  # Coverage report (lib/ = 100%)
 - **ADR-004:** JSDoc/TSDoc enforcement via eslint-plugin-jsdoc + eslint-plugin-tsdoc.
 - **ADR-005:** Supabase env var renamed to `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 - **ADR-006:** Admin auth via Supabase + profiles table + middleware-gated `/admin/*`.
-- **ADR-007:** Service-role client for admin writes (bypasses RLS, server-only).
+- **ADR-007:** Secret-key client for admin writes (bypasses RLS, server-only).
 - **ADR-008:** Tournament generation engine: 4 algorithms + bracket adjacency + format config.
 - **ADR-009:** Cascade lock model — upstream edits blocked once downstream is played.
 - **ADR-010:** No retroactive editing — completed tournaments are permanently frozen.

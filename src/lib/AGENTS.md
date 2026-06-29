@@ -24,7 +24,7 @@
 - `queryKeys` entries are hierarchical `as const` arrays. Parameterised keys are functions returning a new array so cache identity stays stable.
 - Supabase browser client (`createClient()` from `client.ts`) reads `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` at module load and asserts them non-null. Ensure both env vars are set in `.env.local` or the client throws at first use.
 - Supabase server client must be awaited: `const supabase = await getSupabase()` (it reads the async cookie store).
-- Supabase admin client: `createAdminClient()` from `@/lib/supabase/server-admin` — uses `SUPABASE_SERVICE_ROLE_KEY` (server-only, never `NEXT_PUBLIC_`-prefixed). Bypasses RLS. Use only in admin Route Handlers with `requireAdmin()`/`requireScorekeeper()` guards.
+- Supabase admin client: `createAdminClient()` from `@/lib/supabase/server-admin` — uses `SUPABASE_SECRET_KEY` (the `sb_secret_...` key, server-only, never `NEXT_PUBLIC_`-prefixed). Bypasses RLS via the `service_role` Postgres role. Use only in admin Route Handlers with `requireAdmin()`/`requireScorekeeper()` guards.
 - Auth guards: `getSessionProfile()`, `requireAdmin()`, `requireAdminOrScorekeeper()`, `isAuthError()` from `@/lib/api-utils`. The `require*` functions return `SessionProfile | NextResponse` — always narrow with `isAuthError()` before proceeding.
 
 ## Tests

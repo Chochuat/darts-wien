@@ -59,8 +59,8 @@
     "filterScore": "Score (e.g. 3-0)",
     "matchesFound": "{{count}} matches found",
     "date": "DATE",
-    "opponent": "OPPONENT",
-    "result": "RESULT",
+    "players": "PLAYERS",
+    "score": "SCORE",
     "noMatchesRecorded": "No matches recorded yet."
   },
   "playerPage": {
