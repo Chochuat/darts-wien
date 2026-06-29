@@ -1,6 +1,6 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse, validationError } from "@/lib/api-utils";
+import { getSupabase, errorResponse, validationError, requireNumericParam } from "@/lib/api-utils";
 import { MatchNoShowUpdate } from "@/lib/validation";
 
 /**
@@ -11,28 +11,19 @@ import { MatchNoShowUpdate } from "@/lib/validation";
  */
 export async function PATCH(
   req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const matchId = Number(id);
-  if (Number.isNaN(matchId)) {
-    return NextResponse.json({ error: "Invalid match ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "match ID");
+  if (param instanceof NextResponse) return param;
+  const matchId = param.id;
 
-  
   const body = await req.json();
-  
   const parsed = MatchNoShowUpdate.safeParse(body);
   if (!parsed.success) return validationError(parsed.error.issues);
 
-  
   const supabase = await getSupabase();
 
-  
   const { data: match, error: findError } = await supabase
     .from("matches")
     .select("id, legs_target, player1_id, player2_id, status")
@@ -50,11 +41,8 @@ export async function PATCH(
     );
   }
 
-  
   const noShowPlayerId = parsed.data.no_show_player_id;
-  
   const isPlayer1NoShow = noShowPlayerId === match.player1_id;
-  
   const isPlayer2NoShow = noShowPlayerId === match.player2_id;
 
   if (!isPlayer1NoShow && !isPlayer2NoShow) {
@@ -64,12 +52,9 @@ export async function PATCH(
     );
   }
 
-  
   const winnerLegs = match.legs_target;
-  
   const loserLegs = 0;
 
-  
   const { data, error } = await supabase
     .from("matches")
     .update({

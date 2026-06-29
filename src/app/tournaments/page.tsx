@@ -12,6 +12,7 @@ import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import PageHeader from "@/app/_components/ui/page-header";
+import { DartLoading } from "@/app/_components/ui/dart-loading";
 import { useTournaments } from "@/lib/hooks/use-tournaments";
 
 
@@ -22,17 +23,7 @@ const TournamentsListPage = () => {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useTournaments();
 
-  if (isLoading) {
-    return (
-      <PageLayout>
-        <Section>
-          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-            {t("common.loading")}
-          </Typography>
-        </Section>
-      </PageLayout>
-    );
-  }
+  if (isLoading) return <DartLoading />;
 
   if (isError || !data) {
     return (

@@ -70,7 +70,7 @@
 - Browser client: `createClient()` from `@/lib/supabase/client` — use in Client Components / event handlers.
 - Server client: `createClient()` from `@/lib/supabase/server` — use in Server Components, Route Handlers, Server Actions.
 - Database types: define tables in `src/lib/supabase/types.ts` under the `Database` interface. PostGIS geometry types are re-exported from the same file.
-- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`.
+- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see ADR-005).
 
 ### React Query
 
@@ -85,7 +85,7 @@
 
 - Import from `three` directly.
 - Use a Client Component (with `"use client"`) for any Three.js rendering.
-- Consider using `@react-three/fiber` if declarative scene management is desired (not installed by default).
+- Declarative scene management uses `@react-three/fiber` (installed) with helpers from `@react-three/drei` and animation via `@react-spring/three`. See `src/app/_components/game/AGENTS.md` for the 3D architecture.
 
 ### MUI
 
@@ -107,6 +107,33 @@
 - Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final. Two-group bracket: 1A v 4B / 2A v 3B / 1B v 4A / 2B v 3A.
 - Final standings sort by: winner → finalist → semi-finalists → quarter-finalists, then by points.
 
+### i18n
+
+- i18next + react-i18next, initialised in `src/app/_i18n/i18n.ts` (see ADR-002).
+- Language switching is via a `?lang=` query parameter, read by `LocaleProvider` — **no** Next.js i18n router.
+- Locales live in `src/app/_i18n/locales/{en,de,sk}.json`; `sk` is the default/fallback.
+- `resolveLanguage(lang)` guards against unsupported codes; always route user input through it.
+- Translation keys are flat, dot-namespaced within each locale file (e.g. `matches.title`).
+
+### JSDoc / TSDoc
+
+- Enforced by `eslint-plugin-jsdoc` (`flat/recommended-typescript`) + `eslint-plugin-tsdoc` (see ADR-004).
+- Every exported `const` schema and its `z.infer` `type` alias in `validation.ts` MUST have a JSDoc block.
+- The `jsdoc/require-jsdoc` auto-fixer places the JSDoc block **between** `export` and the declaration (e.g. `export\n/** ... */\nconst x = ...`). This is the required form — do **not** move the block above `export`, the rule will not detect it there.
+- `@param` and `@returns` descriptions are required; `@throws` is required when a function throws.
+
+### React (additional rules)
+
+- Function components are arrow functions with a default export (`react/function-component-definition`).
+- Props are destructured in the signature, not accessed via `props.x` (`react/destructuring-assignment`, `destructureInSignature: always`).
+- JSX nesting depth ≤ 6 (`react/jsx-max-depth`).
+- No leaked renders — use a ternary, not `&&` with non-boolean values (`react/jsx-no-leaked-render`).
+- Buttons must declare `type` (`react/button-has-type`).
+
 ## Testing
 
-_No testing framework configured yet. Document the approach when one is added._
+- Vitest is the test runner (`vitest.config.ts`); colocated `*.test.ts` files next to the module they cover (see ADR-003).
+- Run `npm test` (single run) or `npm run test:watch` (watch mode). Coverage via `npx vitest run --coverage` — `src/lib/` is at 100%.
+- Environment is `node` by default; no DOM tests exist yet (`@testing-library/react` + `jsdom` are installed for future component tests).
+- Zod schema tests must cover at least one valid and one invalid case, including `.refine()` cross-field rules.
+- `vitest.config.ts` inlines `@exodus/bytes` (a transitive Supabase dep) to work around a Vite CJS interop warning; keep the override until the upstream issue resolves.

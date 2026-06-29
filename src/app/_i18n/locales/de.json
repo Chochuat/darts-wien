@@ -16,6 +16,8 @@
     "winner": "Sieger: {{name}}",
     "matchesFound_one": "{{count}} Spiel gefunden",
     "matchesFound_other": "{{count}} Spiele gefunden",
+    "loading": "Lädt...",
+    "error": "Ein Fehler ist aufgetreten",
     "noResults": "Keine Ergebnisse",
     "noMatchesFilter": "Keine Spiele entsprechen den Filtern.",
     "clearAll": "Alle löschen",

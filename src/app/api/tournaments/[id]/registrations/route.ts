@@ -1,6 +1,7 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse } from "@/lib/api-utils";
+import { getSupabase, errorResponse, validationError, requireNumericParam } from "@/lib/api-utils";
+import { RegistrationAddBody } from "@/lib/validation";
 
 /**
  * Handles GET requests for tournament registrations.
@@ -10,22 +11,15 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
  */
 export async function GET(
   _req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const tournamentId = Number(id);
-  if (Number.isNaN(tournamentId)) {
-    return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "tournament ID");
+  if (param instanceof NextResponse) return param;
+  const tournamentId = param.id;
 
-  
   const supabase = await getSupabase();
 
-  
   const { data: registrations, error } = await supabase
     .from("tournament_registrations")
     .select("player_id, checked_in, created_at")
@@ -33,21 +27,15 @@ export async function GET(
 
   if (error) return errorResponse(error);
 
-  
-  const playerIds = registrations.map((r) => r.player_id);
-  
+  const playerIds = (registrations ?? []).map((r) => r.player_id);
   const { data: players } = await supabase
     .from("players")
     .select("id, name, slug")
-    .in("id", playerIds);
+    .in("id", playerIds.length ? playerIds : [0]);
 
-  
-  const playerMap = new Map(
-    (players ?? []).map((p) => [p.id, p]),
-  );
+  const playerMap = new Map((players ?? []).map((p) => [p.id, p]));
 
-  
-  const entries = registrations.map((r) => ({
+  const entries = (registrations ?? []).map((r) => ({
     player: playerMap.get(r.player_id) ?? { id: r.player_id, name: "Unknown", slug: "unknown" },
     checkedIn: r.checked_in,
     createdAt: r.created_at,
@@ -64,34 +52,22 @@ export async function GET(
  */
 export async function POST(
   req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const tournamentId = Number(id);
-  if (Number.isNaN(tournamentId)) {
-    return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "tournament ID");
+  if (param instanceof NextResponse) return param;
+  const tournamentId = param.id;
 
-  
   const body = await req.json();
-  
-  const { playerId } = body;
+  const parsed = RegistrationAddBody.safeParse(body);
+  if (!parsed.success) return validationError(parsed.error.issues);
 
-  if (!playerId) {
-    return NextResponse.json({ error: "playerId is required" }, { status: 400 });
-  }
-
-  
   const supabase = await getSupabase();
 
-  
   const { data, error } = await supabase
     .from("tournament_registrations")
-    .insert({ tournament_id: tournamentId, player_id: playerId })
+    .insert({ tournament_id: tournamentId, player_id: parsed.data.playerId })
     .select()
     .single();
 

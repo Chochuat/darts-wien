@@ -1,6 +1,7 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse } from "@/lib/api-utils";
+import { getSupabase, errorResponse, validationError, requireNumericParam } from "@/lib/api-utils";
+import { TournamentGenerateBody } from "@/lib/validation";
 
 /**
  * Handles POST requests to generate tournament groups and matches.
@@ -10,39 +11,24 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
  */
 export async function POST(
   req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const tournamentId = Number(id);
-  if (Number.isNaN(tournamentId)) {
-    return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "tournament ID");
+  if (param instanceof NextResponse) return param;
+  const tournamentId = param.id;
 
-  
   const body = await req.json();
-  
-  const { generationType } = body;
+  const parsed = TournamentGenerateBody.safeParse(body);
+  if (!parsed.success) return validationError(parsed.error.issues);
 
-  if (!generationType) {
-    return NextResponse.json(
-      { error: "generationType is required" },
-      { status: 400 },
-    );
-  }
-
-  
   const supabase = await getSupabase();
 
-  
   const { error } = await supabase
     .from("tournaments")
     .update({
       status: "ready",
-      generation_type: generationType,
+      generation_type: parsed.data.generationType,
     })
     .eq("id", tournamentId);
 

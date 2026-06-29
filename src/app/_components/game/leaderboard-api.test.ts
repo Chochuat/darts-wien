@@ -38,8 +38,8 @@ describe("leaderboard-api", () => {
 
       const results = await fetchTopThrows(5);
       expect(results).toHaveLength(2);
-      expect(results[0].name).toBe("Alice");
-      expect(results[1].name).toBe("Bob");
+      expect(results[0]?.name).toBe("Alice");
+      expect(results[1]?.name).toBe("Bob");
       expect(mockSupabaseClient.from).toHaveBeenCalledWith("game_throw");
     });
 

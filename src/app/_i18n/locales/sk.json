@@ -17,6 +17,8 @@
     "matchesFound_one": "{{count}} zápas nájdený",
     "matchesFound_few": "{{count}} zápasy nájdené",
     "matchesFound_many": "{{count}} zápasov nájdených",
+    "loading": "Načítava sa...",
+    "error": "Vyskytla sa chyba",
     "noResults": "Žiadne výsledky",
     "noMatchesFilter": "Žiadne zápasy nezodpovedajú filtrom.",
     "clearAll": "Vymazať všetko",

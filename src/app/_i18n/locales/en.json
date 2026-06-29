@@ -16,6 +16,8 @@
     "winner": "Winner: {{name}}",
     "matchesFound_one": "{{count}} match found",
     "matchesFound_other": "{{count}} matches found",
+    "loading": "Loading...",
+    "error": "An error occurred",
     "noResults": "No results",
     "noMatchesFilter": "No matches match your filters.",
     "clearAll": "Clear all",

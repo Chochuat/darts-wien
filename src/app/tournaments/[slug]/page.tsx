@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import PageLayout from "@/app/_components/ui/page-layout";
+import { DartLoading } from "@/app/_components/ui/dart-loading";
 import { useTournaments, useTournamentDetail } from "@/lib/hooks/use-tournaments";
 import TournamentDetail from "@/app/_components/tournaments/tournament-detail";
 
@@ -28,17 +29,7 @@ const TournamentPage = () => {
     tournamentSummary?.id ?? 0,
   );
 
-  if (listLoading) {
-    return (
-      <PageLayout>
-        <Section>
-          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-            {t("common.loading")}
-          </Typography>
-        </Section>
-      </PageLayout>
-    );
-  }
+  if (listLoading) return <DartLoading />;
 
   if (listError || !listData || !tournamentSummary) {
     return (
@@ -79,17 +70,7 @@ const TournamentPage = () => {
     );
   }
 
-  if (detailLoading) {
-    return (
-      <PageLayout>
-        <Section>
-          <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-            {t("common.loading")}
-          </Typography>
-        </Section>
-      </PageLayout>
-    );
-  }
+  if (detailLoading) return <DartLoading />;
 
   if (detailError || !detail) {
     return (

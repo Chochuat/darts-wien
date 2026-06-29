@@ -21,7 +21,7 @@
 - Zod schemas that mirror database columns use `snake_case` (e.g. `player1_id`). API-facing schemas use `camelCase` (e.g. `player1`). Do not mix the two in one object.
 - Hooks always `parse()` the fetch response with the matching Zod schema before returning — never trust raw JSON.
 - `queryKeys` entries are hierarchical `as const` arrays. Parameterised keys are functions returning a new array so cache identity stays stable.
-- Supabase browser client (`createClient()` from `client.ts`) may return null when env vars are missing; always guard.
+- Supabase browser client (`createClient()` from `client.ts`) reads `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` at module load and asserts them non-null. Ensure both env vars are set in `.env.local` or the client throws at first use.
 - Supabase server client must be awaited: `const supabase = await getSupabase()` (it reads the async cookie store).
 
 ## Tests

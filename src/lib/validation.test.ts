@@ -20,6 +20,12 @@ import {
   ApiMatchRow,
   MatchResultUpdate,
   MatchNoShowUpdate,
+  MatchListQuery,
+  TournamentListQuery,
+  TournamentCreateBody,
+  TournamentGenerateBody,
+  RegistrationAddBody,
+  RegistrationCheckinBody,
 } from "./validation";
 
 describe("Season schemas", () => {
@@ -321,6 +327,158 @@ describe("MatchNoShowUpdate", () => {
     expect(
       MatchNoShowUpdate.parse({ no_show_player_id: 1 }),
     ).toEqual({ no_show_player_id: 1 });
+  });
+});
+
+describe("MatchListQuery", () => {
+  it("applies defaults for empty input", () => {
+    expect(MatchListQuery.parse({})).toEqual({ page: 1, limit: 20 });
+  });
+
+  it("coerces numeric string params", () => {
+    const parsed = MatchListQuery.parse({
+      seasonId: "2",
+      playerId: "5",
+      matchType: "league",
+      result: "W",
+      q: "dave",
+      page: "3",
+      limit: "50",
+    });
+    expect(parsed).toMatchObject({
+      seasonId: 2,
+      playerId: 5,
+      matchType: "league",
+      result: "W",
+      q: "dave",
+      page: 3,
+      limit: 50,
+    });
+  });
+
+  it("rejects an invalid matchType", () => {
+    expect(() =>
+      MatchListQuery.parse({ matchType: "friendly" }),
+    ).toThrow();
+  });
+
+  it("rejects an invalid result", () => {
+    expect(() => MatchListQuery.parse({ result: "D" })).toThrow();
+  });
+});
+
+describe("TournamentListQuery", () => {
+  it("accepts a seasonId and coerces it", () => {
+    expect(TournamentListQuery.parse({ seasonId: "3" })).toEqual({
+      seasonId: 3,
+    });
+  });
+
+  it("accepts empty input", () => {
+    expect(TournamentListQuery.parse({})).toEqual({});
+  });
+
+  it("rejects a non-positive seasonId", () => {
+    expect(() => TournamentListQuery.parse({ seasonId: "0" })).toThrow();
+  });
+});
+
+describe("TournamentCreateBody", () => {
+  it("accepts a valid regular tournament", () => {
+    const data = {
+      seasonId: 1,
+      weekNumber: 3,
+      date: "2025-10-02",
+      type: "regular",
+      numGroups: 3,
+    };
+    expect(TournamentCreateBody.parse(data)).toEqual({
+      seasonId: 1,
+      weekNumber: 3,
+      date: "2025-10-02",
+      type: "regular",
+      numGroups: 3,
+    });
+  });
+
+  it("defaults type to regular and numGroups to null", () => {
+    expect(
+      TournamentCreateBody.parse({
+        seasonId: 1,
+        weekNumber: 3,
+        date: "2025-10-02",
+      }),
+    ).toEqual({
+      seasonId: 1,
+      weekNumber: 3,
+      date: "2025-10-02",
+      type: "regular",
+      numGroups: null,
+    });
+  });
+
+  it("rejects numGroups on grand_final", () => {
+    expect(() =>
+      TournamentCreateBody.parse({
+        seasonId: 1,
+        weekNumber: 16,
+        date: "2026-01-15",
+        type: "grand_final",
+        numGroups: 2,
+      }),
+    ).toThrow();
+  });
+
+  it("rejects missing required fields", () => {
+    expect(() =>
+      TournamentCreateBody.parse({ seasonId: 1, weekNumber: 3 }),
+    ).toThrow();
+  });
+});
+
+describe("TournamentGenerateBody", () => {
+  it("accepts a valid generationType", () => {
+    expect(
+      TournamentGenerateBody.parse({ generationType: "1A_4A_8A_12A" }),
+    ).toEqual({ generationType: "1A_4A_8A_12A" });
+  });
+
+  it("rejects an empty generationType", () => {
+    expect(() => TournamentGenerateBody.parse({ generationType: "" })).toThrow();
+  });
+
+  it("rejects missing generationType", () => {
+    expect(() => TournamentGenerateBody.parse({})).toThrow();
+  });
+});
+
+describe("RegistrationAddBody", () => {
+  it("accepts a valid playerId", () => {
+    expect(RegistrationAddBody.parse({ playerId: 7 })).toEqual({
+      playerId: 7,
+    });
+  });
+
+  it("rejects a non-positive playerId", () => {
+    expect(() => RegistrationAddBody.parse({ playerId: 0 })).toThrow();
+  });
+
+  it("rejects missing playerId", () => {
+    expect(() => RegistrationAddBody.parse({})).toThrow();
+  });
+});
+
+describe("RegistrationCheckinBody", () => {
+  it("accepts a boolean checkedIn", () => {
+    expect(RegistrationCheckinBody.parse({ checkedIn: true })).toEqual({
+      checkedIn: true,
+    });
+  });
+
+  it("rejects a non-boolean checkedIn", () => {
+    expect(() =>
+      RegistrationCheckinBody.parse({ checkedIn: "yes" }),
+    ).toThrow();
   });
 });
 

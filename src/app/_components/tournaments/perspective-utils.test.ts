@@ -78,16 +78,16 @@ describe("groupMatchesFromPerspective", () => {
       players: [],
       matches: [
         makeMatch({ id: 1 }),
-        makeMatch({ id: 2, player1: { id: 3, name: "Charlie" }, player2: { id: 4, name: "Dave" }, legsPlayer1: 0, legsPlayer2: 2 }),
+        makeMatch({ id: 2, player1: { id: 3, name: "Charlie", slug: "charlie" }, player2: { id: 4, name: "Dave", slug: "dave" }, legsPlayer1: 0, legsPlayer2: 2 }),
       ],
       standings: [],
     } as unknown as ApiTournamentGroup;
 
     const results = groupMatchesFromPerspective(g);
     expect(results).toHaveLength(4);
-    expect(results[0].playerName).toBe("Alice");
-    expect(results[1].playerName).toBe("Bob");
-    expect(results[2].playerName).toBe("Charlie");
-    expect(results[3].playerName).toBe("Dave");
+    expect(results[0]?.playerName).toBe("Alice");
+    expect(results[1]?.playerName).toBe("Bob");
+    expect(results[2]?.playerName).toBe("Charlie");
+    expect(results[3]?.playerName).toBe("Dave");
   });
 });

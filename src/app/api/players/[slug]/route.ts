@@ -1,6 +1,7 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/api-utils";
+import type { PlayerMatchPerspective } from "@/lib/validation";
 
 /**
  * Handles GET requests for a player's details (stats + matches).
@@ -10,16 +11,11 @@ import { getSupabase } from "@/lib/api-utils";
  */
 export async function GET(
   _req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  slug: string }> },
+  context: { params: Promise<{ slug: string }> },
 ) {
-  
   const { slug } = await context.params;
-  
   const supabase = await getSupabase();
 
-  
   const { data: player, error: playerError } = await supabase
     .from("players")
     .select("id, name, slug")
@@ -30,7 +26,6 @@ export async function GET(
     return NextResponse.json({ error: "Player not found" }, { status: 404 });
   }
 
-  
   const { data: season } = await supabase
     .from("seasons")
     .select("id")
@@ -41,7 +36,6 @@ export async function GET(
     return NextResponse.json({ error: "No active season" }, { status: 404 });
   }
 
-  
   const { data: matches, error: matchError } = await supabase
     .from("matches")
     .select(
@@ -56,53 +50,60 @@ export async function GET(
     return NextResponse.json({ error: matchError.message }, { status: 500 });
   }
 
-  
-  const allPlayerIds = new Set<number>();
-  for (
-  const m of matches) {
-    allPlayerIds.add(m.player1_id);
-    allPlayerIds.add(m.player2_id);
+  const opponentIds = new Set<number>();
+  const tournamentIds = new Set<number>();
+  const groupIds = new Set<number>();
+  for (const m of matches ?? []) {
+    opponentIds.add(m.player1_id);
+    opponentIds.add(m.player2_id);
+    if (m.tournament_id) tournamentIds.add(m.tournament_id);
+    if (m.tournament_group_id) groupIds.add(m.tournament_group_id);
   }
 
-  
-  const { data: allPlayers } = await supabase
+  const { data: opponents } = await supabase
     .from("players")
-    .select("id, name, slug");
+    .select("id, name, slug")
+    .in("id", opponentIds.size ? [...opponentIds] : [0]);
 
-  
-  const playerMap = new Map(
-    (allPlayers ?? []).map((p) => [p.id, { name: p.name, slug: p.slug }]),
+  const opponentMap = new Map(
+    (opponents ?? []).map((p) => [p.id, { name: p.name, slug: p.slug }]),
   );
 
-  
+  const { data: tournaments } = await supabase
+    .from("tournaments")
+    .select("id, week_number, type")
+    .in("id", tournamentIds.size ? [...tournamentIds] : [0]);
+
+  const tournamentMap = new Map(
+    (tournaments ?? []).map((t) => [
+      t.id,
+      { weekNumber: t.week_number, type: t.type },
+    ]),
+  );
+
+  const { data: groups } = await supabase
+    .from("tournament_groups")
+    .select("id, label")
+    .in("id", groupIds.size ? [...groupIds] : [0]);
+
+  const groupMap = new Map((groups ?? []).map((g) => [g.id, g.label]));
+
   let wins = 0;
-  
   let losses = 0;
-  
   let setsFor = 0;
-  
   let setsAgainst = 0;
-  
   let one80s = 0;
-  
   const form: ("W" | "L")[] = [];
 
-  
-  const matchPerspectives = matches.map((m) => {
-    
+  const matchPerspectives: PlayerMatchPerspective[] = (matches ?? []).map((m) => {
     const isPlayer1 = m.player1_id === player.id;
-    
     const opponentId = isPlayer1 ? m.player2_id : m.player1_id;
-    
-    const opponent = playerMap.get(opponentId);
-    
+    const opponent = opponentMap.get(opponentId);
     const legsFor = isPlayer1 ? m.legs_player1 : m.legs_player2;
-    
     const legsAgainst = isPlayer1 ? m.legs_player2 : m.legs_player1;
-    
     const won = legsFor > legsAgainst;
-    
     const player180 = isPlayer1 ? m.player1_180 : m.player2_180;
+    const t = m.tournament_id ? tournamentMap.get(m.tournament_id) : undefined;
 
     wins += won ? 1 : 0;
     losses += won ? 0 : 1;
@@ -116,33 +117,28 @@ export async function GET(
       opponentName: opponent?.name ?? "Unknown",
       opponentSlug: opponent?.slug ?? "unknown",
       score: `${legsFor}-${legsAgainst}`,
-      result: won ? ("W" as const) : ("L" as const),
+      result: won ? "W" : "L",
       date: m.match_date,
       one80: player180,
       matchType: m.match_type,
-      tournamentWeek: undefined as number | undefined,
-      tournamentType: undefined as "regular" | "grand_final" | undefined,
-      roundName: m.tournament_round_name as
-        | "Quarter-Finals"
-        | "Semi-Finals"
-        | "3rd Place"
-        | "Final"
-        | undefined,
-      groupLabel: undefined as string | undefined,
+      tournamentWeek: t?.weekNumber,
+      tournamentType: t?.type,
+      roundName: m.tournament_round_name,
+      groupLabel: m.tournament_group_id
+        ? groupMap.get(m.tournament_group_id)
+        : undefined,
     };
   });
 
-  
   const recentForm = form.slice(-5);
 
-  
   const response = {
     player: {
       id: player.id,
       name: player.name,
       slug: player.slug,
       pos: 1,
-      played: matches.length,
+      played: matchPerspectives.length,
       wins,
       losses,
       setsFor,

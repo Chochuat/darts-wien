@@ -3,16 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query/keys";
 import { ApiMatchesResponse, ApiMatchRow } from "@/lib/validation";
+import type { MatchListQuery } from "@/lib/validation";
 
-interface MatchListParams {
+type MatchListParams = {
   seasonId?: number;
   playerId?: number;
-  matchType?: string;
-  result?: string;
+  matchType?: NonNullable<MatchListQuery["matchType"]>;
+  result?: NonNullable<MatchListQuery["result"]>;
   q?: string;
   page?: number;
   limit?: number;
-}
+};
 
 /**
  * Builds a query string from match list parameters.
@@ -62,7 +63,9 @@ async function fetchMatchDetail(id: number) {
  */
 export function useMatches(params: MatchListParams = {}) {
   return useQuery({
-    queryKey: queryKeys.match.list(params as Record<string, string | number | undefined>),
+    queryKey: queryKeys.match.list(
+      params as unknown as Record<string, string | number | undefined>,
+    ),
     queryFn: () => fetchMatches(params),
     staleTime: 30_000,
   });

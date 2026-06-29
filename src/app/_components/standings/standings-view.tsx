@@ -8,21 +8,9 @@ import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
 import PageLayout from "@/app/_components/ui/page-layout";
 import LiveIndicator from "@/app/_components/ui/live-indicator";
+import { DartLoading } from "@/app/_components/ui/dart-loading";
 import { useStandings } from "@/lib/hooks/use-standings";
 import { StandingsHeaderSummary, StandingsPlayerCard } from "./player-card";
-
-const StandingsLoading = () => {
-  const { t } = useTranslation();
-  return (
-    <PageLayout>
-      <Section>
-        <Typography sx={{ color: colors.text.muted, textAlign: "center", py: 4, fontSize: "0.85rem" }}>
-          {t("common.loading")}
-        </Typography>
-      </Section>
-    </PageLayout>
-  );
-};
 
 const StandingsError = () => {
   const { t } = useTranslation();
@@ -49,7 +37,7 @@ const StandingsView = () => {
     setExpanded((prev) => (prev === name ? null : name));
   };
 
-  if (isLoading) return <StandingsLoading />;
+  if (isLoading) return <DartLoading />;
   if (isError || !data) return <StandingsError />;
 
   const { players } = data;

@@ -16,6 +16,7 @@ import Section from "@/app/_components/ui/section";
 import Card from "@/app/_components/ui/card";
 import PageLayout from "@/app/_components/ui/page-layout";
 import RankBadge from "@/app/_components/ui/rank-badge";
+import { DartLoading } from "@/app/_components/ui/dart-loading";
 import FormIndicator from "@/app/_components/ui/form-indicator";
 import { usePlayerBySlug } from "@/lib/hooks/use-players";
 import { MatchHistoryRow } from "@/app/_components/ui/match-history-row";
@@ -31,15 +32,7 @@ const PlayerMatchesPage = () => {
   const { t } = useTranslation();
   const { desktopStats, mobileStats } = usePlayerStatBoxes();
 
-  if (isLoading) {
-    return (
-      <PageLayout>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: 2, minHeight: "100%" }}>
-          <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>{t("common.loading")}</Typography>
-        </Box>
-      </PageLayout>
-    );
-  }
+  if (isLoading) return <DartLoading withSection={false} />;
 
   if (isError || !data) {
     return (

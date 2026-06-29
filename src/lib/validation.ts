@@ -253,6 +253,26 @@ const TournamentUpdate = tournamentInsertBase.partial();
  */
 export type TournamentUpdate = z.infer<typeof TournamentUpdate>;
 
+export 
+/**
+ * Zod schema for the camelCase request body to create a tournament via the API.
+ */
+const TournamentCreateBody = z.object({
+  seasonId: seasonId,
+  weekNumber: z.number().int().min(1).max(16),
+  date: dateString,
+  type: tournamentType.default("regular"),
+  numGroups: z.number().int().min(2).max(4).nullable().default(null),
+}).refine(
+  (t) => t.type === "grand_final" ? t.numGroups === null : true,
+  { message: "numGroups must be null for grand_final" },
+);
+
+/**
+ * Inferred type of the request body to create a tournament via the API.
+ */
+export type TournamentCreateBody = z.infer<typeof TournamentCreateBody>;
+
 // ─── Tournament Registrations ─────────────────────────────────
 
 const registrationColumns = {
@@ -628,7 +648,7 @@ export
  * Zod schema for the tournament generate request body.
  */
 const TournamentGenerateBody = z.object({
-  generation_type: generationType,
+  generationType: generationType,
 });
 
 /**
@@ -643,7 +663,7 @@ export
  * Zod schema for the request body to add a tournament registration.
  */
 const RegistrationAddBody = z.object({
-  player_id: playerId,
+  playerId: playerId,
 });
 
 /**
@@ -656,7 +676,7 @@ export
  * Zod schema for the request body to toggle a registration's check-in flag.
  */
 const RegistrationCheckinBody = z.object({
-  checked_in: z.boolean(),
+  checkedIn: z.boolean(),
 });
 
 /**
@@ -671,13 +691,13 @@ export
  * Zod schema for the matches list query parameters (values are coerced to numbers).
  */
 const MatchListQuery = z.object({
-  season_id: z.coerce.number().int().positive().optional(),
-  player_id: z.coerce.number().int().positive().optional(),
-  match_type: matchType.optional(),
+  seasonId: z.coerce.number().int().positive().optional(),
+  playerId: z.coerce.number().int().positive().optional(),
+  matchType: matchType.optional(),
   result: z.enum(["W", "L"]).optional(),
   q: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+  limit: z.coerce.number().int().min(1).max(5000).default(20),
 });
 
 /**
@@ -692,7 +712,7 @@ export
  * Zod schema for the tournaments list query parameters (values are coerced to numbers).
  */
 const TournamentListQuery = z.object({
-  season_id: z.coerce.number().int().positive().optional(),
+  seasonId: z.coerce.number().int().positive().optional(),
 });
 
 /**

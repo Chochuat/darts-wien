@@ -1,6 +1,6 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse, validationError } from "@/lib/api-utils";
+import { getSupabase, errorResponse, validationError, requireNumericParam } from "@/lib/api-utils";
 import { MatchResultUpdate } from "@/lib/validation";
 
 /**
@@ -11,28 +11,19 @@ import { MatchResultUpdate } from "@/lib/validation";
  */
 export async function PATCH(
   req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const matchId = Number(id);
-  if (Number.isNaN(matchId)) {
-    return NextResponse.json({ error: "Invalid match ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "match ID");
+  if (param instanceof NextResponse) return param;
+  const matchId = param.id;
 
-  
   const body = await req.json();
-  
   const parsed = MatchResultUpdate.safeParse(body);
   if (!parsed.success) return validationError(parsed.error.issues);
 
-  
   const supabase = await getSupabase();
 
-  
   const { data: match, error: findError } = await supabase
     .from("matches")
     .select("id, tournament_id, season_id, match_type, status")
@@ -50,7 +41,6 @@ export async function PATCH(
     );
   }
 
-  
   const { data, error } = await supabase
     .from("matches")
     .update({

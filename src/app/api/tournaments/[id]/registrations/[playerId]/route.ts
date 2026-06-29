@@ -1,6 +1,7 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse } from "@/lib/api-utils";
+import { getSupabase, errorResponse, validationError, requireNumericParam } from "@/lib/api-utils";
+import { RegistrationCheckinBody } from "@/lib/validation";
 
 /**
  * Handles DELETE requests to remove a tournament registration.
@@ -10,26 +11,18 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
  */
 export async function DELETE(
   _req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string; 
-  playerId: string }> },
+  context: { params: Promise<{ id: string; playerId: string }> },
 ) {
-  
   const { id, playerId } = await context.params;
-  
-  const tournamentId = Number(id);
-  
-  const playerIdNum = Number(playerId);
+  const tParam = requireNumericParam(id, "tournament ID");
+  if (tParam instanceof NextResponse) return tParam;
+  const pParam = requireNumericParam(playerId, "player ID");
+  if (pParam instanceof NextResponse) return pParam;
+  const tournamentId = tParam.id;
+  const playerIdNum = pParam.id;
 
-  if (Number.isNaN(tournamentId) || Number.isNaN(playerIdNum)) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  
   const supabase = await getSupabase();
 
-  
   const { data: tournament } = await supabase
     .from("tournaments")
     .select("status")
@@ -43,7 +36,6 @@ export async function DELETE(
     );
   }
 
-  
   const { error } = await supabase
     .from("tournament_registrations")
     .delete()
@@ -63,41 +55,25 @@ export async function DELETE(
  */
 export async function PATCH(
   req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string; 
-  playerId: string }> },
+  context: { params: Promise<{ id: string; playerId: string }> },
 ) {
-  
   const { id, playerId } = await context.params;
-  
-  const tournamentId = Number(id);
-  
-  const playerIdNum = Number(playerId);
+  const tParam = requireNumericParam(id, "tournament ID");
+  if (tParam instanceof NextResponse) return tParam;
+  const pParam = requireNumericParam(playerId, "player ID");
+  if (pParam instanceof NextResponse) return pParam;
+  const tournamentId = tParam.id;
+  const playerIdNum = pParam.id;
 
-  if (Number.isNaN(tournamentId) || Number.isNaN(playerIdNum)) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  
   const body = await req.json();
-  
-  const { checkedIn } = body;
+  const parsed = RegistrationCheckinBody.safeParse(body);
+  if (!parsed.success) return validationError(parsed.error.issues);
 
-  if (typeof checkedIn !== "boolean") {
-    return NextResponse.json(
-      { error: "checkedIn must be a boolean" },
-      { status: 400 },
-    );
-  }
-
-  
   const supabase = await getSupabase();
 
-  
   const { data, error } = await supabase
     .from("tournament_registrations")
-    .update({ checked_in: checkedIn })
+    .update({ checked_in: parsed.data.checkedIn })
     .eq("tournament_id", tournamentId)
     .eq("player_id", playerIdNum)
     .select()

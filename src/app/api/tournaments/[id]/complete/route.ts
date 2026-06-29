@@ -1,6 +1,6 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getSupabase, errorResponse } from "@/lib/api-utils";
+import { getSupabase, errorResponse, requireNumericParam } from "@/lib/api-utils";
 
 /**
  * Handles POST requests to complete a tournament.
@@ -10,22 +10,15 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
  */
 export async function POST(
   _req: NextRequest,
-  context: { 
-  params: Promise<{ 
-  id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  
   const { id } = await context.params;
-  
-  const tournamentId = Number(id);
-  if (Number.isNaN(tournamentId)) {
-    return NextResponse.json({ error: "Invalid tournament ID" }, { status: 400 });
-  }
+  const param = requireNumericParam(id, "tournament ID");
+  if (param instanceof NextResponse) return param;
+  const tournamentId = param.id;
 
-  
   const supabase = await getSupabase();
 
-  
   const { data: pendingMatches } = await supabase
     .from("matches")
     .select("id")
@@ -39,7 +32,6 @@ export async function POST(
     );
   }
 
-  
   const { data: finalMatch } = await supabase
     .from("matches")
     .select("player1_id, player2_id, legs_player1, legs_player2")
@@ -48,7 +40,6 @@ export async function POST(
     .eq("tournament_round_name", "Final")
     .single();
 
-  
   let winnerPlayerId: number | null = null;
   if (finalMatch) {
     winnerPlayerId =
@@ -57,7 +48,6 @@ export async function POST(
         : finalMatch.player2_id;
   }
 
-  
   const { error } = await supabase
     .from("tournaments")
     .update({

@@ -33,13 +33,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Package Manager | npm | — |
 | Styling | MUI (Material UI) + CSS Modules | 9.x |
 | Forms | React Hook Form | 7.x |
+| Validation | Zod | 4.x |
 | Server State | TanStack React Query | 5.x |
 | Database | Supabase (PostgreSQL + PostGIS) | — |
+| i18n | i18next + react-i18next | 26.x / 17.x |
+| Testing | Vitest + @testing-library | 3.x |
 | 3D Graphics | Three.js | 0.185.x |
 | 3D React Renderer | @react-three/fiber | 9.x |
 | 3D Helpers | @react-three/drei | 10.x |
 | 3D Animation | @react-spring/three | 10.x |
-| i18n | i18next + react-i18next | — |
+| Linting (docs) | eslint-plugin-jsdoc + eslint-plugin-tsdoc | — |
+| Test DOM | jsdom + @testing-library/react | 29.x / 16.x |
 
 ---
 
@@ -48,30 +52,42 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ```
 darts-wien/
 ├── src/
-│   └── app/                  # App Router pages and layouts
-│       ├── _components/
-│       │   ├── standings/standings-view.tsx  # API-backed standings display
-│       │   ├── tournaments/format-constants.ts # Game format constants
-│       │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
-│       ├── matches/
-│       │   ├── page.tsx           # Filterable all-matches view (20/page)
-│       │   └── [slug]/page.tsx    # Player match history
-│       ├── tournaments/
-│       │   └── page.tsx           # Tournament list (past + future)
-│       ├── globals.css
-│       ├── layout.tsx
-│       ├── page.tsx          # Home page (Standings)
-│       └── providers.tsx
+│   ├── app/                  # App Router pages and layouts
+│   │   ├── _components/
+│   │   │   ├── game/              # 3D darts game (Three.js / R3F)
+│   │   │   ├── standings/         # API-backed standings display
+│   │   │   ├── tournaments/       # Format constants, bracket, detail page
+│   │   │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
+│   │   ├── _i18n/                 # i18next init, LocaleProvider, locales/{en,de,sk}.json
+│   │   ├── about/                 # About page
+│   │   ├── api/                   # Route Handlers (see src/app/api/AGENTS.md)
+│   │   ├── game/                  # 3D darts game page
+│   │   ├── matches/
+│   │   │   ├── page.tsx           # Filterable all-matches view (20/page)
+│   │   │   └── [slug]/page.tsx    # Player match history
+│   │   ├── tournaments/
+│   │   │   └── page.tsx           # Tournament list (past + future)
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx               # Home page (Standings)
+│   │   └── providers.tsx
 │   └── lib/
-│       ├── design-tokens.ts  # Colors, spacing, borderRadius, helpers
-│       └── supabase/         # (not yet in use)
+│       ├── AGENTS.md              # Scoped rules for src/lib/
+│       ├── api-utils.ts           # Supabase server client, param parsing, error helpers
+│       ├── design-tokens.ts       # Colors, spacing, borderRadius, helpers
+│       ├── validation.ts          # All Zod schemas + inferred types (single source of truth)
+│       ├── hooks/                 # use* hooks (React Query + fetch + Zod parse)
+│       ├── query/keys.ts          # Centralised React Query key factory
+│       └── supabase/              # Browser + server client factories, Database types
 ├── docs/
 │   ├── architecture.md
 │   └── conventions.md
 ├── public/
+├── supabase/                      # Migrations + seed SQL
 ├── opencode.json
 ├── next.config.ts
 ├── tsconfig.json
+├── vitest.config.ts
 ├── eslint.config.mjs
 └── package.json
 ```
@@ -84,7 +100,7 @@ darts-wien/
 npm run dev       # Dev server → http://localhost:3000
 npm run build     # Production build
 npm run lint      # ESLint
-npm test          # Vitest (185 tests across 17 test files)
+npm test          # Vitest (204 tests across 17 test files)
 npm run test:watch# Vitest watch mode
 npx vitest run --coverage  # Coverage report (lib/ = 100%)
 ```
@@ -108,7 +124,11 @@ npx vitest run --coverage  # Coverage report (lib/ = 100%)
 
 > See `docs/architecture.md` for full records.
 
-_No decisions recorded yet._
+- **ADR-001:** Standings stats include all match types (no `match_type` filter).
+- **ADR-002:** i18n via i18next + query-param language switching (no Next.js i18n router).
+- **ADR-003:** Vitest for unit testing, colocated `*.test.ts` files.
+- **ADR-004:** JSDoc/TSDoc enforcement via eslint-plugin-jsdoc + eslint-plugin-tsdoc.
+- **ADR-005:** Supabase env var renamed to `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 
 ---
 
