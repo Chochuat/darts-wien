@@ -33,7 +33,9 @@
     "game": "Hra",
     "about": "O nás",
     "settings": "Nastavenia",
-    "language": "Jazyk"
+    "language": "Jazyk",
+    "login": "Prihlásiť",
+    "dashboard": "Panel"
   },
   "lang": {
     "en": "English",

@@ -6,6 +6,7 @@
 -- Drop the recursive policies (they error on every query).
 DROP POLICY IF EXISTS "Users can read own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Admins can read all profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Admins can update any profile" ON public.profiles;
 DROP POLICY IF EXISTS "Admins can delete profiles" ON public.profiles;
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import BarChart from "@mui/icons-material/BarChart";
@@ -7,11 +8,14 @@ import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import TrackChanges from "@mui/icons-material/TrackChanges";
 import Info from "@mui/icons-material/Info";
 import SportsEsports from "@mui/icons-material/SportsEsports";
+import LoginIcon from "@mui/icons-material/Login";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
 import { colors } from "@/lib/design-tokens";
+import { createClient } from "@/lib/supabase/client";
 import { LanguageSettings } from "./language-settings";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
@@ -30,6 +34,16 @@ export const SIDEBAR_WIDTH = 100;
 const Sidebar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      setLoggedIn(!!session);
+    };
+    void check();
+  }, []);
 
   const links = [
     { label: t("nav.standings"), href: "/", icon: <BarChart sx={{ fontSize: "1.3rem" }} /> },
@@ -67,6 +81,14 @@ const Sidebar = () => {
       </Box>
 
       <Box sx={{ flex: 1 }} />
+      <Link href={loggedIn ? "/admin" : "/admin/login"} style={{ textDecoration: "none", width: "100%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5, py: 0.75, cursor: "pointer", color: "rgba(255,255,255,0.3)", transition: "color 0.15s", "&:hover": { color: "rgba(255,255,255,0.55)" } }}>
+          {loggedIn ? <DashboardIcon sx={{ fontSize: "1.1rem" }} /> : <LoginIcon sx={{ fontSize: "1.1rem" }} />}
+          <Typography className={robotoCondensed.className} sx={{ fontWeight: 700, fontSize: "0.5rem", letterSpacing: 1, textTransform: "uppercase", lineHeight: 1, color: "inherit" }}>
+            {loggedIn ? t("nav.dashboard") : t("nav.login")}
+          </Typography>
+        </Box>
+      </Link>
       <LanguageSettings />
     </Box>
   );

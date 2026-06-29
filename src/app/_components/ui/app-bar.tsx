@@ -1,13 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TrackChanges from "@mui/icons-material/TrackChanges";
+import LoginIcon from "@mui/icons-material/Login";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Orbitron, Roboto_Condensed } from "next/font/google";
 import { colors } from "@/lib/design-tokens";
+import { createClient } from "@/lib/supabase/client";
 import i18n, { SUPPORTED_LANGUAGES, LANG_LABELS } from "@/app/_i18n/i18n";
 import type { SupportedLanguage } from "@/app/_i18n/i18n";
 
@@ -21,6 +25,16 @@ const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] }
 const AppBar = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      setLoggedIn(!!session);
+    };
+    void check();
+  }, []);
 
   const tabs = [
     { label: t("nav.standings"), href: "/" },
@@ -69,23 +83,47 @@ const AppBar = () => {
           </Box>
         </Link>
 
-        <Box
-          className={robotoCondensed.className}
-          onClick={cycleLang}
-          sx={{
-            color: "rgba(255,255,255,0.5)",
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            letterSpacing: 1,
-            cursor: "pointer",
-            px: 1,
-            py: 0.25,
-            borderRadius: 0.5,
-            transition: "all 0.15s",
-            "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.08)" },
-          }}
-        >
-          {LANG_LABELS[i18n.language as SupportedLanguage] ?? "SK"}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Link href={loggedIn ? "/admin" : "/admin/login"} style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+            <Box
+              className={robotoCondensed.className}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                px: 1,
+                py: 0.25,
+                borderRadius: 0.5,
+                color: "rgba(255,255,255,0.5)",
+                cursor: "pointer",
+                transition: "all 0.15s",
+                "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              {loggedIn ? <DashboardIcon sx={{ fontSize: "1rem" }} /> : <LoginIcon sx={{ fontSize: "1rem" }} />}
+              <Typography sx={{ fontWeight: 700, fontSize: "0.7rem", letterSpacing: 1, textTransform: "uppercase", color: "inherit" }}>
+                {loggedIn ? t("nav.dashboard") : t("nav.login")}
+              </Typography>
+            </Box>
+          </Link>
+          <Box
+            className={robotoCondensed.className}
+            onClick={cycleLang}
+            sx={{
+              color: "rgba(255,255,255,0.5)",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: 1,
+              cursor: "pointer",
+              px: 1,
+              py: 0.25,
+              borderRadius: 0.5,
+              transition: "all 0.15s",
+              "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.08)" },
+            }}
+          >
+            {LANG_LABELS[i18n.language as SupportedLanguage] ?? "SK"}
+          </Box>
         </Box>
       </Box>
 

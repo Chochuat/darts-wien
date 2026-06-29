@@ -32,7 +32,9 @@
     "game": "Spiel",
     "about": "Über uns",
     "settings": "Einstellungen",
-    "language": "Sprache"
+    "language": "Sprache",
+    "login": "Anmelden",
+    "dashboard": "Dashboard"
   },
   "lang": {
     "en": "English",

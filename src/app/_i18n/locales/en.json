@@ -32,7 +32,9 @@
     "game": "Game",
     "about": "About",
     "settings": "Settings",
-    "language": "Language"
+    "language": "Language",
+    "login": "Login",
+    "dashboard": "Dashboard"
   },
   "lang": {
     "en": "English",
