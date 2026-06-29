@@ -6,25 +6,25 @@ import en from "./locales/en.json";
 import de from "./locales/de.json";
 import sk from "./locales/sk.json";
 
-export 
+export
 /**
- * SUPPORTED_LANGUAGES component.
+ * Language codes supported by the app, in cycle order for the language switcher.
  */
 const SUPPORTED_LANGUAGES = ["en", "de", "sk"] as const;
 
 /**
- * SupportedLanguage component.
+ * Supported language code derived from {@link SUPPORTED_LANGUAGES}.
  */
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
-export 
+export
 /**
- * DEFAULT_LANGUAGE component.
+ * Language used on first load and when the requested language is unsupported.
  */
 const DEFAULT_LANGUAGE: SupportedLanguage = "sk";
 
-export 
+export
 /**
- * LANG_LABELS component.
+ * Short uppercase labels shown in the language switcher, keyed by language code.
  */
 const LANG_LABELS: Record<SupportedLanguage, string> = {
   en: "EN",

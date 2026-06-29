@@ -1,6 +1,6 @@
-export 
+export
 /**
- * colors component.
+ * Central color palette: surfaces, accents, medal colors, and text shades.
  */
 const colors = {
   background: "#000",
@@ -26,9 +26,9 @@ const colors = {
   },
 } as const;
 
-export 
+export
 /**
- * borderRadius component.
+ * Border-radius scale (in pixels) used across UI components.
  */
 const borderRadius = {
   sm: 4,
@@ -38,9 +38,9 @@ const borderRadius = {
   xxl: 20,
 } as const;
 
-export 
+export
 /**
- * spacing component.
+ * Spacing scale (in pixels) used for layout paddings and gaps.
  */
 const spacing = {
   xs: 4,

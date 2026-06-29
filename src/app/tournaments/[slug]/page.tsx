@@ -13,7 +13,7 @@ import TournamentDetail from "@/app/_components/tournaments/tournament-detail";
 
 
 /**
- * TournamentPage component.
+ * Tournament detail page: resolves a week-number slug to a tournament and renders its detail view.
  */
 const TournamentPage = () => {
   const params = useParams<{ slug: string }>();

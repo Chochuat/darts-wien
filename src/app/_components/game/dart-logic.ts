@@ -1,44 +1,44 @@
 import * as THREE from "three";
 import type { DartOutcome } from "./types";
 
-export 
+export
 /**
- * DART_NUMBERS component.
+ * Dartboard wedge numbers in clockwise order starting from the top (20).
  */
 const DART_NUMBERS = [
   20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5,
 ];
 
-export 
+export
 /**
- * BOARD_RADIUS component.
+ * Outer radius of the dartboard playing area (scene units).
  */
 const BOARD_RADIUS = 0.9;
-export 
+export
 /**
- * BOARD_POSITION component.
+ * World-space position of the dartboard centre.
  */
 const BOARD_POSITION = new THREE.Vector3(0, 0.45, -0.42);
-export 
+export
 /**
- * BOARD_FACE_Z component.
+ * Z coordinate of the board's playable face (slightly in front of the board centre).
  */
 const BOARD_FACE_Z = BOARD_POSITION.z + 0.03;
 
-export 
+export
 /**
- * HAND_POS component.
+ * World-space position where darts spawn before flying toward the board.
  */
 const HAND_POS = new THREE.Vector3(0.2, -0.55, 1.7);
 
-export 
+export
 /**
- * WEDGE_HALF component.
+ * Half the angular span of a single wedge (radians).
  */
 const WEDGE_HALF = Math.PI / 20;
-export 
+export
 /**
- * WEDGE_SPAN component.
+ * Full angular span of a single wedge (radians).
  */
 const WEDGE_SPAN = Math.PI / 10;
 
@@ -53,7 +53,9 @@ export function wedgeCenterAngle(index: number): number {
 
 
 /**
- * randomOutcome component.
+ * Produces a weighted-random dart outcome simulating an amateur throw.
+ *
+ * @returns A random {@link DartOutcome}.
  */
 export function randomOutcome(): DartOutcome {
   

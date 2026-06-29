@@ -2,7 +2,7 @@ import GamePage from "@/app/_components/game/game-page";
 
 
 /**
- * Game component.
+ * Game page route — mounts the 3D darts game client.
  */
 const Game = () => {
   return <GamePage />;

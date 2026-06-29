@@ -18,7 +18,7 @@ import MatchRow from "@/app/_components/ui/match-row";
 import type { StandingPlayer } from "@/lib/validation";
 
 /**
- * StandingsHeaderSummary component.
+ * Header summary shown next to the standings title (player count, matches, top streak).
  *
  * @param props - Component properties.
  */
@@ -46,7 +46,7 @@ export const StandingsHeaderSummary = ({ players, totalMatches }: { players: Sta
 };
 
 /**
- * StandingsPlayerCard component.
+ * Expandable standings card for a single player, showing stats and last 5 matches.
  *
  * @param props - Component properties.
  */

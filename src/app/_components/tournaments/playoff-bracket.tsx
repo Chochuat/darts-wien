@@ -56,7 +56,7 @@ export const SetsDiff = ({ setsFor, setsAgainst }: { setsFor: number; setsAgains
 }
 
 /**
- * Displays a playoff match between two playerprops.s.
+ * Displays a single playoff match as a head-to-head row between two players.
  *
  * @param props - Component properties.
  */

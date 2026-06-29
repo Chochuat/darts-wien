@@ -18,7 +18,7 @@ const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "900"] });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
 /**
- * SIDEBAR_WIDTH component.
+ * Fixed sidebar width in pixels (desktop navigation).
  */
 export const SIDEBAR_WIDTH = 100;
 

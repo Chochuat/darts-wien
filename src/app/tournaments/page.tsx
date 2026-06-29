@@ -16,7 +16,7 @@ import { useTournaments } from "@/lib/hooks/use-tournaments";
 
 
 /**
- * TournamentsListPage component.
+ * Tournaments list page: shows past (completed) and upcoming tournaments for the season.
  */
 const TournamentsListPage = () => {
   const { t } = useTranslation();

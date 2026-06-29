@@ -2,7 +2,7 @@ import StandingsView from "./_components/standings/standings-view";
 
 
 /**
- * Home component.
+ * Home page — renders the live season standings.
  */
 const Home = () => {
   return <StandingsView />;

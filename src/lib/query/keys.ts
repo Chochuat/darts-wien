@@ -1,6 +1,9 @@
-export 
+export
 /**
- * queryKeys component.
+ * Centralised React Query key factory. Keys are hierarchical arrays so that
+ * `queryClient.invalidateQueries({ queryKey: queryKeys.match.all })` invalidates
+ * every match query. Use the factory functions for parameterised queries to keep
+ * cache identity stable across refetches.
  */
 const queryKeys = {
   season: {

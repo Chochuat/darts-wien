@@ -4,52 +4,52 @@ import { z } from "zod";
 
 export 
 /**
- * positiveInt component.
+ * Zod schema for a non-negative integer (minimum 0).
  */
 const positiveInt = z.number().int().min(0);
 export 
 /**
- * positiveSmallInt component.
+ * Zod schema for a non-negative integer that fits a Postgres smallint (0-32767).
  */
 const positiveSmallInt = z.number().int().min(0).max(32767);
 export 
 /**
- * playerId component.
+ * Zod schema for a player primary key (positive integer).
  */
 const playerId = z.number().int().positive();
 export 
 /**
- * seasonId component.
+ * Zod schema for a season primary key (positive integer).
  */
 const seasonId = z.number().int().positive();
-export 
+export
 /**
- * tournamentId.
+ * Zod schema for a tournament primary key (positive integer).
  */
 const tournamentId = z.number().int().positive();
 export 
 /**
- * groupId component.
+ * Zod schema for a tournament group primary key (positive integer).
  */
 const groupId = z.number().int().positive();
 export 
 /**
- * matchId component.
+ * Zod schema for a match primary key (positive integer).
  */
 const matchId = z.number().int().positive();
 export 
 /**
- * nonEmptyName component.
+ * Zod schema for a non-empty display name (1-255 characters).
  */
 const nonEmptyName = z.string().min(1).max(255);
 export 
 /**
- * dateString component.
+ * Zod schema for an ISO calendar date (YYYY-MM-DD).
  */
 const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date YYYY-MM-DD");
 export 
 /**
- * timestamptz component.
+ * Zod schema for an ISO 8601 timestamp with timezone offset.
  */
 const timestamptz = z.string().datetime({ offset: true });
 
@@ -64,7 +64,7 @@ const seasonColumns = {
 
 export 
 /**
- * SeasonRow component.
+ * Zod schema for a season row as stored in the `seasons` table.
  */
 const SeasonRow = z.object({
   id: z.number().int().positive(),
@@ -73,20 +73,20 @@ const SeasonRow = z.object({
 });
 
 /**
- * SeasonRow component.
+ * Inferred type of a validated season database row.
  */
 export type SeasonRow = z.infer<typeof SeasonRow>;
 
 export 
 /**
- * SeasonInsert component.
+ * Zod schema for the payload to create a new season.
  */
 const SeasonInsert = z.object({
   ...seasonColumns,
 });
 
 /**
- * SeasonInsert component.
+ * Inferred type of the payload to create a new season.
  */
 export type SeasonInsert = z.infer<typeof SeasonInsert>;
 
@@ -98,7 +98,7 @@ const playerColumns = {
 
 export 
 /**
- * PlayerRow component.
+ * Zod schema for a player row as stored in the `players` table.
  */
 const PlayerRow = z.object({
   id: playerId,
@@ -108,26 +108,26 @@ const PlayerRow = z.object({
 });
 
 /**
- * PlayerRow component.
+ * Inferred type of a validated player database row.
  */
 export type PlayerRow = z.infer<typeof PlayerRow>;
 
 export 
 /**
- * PlayerInsert component.
+ * Zod schema for the payload to create a new player.
  */
 const PlayerInsert = z.object({
   ...playerColumns,
 });
 
 /**
- * PlayerInsert component.
+ * Inferred type of the payload to create a new player.
  */
 export type PlayerInsert = z.infer<typeof PlayerInsert>;
 
 export 
 /**
- * PlayerSummary component.
+ * Zod schema for a compact player summary (id, name, slug) used in API responses.
  */
 const PlayerSummary = z.object({
   id: playerId,
@@ -136,7 +136,7 @@ const PlayerSummary = z.object({
 });
 
 /**
- * PlayerSummary component.
+ * Inferred type of a compact player summary used in API responses.
  */
 export type PlayerSummary = z.infer<typeof PlayerSummary>;
 
@@ -149,7 +149,7 @@ const seasonPlayerColumns = {
 
 export 
 /**
- * SeasonPlayerRow component.
+ * Zod schema for a season-player association row.
  */
 const SeasonPlayerRow = z.object({
   id: z.number().int().positive(),
@@ -157,20 +157,20 @@ const SeasonPlayerRow = z.object({
 });
 
 /**
- * SeasonPlayerRow component.
+ * Inferred type of a season-player association row.
  */
 export type SeasonPlayerRow = z.infer<typeof SeasonPlayerRow>;
 
 export 
 /**
- * SeasonPlayerInsert component.
+ * Zod schema for the payload to associate a player with a season.
  */
 const SeasonPlayerInsert = z.object({
   ...seasonPlayerColumns,
 });
 
 /**
- * SeasonPlayerInsert component.
+ * Inferred type of the payload to associate a player with a season.
  */
 export type SeasonPlayerInsert = z.infer<typeof SeasonPlayerInsert>;
 
@@ -188,7 +188,7 @@ export
 const tournamentType = z.enum(["regular", "grand_final"]);
 export 
 /**
- * generationType component.
+ * Zod schema for the group/match generation strategy identifier.
  */
 const generationType = z.string().min(1);
 
@@ -207,7 +207,7 @@ const tournamentColumns = {
 
 export 
 /**
- * TournamentRow component.
+ * Zod schema for a tournament row as stored in the `tournaments` table.
  */
 const TournamentRow = z.object({
   id: tournamentId,
@@ -216,7 +216,7 @@ const TournamentRow = z.object({
 });
 
 /**
- * TournamentRow component.
+ * Inferred type of a validated tournament database row.
  */
 export type TournamentRow = z.infer<typeof TournamentRow>;
 
@@ -230,7 +230,7 @@ const tournamentInsertBase = z.object({
 
 export 
 /**
- * TournamentInsert component.
+ * Zod schema for the payload to create a new tournament; rejects `num_groups` on grand_final.
  */
 const TournamentInsert = tournamentInsertBase.refine(
   (t) => t.type === "grand_final" ? t.num_groups === null : true,
@@ -238,18 +238,18 @@ const TournamentInsert = tournamentInsertBase.refine(
 );
 
 /**
- * TournamentInsert component.
+ * Inferred type of the payload to create a new tournament.
  */
 export type TournamentInsert = z.infer<typeof TournamentInsert>;
 
 export 
 /**
- * TournamentUpdate component.
+ * Zod schema for a partial tournament update payload.
  */
 const TournamentUpdate = tournamentInsertBase.partial();
 
 /**
- * TournamentUpdate component.
+ * Inferred type of a partial tournament update payload.
  */
 export type TournamentUpdate = z.infer<typeof TournamentUpdate>;
 
@@ -263,7 +263,7 @@ const registrationColumns = {
 
 export 
 /**
- * TournamentRegistrationRow component.
+ * Zod schema for a tournament registration row.
  */
 const TournamentRegistrationRow = z.object({
   id: z.number().int().positive(),
@@ -272,13 +272,13 @@ const TournamentRegistrationRow = z.object({
 });
 
 /**
- * TournamentRegistrationRow component.
+ * Inferred type of a tournament registration row.
  */
 export type TournamentRegistrationRow = z.infer<typeof TournamentRegistrationRow>;
 
 export 
 /**
- * TournamentRegistrationInsert component.
+ * Zod schema for the payload to register a player to a tournament.
  */
 const TournamentRegistrationInsert = z.object({
   tournament_id: tournamentId,
@@ -286,20 +286,20 @@ const TournamentRegistrationInsert = z.object({
 });
 
 /**
- * TournamentRegistrationInsert component.
+ * Inferred type of the payload to register a player to a tournament.
  */
 export type TournamentRegistrationInsert = z.infer<typeof TournamentRegistrationInsert>;
 
 export 
 /**
- * TournamentRegistrationUpdate component.
+ * Zod schema for updating a registration (check-in toggle).
  */
 const TournamentRegistrationUpdate = z.object({
   checked_in: z.boolean(),
 });
 
 /**
- * TournamentRegistrationUpdate component.
+ * Inferred type of a registration update payload.
  */
 export type TournamentRegistrationUpdate = z.infer<typeof TournamentRegistrationUpdate>;
 
@@ -307,7 +307,7 @@ export type TournamentRegistrationUpdate = z.infer<typeof TournamentRegistration
 
 export 
 /**
- * groupLabel component.
+ * Zod enum of tournament group labels (A-D).
  */
 const groupLabel = z.enum(["A", "B", "C", "D"]);
 
@@ -318,7 +318,7 @@ const tournamentGroupColumns = {
 
 export 
 /**
- * TournamentGroupRow component.
+ * Zod schema for a tournament group row.
  */
 const TournamentGroupRow = z.object({
   id: groupId,
@@ -326,20 +326,20 @@ const TournamentGroupRow = z.object({
 });
 
 /**
- * TournamentGroupRow component.
+ * Inferred type of a tournament group row.
  */
 export type TournamentGroupRow = z.infer<typeof TournamentGroupRow>;
 
 export 
 /**
- * TournamentGroupInsert component.
+ * Zod schema for the payload to create a tournament group.
  */
 const TournamentGroupInsert = z.object({
   ...tournamentGroupColumns,
 });
 
 /**
- * TournamentGroupInsert component.
+ * Inferred type of the payload to create a tournament group.
  */
 export type TournamentGroupInsert = z.infer<typeof TournamentGroupInsert>;
 
@@ -352,7 +352,7 @@ const tournamentGroupPlayerColumns = {
 
 export 
 /**
- * TournamentGroupPlayerRow component.
+ * Zod schema for a tournament group membership row.
  */
 const TournamentGroupPlayerRow = z.object({
   id: z.number().int().positive(),
@@ -360,20 +360,20 @@ const TournamentGroupPlayerRow = z.object({
 });
 
 /**
- * TournamentGroupPlayerRow component.
+ * Inferred type of a tournament group membership row.
  */
 export type TournamentGroupPlayerRow = z.infer<typeof TournamentGroupPlayerRow>;
 
 export 
 /**
- * TournamentGroupPlayerInsert component.
+ * Zod schema for the payload to add a player to a tournament group.
  */
 const TournamentGroupPlayerInsert = z.object({
   ...tournamentGroupPlayerColumns,
 });
 
 /**
- * TournamentGroupPlayerInsert component.
+ * Inferred type of the payload to add a player to a tournament group.
  */
 export type TournamentGroupPlayerInsert = z.infer<typeof TournamentGroupPlayerInsert>;
 
@@ -381,17 +381,17 @@ export type TournamentGroupPlayerInsert = z.infer<typeof TournamentGroupPlayerIn
 
 export 
 /**
- * matchStatus component.
+ * Zod enum of match lifecycle states.
  */
 const matchStatus = z.enum(["pending", "completed", "no_show"]);
 export 
 /**
- * matchType component.
+ * Zod enum of match types (league, tournament group, tournament playoff).
  */
 const matchType = z.enum(["league", "tournament_group", "tournament_playoff"]);
 export 
 /**
- * roundName component.
+ * Zod enum of playoff round names.
  */
 const roundName = z.enum(["Quarter-Finals", "Semi-Finals", "3rd Place", "Final"]);
 
@@ -419,7 +419,7 @@ const matchColumns = {
 
 export 
 /**
- * Single match row display.
+ * Zod schema for a match row as stored in the `matches` table, with cross-field validation for type/status/legs.
  */
 const MatchRow = z.object({
   id: matchId,
@@ -458,13 +458,13 @@ const MatchRow = z.object({
 );
 
 /**
- * Single match row display.
+ * Inferred type of a validated match database row.
  */
 export type MatchRow = z.infer<typeof MatchRow>;
 
 export 
 /**
- * MatchInsert component.
+ * Zod schema for the payload to create a new match, with cross-field validation for type/status/legs.
  */
 const MatchInsert = z.object({
   ...matchColumns,
@@ -501,7 +501,7 @@ const MatchInsert = z.object({
 );
 
 /**
- * MatchInsert component.
+ * Inferred type of the payload to create a new match.
  */
 export type MatchInsert = z.infer<typeof MatchInsert>;
 
@@ -509,7 +509,7 @@ export type MatchInsert = z.infer<typeof MatchInsert>;
 
 export 
 /**
- * MatchResultUpdate component.
+ * Zod schema for submitting a completed match result (no draws, at least one leg won).
  */
 const MatchResultUpdate = z.object({
   legs_player1: positiveSmallInt,
@@ -525,7 +525,7 @@ const MatchResultUpdate = z.object({
 );
 
 /**
- * MatchResultUpdate component.
+ * Inferred type of a completed match result payload.
  */
 export type MatchResultUpdate = z.infer<typeof MatchResultUpdate>;
 
@@ -533,14 +533,14 @@ export type MatchResultUpdate = z.infer<typeof MatchResultUpdate>;
 
 export 
 /**
- * MatchNoShowUpdate component.
+ * Zod schema for recording a no-show (walkover) result.
  */
 const MatchNoShowUpdate = z.object({
   no_show_player_id: playerId,
 });
 
 /**
- * MatchNoShowUpdate component.
+ * Inferred type of a no-show result payload.
  */
 export type MatchNoShowUpdate = z.infer<typeof MatchNoShowUpdate>;
 
@@ -564,7 +564,7 @@ const finalStandingColumns = {
 
 export 
 /**
- * TournamentFinalStandingRow component.
+ * Zod schema for a tournament final standing row.
  */
 const TournamentFinalStandingRow = z.object({
   id: z.number().int().positive(),
@@ -572,20 +572,20 @@ const TournamentFinalStandingRow = z.object({
 });
 
 /**
- * TournamentFinalStandingRow component.
+ * Inferred type of a tournament final standing row.
  */
 export type TournamentFinalStandingRow = z.infer<typeof TournamentFinalStandingRow>;
 
 export 
 /**
- * TournamentFinalStandingInsert component.
+ * Zod schema for the payload to create a final standing entry.
  */
 const TournamentFinalStandingInsert = z.object({
   ...finalStandingColumns,
 });
 
 /**
- * TournamentFinalStandingInsert component.
+ * Inferred type of the payload to create a final standing entry.
  */
 export type TournamentFinalStandingInsert = z.infer<typeof TournamentFinalStandingInsert>;
 
@@ -593,7 +593,7 @@ export type TournamentFinalStandingInsert = z.infer<typeof TournamentFinalStandi
 
 export 
 /**
- * GameThrowRow component.
+ * Zod schema for a `game_throw` row (3D game leaderboard entry).
  */
 const GameThrowRow = z.object({
   id: z.number().int().positive(),
@@ -603,13 +603,13 @@ const GameThrowRow = z.object({
 });
 
 /**
- * GameThrowRow component.
+ * Inferred type of a game throw leaderboard row.
  */
 export type GameThrowRow = z.infer<typeof GameThrowRow>;
 
 export 
 /**
- * GameThrowInsert component.
+ * Zod schema for the payload to insert a game throw score.
  */
 const GameThrowInsert = z.object({
   name: nonEmptyName,
@@ -617,7 +617,7 @@ const GameThrowInsert = z.object({
 });
 
 /**
- * GameThrowInsert component.
+ * Inferred type of the payload to insert a game throw score.
  */
 export type GameThrowInsert = z.infer<typeof GameThrowInsert>;
 
@@ -625,14 +625,14 @@ export type GameThrowInsert = z.infer<typeof GameThrowInsert>;
 
 export 
 /**
- * TournamentGenerateBody component.
+ * Zod schema for the tournament generate request body.
  */
 const TournamentGenerateBody = z.object({
   generation_type: generationType,
 });
 
 /**
- * TournamentGenerateBody component.
+ * Inferred type of the tournament generate request body.
  */
 export type TournamentGenerateBody = z.infer<typeof TournamentGenerateBody>;
 
@@ -640,27 +640,27 @@ export type TournamentGenerateBody = z.infer<typeof TournamentGenerateBody>;
 
 export 
 /**
- * RegistrationAddBody component.
+ * Zod schema for the request body to add a tournament registration.
  */
 const RegistrationAddBody = z.object({
   player_id: playerId,
 });
 
 /**
- * RegistrationAddBody component.
+ * Inferred type of the request body to add a registration.
  */
 export type RegistrationAddBody = z.infer<typeof RegistrationAddBody>;
 
 export 
 /**
- * RegistrationCheckinBody component.
+ * Zod schema for the request body to toggle a registration's check-in flag.
  */
 const RegistrationCheckinBody = z.object({
   checked_in: z.boolean(),
 });
 
 /**
- * RegistrationCheckinBody component.
+ * Inferred type of the request body to toggle check-in.
  */
 export type RegistrationCheckinBody = z.infer<typeof RegistrationCheckinBody>;
 
@@ -668,7 +668,7 @@ export type RegistrationCheckinBody = z.infer<typeof RegistrationCheckinBody>;
 
 export 
 /**
- * MatchListQuery component.
+ * Zod schema for the matches list query parameters (values are coerced to numbers).
  */
 const MatchListQuery = z.object({
   season_id: z.coerce.number().int().positive().optional(),
@@ -681,7 +681,7 @@ const MatchListQuery = z.object({
 });
 
 /**
- * MatchListQuery component.
+ * Inferred type of the matches list query parameters.
  */
 export type MatchListQuery = z.infer<typeof MatchListQuery>;
 
@@ -689,14 +689,14 @@ export type MatchListQuery = z.infer<typeof MatchListQuery>;
 
 export 
 /**
- * TournamentListQuery component.
+ * Zod schema for the tournaments list query parameters (values are coerced to numbers).
  */
 const TournamentListQuery = z.object({
   season_id: z.coerce.number().int().positive().optional(),
 });
 
 /**
- * TournamentListQuery component.
+ * Inferred type of the tournaments list query parameters.
  */
 export type TournamentListQuery = z.infer<typeof TournamentListQuery>;
 
@@ -704,7 +704,7 @@ export type TournamentListQuery = z.infer<typeof TournamentListQuery>;
 
 export 
 /**
- * StandingRecentMatch component.
+ * Zod schema for a recent-match summary shown in the standings expanded view.
  */
 const StandingRecentMatch = z.object({
   opponent: nonEmptyName,
@@ -715,7 +715,7 @@ const StandingRecentMatch = z.object({
 });
 
 /**
- * StandingRecentMatch component.
+ * Inferred type of a recent-match summary shown in standings.
  */
 export type StandingRecentMatch = z.infer<typeof StandingRecentMatch>;
 
@@ -723,7 +723,7 @@ export type StandingRecentMatch = z.infer<typeof StandingRecentMatch>;
 
 export 
 /**
- * StandingPlayer component.
+ * Zod schema for a single player's standings row, including form and recent matches.
  */
 const StandingPlayer = z.object({
   pos: z.number().int().min(1),
@@ -742,13 +742,13 @@ const StandingPlayer = z.object({
 });
 
 /**
- * StandingPlayer component.
+ * Inferred type of a single player's standings row.
  */
 export type StandingPlayer = z.infer<typeof StandingPlayer>;
 
 export 
 /**
- * StandingsResponse component.
+ * Zod schema for the season standings API response.
  */
 const StandingsResponse = z.object({
   season: z.object({
@@ -760,7 +760,7 @@ const StandingsResponse = z.object({
 });
 
 /**
- * StandingsResponse component.
+ * Inferred type of the season standings API response.
  */
 export type StandingsResponse = z.infer<typeof StandingsResponse>;
 
@@ -768,7 +768,7 @@ export type StandingsResponse = z.infer<typeof StandingsResponse>;
 
 export 
 /**
- * PlayerMatchPerspective component.
+ * Zod schema for a match viewed from a single player's perspective.
  */
 const PlayerMatchPerspective = z.object({
   id: matchId,
@@ -786,7 +786,7 @@ const PlayerMatchPerspective = z.object({
 });
 
 /**
- * PlayerMatchPerspective component.
+ * Inferred type of a match viewed from a player's perspective.
  */
 export type PlayerMatchPerspective = z.infer<typeof PlayerMatchPerspective>;
 
@@ -794,7 +794,7 @@ export type PlayerMatchPerspective = z.infer<typeof PlayerMatchPerspective>;
 
 export 
 /**
- * TournamentSummary component.
+ * Zod schema for a tournament summary used in tournament list responses.
  */
 const TournamentSummary = z.object({
   id: tournamentId,
@@ -811,7 +811,7 @@ const TournamentSummary = z.object({
 });
 
 /**
- * TournamentSummary component.
+ * Inferred type of a tournament summary used in list responses.
  */
 export type TournamentSummary = z.infer<typeof TournamentSummary>;
 
@@ -819,7 +819,7 @@ export type TournamentSummary = z.infer<typeof TournamentSummary>;
 
 export 
 /**
- * GroupStandingRow component.
+ * Zod schema for a single group's standing row.
  */
 const GroupStandingRow = z.object({
   player: PlayerSummary,
@@ -834,7 +834,7 @@ const GroupStandingRow = z.object({
 });
 
 /**
- * GroupStandingRow component.
+ * Inferred type of a single group's standing row.
  */
 export type GroupStandingRow = z.infer<typeof GroupStandingRow>;
 
@@ -842,7 +842,7 @@ export type GroupStandingRow = z.infer<typeof GroupStandingRow>;
 
 export 
 /**
- * ApiMatchRow component.
+ * Zod schema for a match row in API responses.
  */
 const ApiMatchRow = z.object({
   id: matchId,
@@ -866,7 +866,7 @@ const ApiMatchRow = z.object({
 });
 
 /**
- * ApiMatchRow component.
+ * Inferred type of a match row in API responses.
  */
 export type ApiMatchRow = z.infer<typeof ApiMatchRow>;
 
@@ -874,7 +874,7 @@ export type ApiMatchRow = z.infer<typeof ApiMatchRow>;
 
 export 
 /**
- * ApiTournamentGroup component.
+ * Zod schema for a tournament group in the detail response.
  */
 const ApiTournamentGroup = z.object({
   label: groupLabel,
@@ -884,7 +884,7 @@ const ApiTournamentGroup = z.object({
 });
 
 /**
- * ApiTournamentGroup component.
+ * Inferred type of a tournament group in the detail response.
  */
 export type ApiTournamentGroup = z.infer<typeof ApiTournamentGroup>;
 
@@ -892,7 +892,7 @@ export type ApiTournamentGroup = z.infer<typeof ApiTournamentGroup>;
 
 export 
 /**
- * ApiPlayoffRound component.
+ * Zod schema for a playoff round in the tournament detail response.
  */
 const ApiPlayoffRound = z.object({
   name: roundName,
@@ -900,7 +900,7 @@ const ApiPlayoffRound = z.object({
 });
 
 /**
- * ApiPlayoffRound component.
+ * Inferred type of a playoff round in the detail response.
  */
 export type ApiPlayoffRound = z.infer<typeof ApiPlayoffRound>;
 
@@ -908,7 +908,7 @@ export type ApiPlayoffRound = z.infer<typeof ApiPlayoffRound>;
 
 export 
 /**
- * ApiFinalStandingEntry component.
+ * Zod schema for a final standing entry in the tournament detail response.
  */
 const ApiFinalStandingEntry = z.object({
   pos: z.number().int().min(1),
@@ -926,7 +926,7 @@ const ApiFinalStandingEntry = z.object({
 });
 
 /**
- * ApiFinalStandingEntry component.
+ * Inferred type of a final standing entry in the detail response.
  */
 export type ApiFinalStandingEntry = z.infer<typeof ApiFinalStandingEntry>;
 
@@ -934,7 +934,7 @@ export type ApiFinalStandingEntry = z.infer<typeof ApiFinalStandingEntry>;
 
 export 
 /**
- * TournamentDetailResponse component.
+ * Zod schema for the tournament detail API response.
  */
 const TournamentDetailResponse = z.object({
   tournament: TournamentSummary,
@@ -944,7 +944,7 @@ const TournamentDetailResponse = z.object({
 });
 
 /**
- * TournamentDetailResponse component.
+ * Inferred type of the tournament detail API response.
  */
 export type TournamentDetailResponse = z.infer<typeof TournamentDetailResponse>;
 
@@ -952,7 +952,7 @@ export type TournamentDetailResponse = z.infer<typeof TournamentDetailResponse>;
 
 export 
 /**
- * ApiMatchesResponse component.
+ * Zod schema for the paginated matches list API response.
  */
 const ApiMatchesResponse = z.object({
   total: z.number().int().min(0),
@@ -962,7 +962,7 @@ const ApiMatchesResponse = z.object({
 });
 
 /**
- * ApiMatchesResponse component.
+ * Inferred type of the matches list API response.
  */
 export type ApiMatchesResponse = z.infer<typeof ApiMatchesResponse>;
 
@@ -970,7 +970,7 @@ export type ApiMatchesResponse = z.infer<typeof ApiMatchesResponse>;
 
 export 
 /**
- * ApiRegistrationEntry component.
+ * Zod schema for a registration entry in API responses.
  */
 const ApiRegistrationEntry = z.object({
   player: PlayerSummary,
@@ -979,19 +979,19 @@ const ApiRegistrationEntry = z.object({
 });
 
 /**
- * ApiRegistrationEntry component.
+ * Inferred type of a registration entry in API responses.
  */
 export type ApiRegistrationEntry = z.infer<typeof ApiRegistrationEntry>;
 
 export 
 /**
- * ApiRegistrationsResponse component.
+ * Zod schema for the tournament registrations API response.
  */
 const ApiRegistrationsResponse = z.object({
   registrations: z.array(ApiRegistrationEntry),
 });
 
 /**
- * ApiRegistrationsResponse component.
+ * Inferred type of the tournament registrations API response.
  */
 export type ApiRegistrationsResponse = z.infer<typeof ApiRegistrationsResponse>;

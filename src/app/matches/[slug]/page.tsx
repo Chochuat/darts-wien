@@ -22,7 +22,7 @@ import { MatchHistoryRow } from "@/app/_components/ui/match-history-row";
 import { PlayerDesktopStats, PlayerMobileStats, usePlayerStatBoxes } from "@/app/_components/ui/player-stat-summary";
 
 /**
- * PlayerMatchesPage component.
+ * Player detail page: shows the player's stat summary and full match history.
  */
 const PlayerMatchesPage = () => {
   const params = useParams<{ slug: string }>();

@@ -8,6 +8,20 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     setupFiles: [],
+    server: {
+      deps: {
+        inline: ["@exodus/bytes"],
+      },
+    },
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "src/**/*.test.{ts,tsx}",
+        "src/**/locales/**",
+        "src/**/globals.css",
+      ],
+    },
   },
   resolve: {
     alias: {

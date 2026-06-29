@@ -84,8 +84,9 @@ darts-wien/
 npm run dev       # Dev server → http://localhost:3000
 npm run build     # Production build
 npm run lint      # ESLint
-npm test          # Vitest (41 tests: 33 Zod schema + 8 hook/fetch)
+npm test          # Vitest (185 tests across 17 test files)
 npm run test:watch# Vitest watch mode
+npx vitest run --coverage  # Coverage report (lib/ = 100%)
 ```
 
 ---
@@ -119,6 +120,21 @@ _No decisions recorded yet._
 
 ---
 
+## Nested AGENTS.md (scoped rules)
+
+The following subdirectories contain their own `AGENTS.md` with area-specific conventions. **Read the relevant one before editing files in that area.**
+
+| Location | Scope |
+|----------|-------|
+| `src/lib/AGENTS.md` | Shared library: Zod validation schemas, API utils, query keys, hooks, Supabase clients. |
+| `src/app/api/AGENTS.md` | Next.js Route Handlers: handler conventions, error/validation patterns, response shapes. |
+| `src/app/_components/game/AGENTS.md` | 3D darts game: Three.js/R3F architecture, reducer/context, physics, textures, performance. |
+| `src/app/_components/tournaments/AGENTS.md` | Tournament display: format constants, perspective utils, playoff bracket, detail page. |
+
+When adding a new self-contained area, create a scoped `AGENTS.md` there and add a row to this table.
+
+---
+
 ## Memory & Agent Instructions
 
 ### What to update and when
@@ -134,6 +150,6 @@ _No decisions recorded yet._
 1. **Read this file** at the start of every session.
 2. **Read `docs/architecture.md`** before making architectural changes.
 3. **Read `docs/conventions.md`** for full convention details.
-4. After making changes, **run `npm run build` and `npm run lint`** — fix all issues.
+4. After making changes, **run `npm test` and `npm run lint`** — fix all issues. If coverage drops below existing thresholds, add tests before committing.
 5. **Update memory files** if your changes introduced anything worth remembering for future sessions.
 6. **Be concise.** Don't explain code unless asked. Don't add comments unless logic is non-obvious.

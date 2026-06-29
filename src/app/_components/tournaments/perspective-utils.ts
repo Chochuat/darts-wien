@@ -1,7 +1,7 @@
 import type { ApiMatchRow, ApiTournamentGroup } from "@/lib/validation";
 
 /**
- * PerspectiveMatch component.
+ * A single match reinterpreted from one player's point of view.
  */
 export interface PerspectiveMatch {
   playerName: string;

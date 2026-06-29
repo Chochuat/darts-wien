@@ -15,7 +15,7 @@ import type { SupportedLanguage } from "@/app/_i18n/i18n";
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["700"] });
 
 /**
- * LanguageSettings component.
+ * Collapsible language picker shown at the bottom of the desktop sidebar.
  */
 export const LanguageSettings = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);

@@ -113,6 +113,18 @@ describe("Tournament schemas", () => {
       }),
     ).toThrow();
   });
+
+  it("accepts a regular type insert with num_groups set", () => {
+    expect(() =>
+      TournamentInsert.parse({
+        season_id: 1,
+        week_number: 1,
+        date: "2025-09-18",
+        type: "regular",
+        num_groups: 4,
+      }),
+    ).not.toThrow();
+  });
 });
 
 describe("Match schemas - structural integrity", () => {

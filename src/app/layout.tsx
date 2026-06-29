@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 
-export 
+export
 /**
- * metadata component.
+ * Next.js metadata for the root layout (title, description, favicon).
  */
 const metadata: Metadata = {
   title: "darts-wien",

@@ -1,6 +1,6 @@
 
 /**
- * OutcomeType component.
+ * Kind of dartboard region a dart can land in.
  */
 export type OutcomeType =
   | "inner_bull"
@@ -48,7 +48,7 @@ export interface GameState {
 
 
 /**
- * Direction component.
+ * Cardinal direction used for dart steering input.
  */
 export type Direction = "up" | "down" | "left" | "right";
 
@@ -61,7 +61,7 @@ export interface FlightInput {
 
 
 /**
- * GameAction component.
+ * Discriminated union of actions dispatchable to the game reducer.
  */
 export type GameAction =
   | { type: "THROW_START" }

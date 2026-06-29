@@ -60,7 +60,7 @@ function matchFilter(match: MatchDisplay, filters: { player: string; result: str
 }
 
 /**
- * AllMatchesPage component.
+ * All-matches page: filterable, paginated list of every completed match in the season.
  */
 const AllMatchesPage = () => {
   const [player, setPlayer] = useState("");

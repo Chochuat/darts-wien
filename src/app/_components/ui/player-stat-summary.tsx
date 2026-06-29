@@ -74,7 +74,7 @@ export const PlayerMobileStats = ({ stats }: PlayerMobileStatsProps) => {
 };
 
 /**
- * usePlayerStatBoxes hook.
+ * Returns builders for the desktop and mobile stat box arrays, bound to i18n labels.
  */
 export const usePlayerStatBoxes = () => {
   const { t } = useTranslation();

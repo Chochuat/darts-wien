@@ -38,7 +38,7 @@ const StandingsError = () => {
 };
 
 /**
- * StandingsView component.
+ * Standings view: fetches the active season and renders an expandable player card list.
  */
 const StandingsView = () => {
   const [expanded, setExpanded] = useState<string | null>(null);

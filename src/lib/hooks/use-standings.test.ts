@@ -1,7 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+const mockUseQuery = vi.fn();
+
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: mockUseQuery,
+}));
+
+const { useQuery } = await import("@tanstack/react-query");
+const { useStandings } = await import("./use-standings");
+const { queryKeys } = await import("@/lib/query/keys");
+
 const validStandingsResponse = {
-  season: { id: 1, name: "Season 2 – 2025", isActive: true },
+  season: { id: 1, name: "Season 2 \u2013 2025", isActive: true },
   players: [
     {
       pos: 1,
@@ -70,3 +80,51 @@ describe("Standings fetch with Zod validation", () => {
     expect(() => StandingsResponse.parse(badData)).toThrow();
   });
 });
+
+describe("useStandings hook", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("calls useQuery with correct query key and options", () => {
+    useStandings(1);
+    expect(useQuery).toHaveBeenCalledWith({
+      queryKey: queryKeys.season.standings(1),
+      queryFn: expect.any(Function) as unknown,
+      staleTime: 30_000,
+    });
+  });
+});
+
+describe("useStandings fetch logic via queryFn", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("queryFn fetches and parses standings correctly", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(validStandingsResponse),
+    });
+
+    useStandings(1);
+    const callArgs = mockUseQuery.mock.calls[0]?.[0];
+    const queryFn = callArgs?.queryFn as () => Promise<unknown>;
+    const result = await queryFn();
+    expect(result).toHaveProperty("players");
+    expect((result as typeof validStandingsResponse).players[0]?.name).toBe("Mike Thorn");
+  });
+
+  it("queryFn throws on non-ok response", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    useStandings(1);
+    const callArgs = mockUseQuery.mock.calls[0]?.[0];
+    const queryFn = callArgs?.queryFn as () => Promise<unknown>;
+    await expect(queryFn()).rejects.toThrow("Failed to fetch standings");
+  });
+});
+
