@@ -69,8 +69,18 @@
 
 - Browser client: `createClient()` from `@/lib/supabase/client` — use in Client Components / event handlers.
 - Server client: `createClient()` from `@/lib/supabase/server` — use in Server Components, Route Handlers, Server Actions.
+- Admin client: `createAdminClient()` from `@/lib/supabase/server-admin` — use in admin Route Handlers for write operations (bypasses RLS, server-only, uses `SUPABASE_SERVICE_ROLE_KEY`).
 - Database types: define tables in `src/lib/supabase/types.ts` under the `Database` interface. PostGIS geometry types are re-exported from the same file.
-- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see ADR-005).
+- Environment vars: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see ADR-005). Plus `SUPABASE_SERVICE_ROLE_KEY` (server-only, never `NEXT_PUBLIC_`-prefixed) for admin writes (see ADR-007).
+
+### Admin Auth & RLS
+
+- `profiles` table links `auth.users.id` to a role (`pending`, `scorekeeper`, `admin`) and optionally to `players.id` (see ADR-006).
+- Middleware (`src/middleware.ts`) gates `/admin/*` — redirects unauthenticated to `/admin/login`, unauthorized to `/admin/403`.
+- Auth guards: `requireAdmin()`, `requireAdminOrScorekeeper()`, `isAuthError()` from `@/lib/api-utils`. Always check the result with `isAuthError()` before proceeding.
+- RLS write policies check `EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role IN ('admin','scorekeeper'))`. Scorekeeper match-write is additionally scoped to `in_progress` tournaments.
+- Admin API routes live under `/api/admin/*` and use the service-role client + auth guards. Public API routes remain under `/api/*`.
+- Self-signup creates `pending` profiles; admins promote via the Users screen (`/admin/users`).
 
 ### React Query
 
@@ -97,14 +107,21 @@
 
 - Game format constants live in `src/app/_components/tournaments/format-constants.ts`.
 - **Schedule:** Tournaments happen on Thursdays.
-- **Tournament lifecycle:** `registration` → `ready` (generate groups/matches) → `in_progress` → `completed` (auto-closed when all matches have results). Matches have their own status: `pending` (generated, ready to play) → `completed` (result filled) or `no_show` (walkover).
-- **Group phase:** Top 2 from each group auto-advance (3+ groups) or top 4 from each (2 groups). For 3 groups of 5: 6 players advance, remaining 2 spots filled by best 3rd-place players. Tiebreaker: head-to-head → leg diff → legs won → legs lost → 180s.
+- **Tournament lifecycle:** `registration` → `ready` (generate groups/matches) → `in_progress` → `completed` (admin clicks "Close Tournament"). Matches have their own status: `pending` (generated, ready to play) → `completed` (result filled) or `no_show` (walkover). No auto-close; close is manual and blocked while any match is `pending`.
+- **Generation strategies:** `split_contiguous`, `interleaved_strict`, `snake`, `manual`. All parameterised by `num_groups` (2–4). Groups have 3–5 players each.
+- **Equal-match guarantee:** Every player plays the same number of group matches, set by the largest group. Smaller groups get extra matches (admin-selected pairing: `top_vs_bottom`, `top_vs_top`, `cross`, or `manual`).
+- **Group phase:** Top 2 from each group auto-advance (3+ groups) or top 4 from each (2 groups), filled to 8 with best 3rd-place players. Tiebreaker: head-to-head → leg diff → legs won → legs lost → 180s (order configurable in `club_settings`).
 - **Scoring:** Group win=2pts. Playoffs: QF win=3/loss=1, SF win=4/loss=2, Final win=10/ru=7, 3rd win=5/loss=3. 180 bonus = 5pts each.
-- **Game formats:**
+- **Game formats (defaults, configurable per tournament via `tournament_format` side table):**
   - Group stage: first to 2 legs, 501 Double Out, max 45 throws
   - Playoffs: first to 3 legs, 501 Double Out, max 45 throws
   - Grand Final: QF first to 4, SF & 3rd first to 5, Final first to 6, 501 Double Out
-- Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final. Two-group bracket: 1A v 4B / 2A v 3B / 1B v 4A / 2B v 3A.
+- Playoff bracket: standard seeding (1v8, 4v5, 2v7, 3v6) with semi-finals and final. 1 and 2 on opposite halves, meet only in final.
+- Grand final bracket: QF(4) + SF(2) + 3rd(1) + Final(1) + Consolation-SF(2) + 5th(1) + 7th(1) = 12 matches. Exactly 8 players.
+- Regular bracket: QF(4) + SF(2) + 3rd(1) + Final(1) = 8 matches. No consolation.
+- **Cascade locks:** Upstream edits blocked once downstream matches have results (see ADR-009).
+- **No retroactive editing:** Completed tournaments are permanently frozen (see ADR-010).
+- **Next-tournament gate:** Within a season, groups for tournament N+1 cannot be generated while tournament N is not `completed`.
 - Final standings sort by: winner → finalist → semi-finalists → quarter-finalists, then by points.
 
 ### i18n

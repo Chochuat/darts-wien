@@ -36,6 +36,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Validation | Zod | 4.x |
 | Server State | TanStack React Query | 5.x |
 | Database | Supabase (PostgreSQL + PostGIS) | — |
+| Auth | Supabase Auth (`@supabase/ssr`) | — |
 | i18n | i18next + react-i18next | 26.x / 17.x |
 | Testing | Vitest + @testing-library | 3.x |
 | 3D Graphics | Three.js | 0.185.x |
@@ -60,7 +61,16 @@ darts-wien/
 │   │   │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
 │   │   ├── _i18n/                 # i18next init, LocaleProvider, locales/{en,de,sk}.json
 │   │   ├── about/                 # About page
+│   │   ├── admin/                 # Admin area (auth pages + dashboard route group)
+│   │   │   ├── (dashboard)/        # Sidebar-layout admin pages
+│   │   │   │   ├── tournaments/   # Tournament CRUD, setup, groups, matches, close
+│   │   │   │   ├── players/       # Player CRUD
+│   │   │   │   └── users/         # Profile/role management
+│   │   │   ├── login/             # Auth pages (login, signup, forgot, reset, 403, callback)
+│   │   │   └── layout.tsx         # Minimal layout (auth pages bypass sidebar)
 │   │   ├── api/                   # Route Handlers (see src/app/api/AGENTS.md)
+│   │   │   ├── admin/             # Admin API routes (auth, profiles, generate, etc.)
+│   │   │   └── ...                # Public API routes
 │   │   ├── game/                  # 3D darts game page
 │   │   ├── matches/
 │   │   │   ├── page.tsx           # Filterable all-matches view (20/page)
@@ -71,19 +81,26 @@ darts-wien/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx               # Home page (Standings)
 │   │   └── providers.tsx
-│   └── lib/
-│       ├── AGENTS.md              # Scoped rules for src/lib/
-│       ├── api-utils.ts           # Supabase server client, param parsing, error helpers
-│       ├── design-tokens.ts       # Colors, spacing, borderRadius, helpers
-│       ├── validation.ts          # All Zod schemas + inferred types (single source of truth)
-│       ├── hooks/                 # use* hooks (React Query + fetch + Zod parse)
-│       ├── query/keys.ts          # Centralised React Query key factory
-│       └── supabase/              # Browser + server client factories, Database types
+│   ├── lib/
+│   │   ├── AGENTS.md              # Scoped rules for src/lib/
+│   │   ├── api-utils.ts           # Supabase server client, param parsing, error helpers, auth guards
+│   │   ├── design-tokens.ts       # Colors, spacing, borderRadius, helpers
+│   │   ├── validation.ts          # All Zod schemas + inferred types (single source of truth)
+│   │   ├── hooks/                 # use* hooks (React Query + fetch + Zod parse)
+│   │   ├── query/keys.ts          # Centralised React Query key factory
+│   │   ├── supabase/              # Browser + server + server-admin client factories, Database types
+│   │   └── tournament/            # Pure-logic generation engine (see AGENTS.md)
+│   │       ├── generation.ts      # Group assignment algorithms (4 strategies)
+│   │       ├── bracket.ts         # Bracket adjacency graph (regular + grand final)
+│   │       ├── tiebreaker.ts      # 5-dimension configurable ranking
+│   │       ├── phase.ts           # Derived tournament phase detection
+│   │       └── AGENTS.md          # Scoped rules for tournament engine
 ├── docs/
 │   ├── architecture.md
 │   └── conventions.md
 ├── public/
-├── supabase/                      # Migrations + seed SQL
+├── supabase/                      # Migrations + seed SQL + README
+├── middleware.ts                  # Admin route gating (session + role check)
 ├── opencode.json
 ├── next.config.ts
 ├── tsconfig.json
@@ -100,7 +117,7 @@ darts-wien/
 npm run dev       # Dev server → http://localhost:3000
 npm run build     # Production build
 npm run lint      # ESLint
-npm test          # Vitest (204 tests across 17 test files)
+npm test          # Vitest (332 tests across 23 test files)
 npm run test:watch# Vitest watch mode
 npx vitest run --coverage  # Coverage report (lib/ = 100%)
 ```
@@ -129,6 +146,11 @@ npx vitest run --coverage  # Coverage report (lib/ = 100%)
 - **ADR-003:** Vitest for unit testing, colocated `*.test.ts` files.
 - **ADR-004:** JSDoc/TSDoc enforcement via eslint-plugin-jsdoc + eslint-plugin-tsdoc.
 - **ADR-005:** Supabase env var renamed to `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- **ADR-006:** Admin auth via Supabase + profiles table + middleware-gated `/admin/*`.
+- **ADR-007:** Service-role client for admin writes (bypasses RLS, server-only).
+- **ADR-008:** Tournament generation engine: 4 algorithms + bracket adjacency + format config.
+- **ADR-009:** Cascade lock model — upstream edits blocked once downstream is played.
+- **ADR-010:** No retroactive editing — completed tournaments are permanently frozen.
 
 ---
 
@@ -146,8 +168,9 @@ The following subdirectories contain their own `AGENTS.md` with area-specific co
 
 | Location | Scope |
 |----------|-------|
-| `src/lib/AGENTS.md` | Shared library: Zod validation schemas, API utils, query keys, hooks, Supabase clients. |
-| `src/app/api/AGENTS.md` | Next.js Route Handlers: handler conventions, error/validation patterns, response shapes. |
+| `src/lib/AGENTS.md` | Shared library: Zod validation schemas, API utils, auth guards, query keys, hooks, Supabase clients. |
+| `src/lib/tournament/AGENTS.md` | Tournament generation engine: algorithms, bracket adjacency, tiebreaker, phase detection. |
+| `src/app/api/AGENTS.md` | Next.js Route Handlers: handler conventions, error/validation patterns, response shapes, admin API. |
 | `src/app/_components/game/AGENTS.md` | 3D darts game: Three.js/R3F architecture, reducer/context, physics, textures, performance. |
 | `src/app/_components/tournaments/AGENTS.md` | Tournament display: format constants, perspective utils, playoff bracket, detail page. |
 
