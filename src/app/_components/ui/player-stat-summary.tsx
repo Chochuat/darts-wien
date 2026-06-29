@@ -27,10 +27,10 @@ interface PlayerDesktopStatsProps {
  *
  * @param props - Component properties.
  */
-export const PlayerDesktopStats = (props: PlayerDesktopStatsProps) => {
+export const PlayerDesktopStats = ({ stats }: PlayerDesktopStatsProps) => {
   return (
     <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2, px: 0.5, mb: 2 }}>
-      {props.stats.map((s) => (
+      {stats.map((s) => (
         <Box key={s.label} sx={{ bgcolor: `${colors.accent}08`, borderRadius: 1.5, px: 1.5, py: 1 }}>
           <Typography sx={{ color: colors.text.secondary, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, mb: 0.2, display: "flex", alignItems: "center", gap: 0.3 }}>
             {s.icon}{s.label}
@@ -53,10 +53,10 @@ interface PlayerMobileStatsProps {
  *
  * @param props - Component properties.
  */
-export const PlayerMobileStats = (props: PlayerMobileStatsProps) => {
+export const PlayerMobileStats = ({ stats }: PlayerMobileStatsProps) => {
   return (
     <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1, mt: 2, px: 0.5 }}>
-      {props.stats.map((s) => (
+      {stats.map((s) => (
         <Box key={s.label} sx={{ flex: 1, bgcolor: `${colors.accent}08`, borderRadius: 1.5, px: 1, py: 1.25, textAlign: "center" }}>
           <Typography sx={{ color: s.color ?? colors.text.primary, fontSize: "0.95rem", fontWeight: 800 }}>
             {s.value}

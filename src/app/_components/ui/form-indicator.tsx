@@ -11,10 +11,10 @@ interface FormIndicatorProps {
  *
  * @param props - Component properties.
  */
-const FormIndicator = (props: FormIndicatorProps) => {
+const FormIndicator = ({ form }: FormIndicatorProps) => {
   return (
     <Box sx={{ display: "flex", gap: 0.3, alignItems: "center" }}>
-      {props.form.map((r, i) => (
+      {form.map((r, i) => (
         <Box
           // eslint-disable-next-line react/no-array-index-key
           key={i}

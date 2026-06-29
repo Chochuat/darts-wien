@@ -108,7 +108,7 @@ const GameContext = createContext<GameContextValue | null>(null);
  *
  * @param props - Component properties.
  */
-export const GameProvider = (props: { children: ReactNode }) => {
+export const GameProvider = ({ children }: { children: ReactNode }) => {
   /** Application state and dispatch. */
   const [state, dispatch] = useReducer(reducer, initialState);
   /** Reference to flight input state. */
@@ -189,9 +189,10 @@ export const GameProvider = (props: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.leaderboardDirtyKey]);
 
-  return <GameContext.Provider value={value}>{props.children}</GameContext.Provider>;
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
 
+// eslint-disable-next-line jsdoc/require-throws-type
 /**
  * Returns the game context value.
  *

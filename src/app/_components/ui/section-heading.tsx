@@ -13,14 +13,14 @@ interface SectionHeadingProps {
  *
  * @param props - Component properties.
  */
-const SectionHeading = (props: SectionHeadingProps) => {
+const SectionHeading = ({ icon, label }: SectionHeadingProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>
       <Box sx={{ color: colors.accent, fontSize: "1.1rem", display: "flex" }}>
-        {props.icon}
+        {icon}
       </Box>
       <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.95rem", letterSpacing: 1 }}>
-        {props.label}
+        {label}
       </Typography>
     </Box>
   );

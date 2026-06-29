@@ -37,8 +37,8 @@ export function cell(label: string | number, opts?: { color?: string; bold?: boo
  *
  * @param props - Component properties.
  */
-export const SetsDiff = (props: { setsFor: number; setsAgainst: number }) => {
-  const diff = props.setsFor - props.setsAgainst;
+export const SetsDiff = ({ setsFor, setsAgainst }: { setsFor: number; setsAgainst: number }) => {
+  const diff = setsFor - setsAgainst;
   return (
     <Typography
       sx={{
@@ -60,43 +60,48 @@ export const SetsDiff = (props: { setsFor: number; setsAgainst: number }) => {
  *
  * @param props - Component properties.
  */
-export const PlayoffMatch = (props: {
+export const PlayoffMatch = ({
+  m1,
+  m2,
+  resultKey,
+  winnerStyle,
+}: {
   m1: PerspectiveMatch;
   m2: PerspectiveMatch;
   resultKey: string;
   winnerStyle: "accent" | "gold" | "bronze";
 }) => {
-  const scoreColor = props.winnerStyle === "gold" ? colors.goldText : colors.accent;
-  const scoreWeight = props.winnerStyle === "gold" ? 900 : 800;
+  const scoreColor = winnerStyle === "gold" ? colors.goldText : colors.accent;
+  const scoreWeight = winnerStyle === "gold" ? 900 : 800;
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
       <Box sx={{ flex: 1, textAlign: "right", minWidth: 0 }}>
-        {props.winnerStyle === "gold" ? (
+        {winnerStyle === "gold" ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
-            {props.m1.result === "W" ? <EmojiEvents sx={{ color: colors.gold, fontSize: "0.75rem", flexShrink: 0 }} /> : null}
+            {m1.result === "W" ? <EmojiEvents sx={{ color: colors.gold, fontSize: "0.75rem", flexShrink: 0 }} /> : null}
             <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {props.m1.playerName}
+              {m1.playerName}
             </Typography>
-            {props.m1.one80 > 0 ? <Badge180 /> : null}
+            {m1.one80 > 0 ? <Badge180 /> : null}
           </Box>
         ) : (
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, justifyContent: "flex-end" }}>
-            <Typography sx={{ color: props.m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: props.m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {props.m1.playerName}
+            <Typography sx={{ color: m1.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: m1.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {m1.playerName}
             </Typography>
-            {props.m1.one80 > 0 ? <Badge180 /> : null}
+            {m1.one80 > 0 ? <Badge180 /> : null}
           </Box>
         )}
       </Box>
-      <Typography sx={{ color: scoreColor, fontSize: "0.75rem", fontWeight: scoreWeight, fontFamily: "'Courier New', monospace", textAlign: "center", flexShrink: 0, minWidth: props.resultKey === "Final" ? 34 : 32 }}>
-        {props.m1.score}
+      <Typography sx={{ color: scoreColor, fontSize: "0.75rem", fontWeight: scoreWeight, fontFamily: "'Courier New', monospace", textAlign: "center", flexShrink: 0, minWidth: resultKey === "Final" ? 34 : 32 }}>
+        {m1.score}
       </Typography>
       <Box sx={{ flex: 1, textAlign: "left", minWidth: 0, display: "flex", alignItems: "center", gap: 0.3 }}>
-        <Typography sx={{ color: props.winnerStyle === "gold" && props.m2.result !== "W" ? colors.text.secondary : props.m2.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: props.winnerStyle === "gold" ? (props.m2.result !== "W" ? 500 : 700) : props.m2.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {props.m2.playerName}
+        <Typography sx={{ color: winnerStyle === "gold" && m2.result !== "W" ? colors.text.secondary : m2.result === "W" ? colors.text.primary : colors.text.muted, fontSize: "0.75rem", fontWeight: winnerStyle === "gold" ? (m2.result !== "W" ? 500 : 700) : m2.result === "W" ? 700 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {m2.playerName}
         </Typography>
-        {props.m2.one80 > 0 ? <Badge180 /> : null}
+        {m2.one80 > 0 ? <Badge180 /> : null}
       </Box>
     </Box>
   );
@@ -107,7 +112,14 @@ export const PlayoffMatch = (props: {
  *
  * @param props - Component properties.
  */
-export const PlayoffRound = (props: {
+export const PlayoffRound = ({
+  roundName,
+  roundLabel,
+  allPlayoffEntries,
+  color,
+  borderColor,
+  bgcolor,
+}: {
   roundName: string;
   roundLabel: string;
   allPlayoffEntries: PerspectiveMatch[];
@@ -116,22 +128,22 @@ export const PlayoffRound = (props: {
   bgcolor: string;
 }) => {
   const pairs: { m1: PerspectiveMatch; m2: PerspectiveMatch }[] = [];
-  for (let i = 0; i < props.allPlayoffEntries.length; i += 2) {
-    const m1 = props.allPlayoffEntries[i];
-    const m2 = props.allPlayoffEntries[i + 1];
+  for (let i = 0; i < allPlayoffEntries.length; i += 2) {
+    const m1 = allPlayoffEntries[i];
+    const m2 = allPlayoffEntries[i + 1];
     if (m1 && m2) pairs.push({ m1, m2 });
   }
 
-  const winnerStyle = props.roundName === "Final" ? "gold" : props.roundName === "3rd Place" ? "bronze" : "accent";
+  const winnerStyle = roundName === "Final" ? "gold" : roundName === "3rd Place" ? "bronze" : "accent";
 
   return (
     <Box sx={{ flex: 1, maxWidth: { md: 300 } }}>
-      <Typography sx={{ color: props.color, fontSize: "0.65rem", fontWeight: 700, letterSpacing: 1, mb: 0.75, textAlign: "center", textTransform: "uppercase" }}>
-        {props.roundLabel}
+      <Typography sx={{ color, fontSize: "0.65rem", fontWeight: 700, letterSpacing: 1, mb: 0.75, textAlign: "center", textTransform: "uppercase" }}>
+        {roundLabel}
       </Typography>
       {pairs.map(({ m1, m2 }) => (
-        <Box key={`${m1.playerName}-${m2.playerName}`} sx={{ bgcolor: props.bgcolor, borderRadius: 1.5, px: 1.25, py: 0.7, mb: 0.5, border: "1px solid", borderColor: props.borderColor }}>
-          <PlayoffMatch m1={m1} m2={m2} resultKey={props.roundName} winnerStyle={winnerStyle} />
+        <Box key={`${m1.playerName}-${m2.playerName}`} sx={{ bgcolor, borderRadius: 1.5, px: 1.25, py: 0.7, mb: 0.5, border: "1px solid", borderColor }}>
+          <PlayoffMatch m1={m1} m2={m2} resultKey={roundName} winnerStyle={winnerStyle} />
         </Box>
       ))}
     </Box>
@@ -143,34 +155,34 @@ export const PlayoffRound = (props: {
  *
  * @param props - Component properties.
  */
-export const FinalStandingsRow = (props: { s: ApiFinalStandingEntry; i: number }) => {
+export const FinalStandingsRow = ({ s, i }: { s: ApiFinalStandingEntry; i: number }) => {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.5, borderBottom: "1px solid #f0f0f0", gap: 0.5, bgcolor: props.i === 0 ? `${colors.gold}12` : props.i === 1 ? `${colors.silver}12` : props.i === 2 ? `${colors.bronze}12` : props.i === 3 ? `${colors.accent}06` : "transparent" }}>
+    <Box sx={{ display: "flex", alignItems: "center", px: 1.5, py: 0.5, borderBottom: "1px solid #f0f0f0", gap: 0.5, bgcolor: i === 0 ? `${colors.gold}12` : i === 1 ? `${colors.silver}12` : i === 2 ? `${colors.bronze}12` : i === 3 ? `${colors.accent}06` : "transparent" }}>
       <Box sx={{ width: 22, textAlign: "center", flexShrink: 0 }}>
-        {props.i === 0 ? (
+        {i === 0 ? (
           <EmojiEvents sx={{ color: colors.gold, fontSize: "0.8rem" }} titleAccess="1st" />
-        ) : props.i === 1 ? (
+        ) : i === 1 ? (
           <EmojiEvents sx={{ color: colors.silver, fontSize: "0.7rem" }} titleAccess="2nd" />
-        ) : props.i === 2 ? (
+        ) : i === 2 ? (
           <EmojiEvents sx={{ color: colors.bronze, fontSize: "0.7rem" }} titleAccess="3rd" />
         ) : (
           <Typography sx={{ color: colors.text.subtle, fontSize: "0.6rem", fontWeight: 600 }}>
-            {props.s.pos}
+            {s.pos}
           </Typography>
         )}
       </Box>
       <Box sx={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 0.5 }}>
-        <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: props.i <= 2 ? 700 : 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {props.s.player.name}
+        <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: i <= 2 ? 700 : 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {s.player.name}
         </Typography>
       </Box>
-      {cell(props.s.played)}
-      {cell(props.s.wins, { color: colors.green })}
-      {cell(props.s.losses, { color: colors.red })}
-      {cell(`${props.s.setsFor}:${props.s.setsAgainst}`)}
-      {cell(props.s.one80s, { color: colors.accent })}
-      <SetsDiff setsAgainst={props.s.setsAgainst} setsFor={props.s.setsFor} />
-      {cell(props.s.totalPoints, { bold: true })}
+      {cell(s.played)}
+      {cell(s.wins, { color: colors.green })}
+      {cell(s.losses, { color: colors.red })}
+      {cell(`${s.setsFor}:${s.setsAgainst}`)}
+      {cell(s.one80s, { color: colors.accent })}
+      <SetsDiff setsAgainst={s.setsAgainst} setsFor={s.setsFor} />
+      {cell(s.totalPoints, { bold: true })}
     </Box>
   );
 }

@@ -7,7 +7,7 @@ import { colors, borderRadius } from "@/lib/design-tokens";
  *
  * @param props - Component properties.
  */
-const Section = (props: { children: React.ReactNode }) => {
+const Section = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
@@ -19,7 +19,7 @@ const Section = (props: { children: React.ReactNode }) => {
         mx: "auto",
       }}
     >
-      {props.children}
+      {children}
     </Box>
   );
 }

@@ -14,12 +14,12 @@ interface PageHeaderProps {
  *
  * @param props - Component properties.
  */
-const PageHeader = (props: PageHeaderProps) => {
+const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.3, px: 0.5 }}>
         <Box sx={{ color: colors.accent, fontSize: "1.2rem", display: "flex" }}>
-          {props.icon}
+          {icon}
         </Box>
         <Typography
           sx={{
@@ -29,7 +29,7 @@ const PageHeader = (props: PageHeaderProps) => {
             letterSpacing: 1,
           }}
         >
-          {props.title}
+          {title}
         </Typography>
       </Box>
       <Typography
@@ -42,7 +42,7 @@ const PageHeader = (props: PageHeaderProps) => {
           px: 0.5,
         }}
       >
-        {props.subtitle}
+        {subtitle}
       </Typography>
     </>
   );

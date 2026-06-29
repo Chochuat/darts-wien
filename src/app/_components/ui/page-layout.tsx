@@ -12,13 +12,13 @@ interface PageLayoutProps {
  *
  * @param props - Component properties.
  */
-const PageLayout = (props: PageLayoutProps) => {
+const PageLayout = ({ children }: PageLayoutProps) => {
   return (
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>
       <AppBar />
       <Sidebar />
       <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 }, ml: { lg: "100px" } }}>
-        {props.children}
+        {children}
       </Box>
     </Box>
   );

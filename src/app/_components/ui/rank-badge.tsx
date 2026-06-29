@@ -12,7 +12,7 @@ interface RankBadgeProps {
  *
  * @param props - Component properties.
  */
-const RankBadge = (props: RankBadgeProps) => {
+const RankBadge = ({ position }: RankBadgeProps) => {
   return (
     <Box
       sx={{
@@ -22,18 +22,18 @@ const RankBadge = (props: RankBadgeProps) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: rankBadgeBg(props.position),
+        bgcolor: rankBadgeBg(position),
         flexShrink: 0,
       }}
     >
       <Typography
         sx={{
-          color: rankBadgeColor(props.position),
+          color: rankBadgeColor(position),
           fontWeight: 900,
           fontSize: "0.95rem",
         }}
       >
-        {props.position}
+        {position}
       </Typography>
     </Box>
   );

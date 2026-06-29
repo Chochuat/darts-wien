@@ -23,28 +23,28 @@ interface MatchListRowProps {
  *
  * @param props - Component properties.
  */
-export const MatchListRow = (props: MatchListRowProps) => {
-  const isWin = props.result === "W";
+export const MatchListRow = ({ playerName, opponent, score, result, date, one80, index }: MatchListRowProps) => {
+  const isWin = result === "W";
   const { t } = useTranslation();
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", px: { xs: 1.75, md: 2.5 }, py: { xs: 1, md: 0.85 }, borderTop: props.index === 0 ? "none" : "1px solid #f0f0f0", gap: { xs: 0.75, md: 1 } }}>
+    <Box sx={{ display: "flex", alignItems: "center", px: { xs: 1.75, md: 2.5 }, py: { xs: 1, md: 0.85 }, borderTop: index === 0 ? "none" : "1px solid #f0f0f0", gap: { xs: 0.75, md: 1 } }}>
       <Box sx={{ flexShrink: 0 }}>
         {isWin ? <CheckCircle sx={{ color: colors.green, fontSize: "0.8rem" }} /> : <Cancel sx={{ color: colors.red, fontSize: "0.8rem" }} />}
       </Box>
       <Box sx={{ minWidth: 0, flex: { xs: 1, md: "none" }, width: { md: 200 } }}>
         <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          <Box component="span" sx={{ color: colors.text.primary }}>{props.playerName}</Box>
-          {props.one80 > 0 ? <Badge180 /> : null}
+          <Box component="span" sx={{ color: colors.text.primary }}>{playerName}</Box>
+          {one80 > 0 ? <Badge180 /> : null}
           {" "}
-          <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {props.opponent}</Box>
+          <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")} {opponent}</Box>
         </Typography>
       </Box>
       <Typography sx={{ color: isWin ? colors.green : colors.red, fontSize: "0.8rem", fontWeight: 700, fontFamily: "'Courier New', monospace", textAlign: "center", minWidth: 36, flexShrink: 0 }}>
-        {props.score}
+        {score}
       </Typography>
       <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", textAlign: "right", minWidth: 40, flexShrink: 0 }}>
-        {props.date}
+        {date}
       </Typography>
     </Box>
   );

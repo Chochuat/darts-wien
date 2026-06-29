@@ -14,8 +14,8 @@ interface WinBarProps {
  *
  * @param props - Component properties.
  */
-const WinBar = (props: WinBarProps) => {
-  const pct = props.played > 0 ? (props.wins / props.played) * 100 : 0;
+const WinBar = ({ wins, played, color }: WinBarProps) => {
+  const pct = played > 0 ? (wins / played) * 100 : 0;
 
   return (
     <Box sx={{ height: 2.5, bgcolor: "#f4f4f5" }}>
@@ -23,7 +23,7 @@ const WinBar = (props: WinBarProps) => {
         sx={{
           height: "100%",
           width: `${pct}%`,
-          bgcolor: props.color,
+          bgcolor: color,
           transition: "width 0.3s",
         }}
       />

@@ -18,8 +18,8 @@ interface MatchRowProps {
  *
  * @param props - Component properties.
  */
-const MatchRow = (props: MatchRowProps) => {
-  const isWin = props.match.result === "W";
+const MatchRow = ({ match }: MatchRowProps) => {
+  const isWin = match.result === "W";
   const { t } = useTranslation();
 
   return (
@@ -50,7 +50,7 @@ const MatchRow = (props: MatchRowProps) => {
             whiteSpace: "nowrap",
           }}
         >
-          {t("common.vs")} {props.match.opponent}
+          {t("common.vs")} {match.opponent}
         </Typography>
       </Box>
 
@@ -65,9 +65,9 @@ const MatchRow = (props: MatchRowProps) => {
             minWidth: 36,
           }}
         >
-          {props.match.score}
+          {match.score}
         </Typography>
-        {props.match.one80 > 0 ? <Badge180 /> : null}
+        {match.one80 > 0 ? <Badge180 /> : null}
       </Box>
 
       <Typography
@@ -78,7 +78,7 @@ const MatchRow = (props: MatchRowProps) => {
           minWidth: 40,
         }}
       >
-        {props.match.date}
+        {match.date}
       </Typography>
     </Box>
   );

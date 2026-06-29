@@ -48,13 +48,27 @@ interface MatchFiltersProps {
  *
  * @param props - Component properties.
  */
-export const MatchFilters = (props: MatchFiltersProps) => {
+export const MatchFilters = ({
+  player,
+  result,
+  scoreQ,
+  quickQ,
+  showFilters,
+  playerNames,
+  hasFilters,
+  onPlayerChange,
+  onResultChange,
+  onScoreQChange,
+  onQuickQChange,
+  onToggleFilters,
+  onClearAll,
+}: MatchFiltersProps) => {
   const { t } = useTranslation();
 
   return (
     <Box sx={{ px: 0.5, mb: 2 }}>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center" }}>
-        <ToggleButtonGroup exclusive onChange={(_, v) => props.onResultChange(v ?? "")} size="small" value={props.result}>
+        <ToggleButtonGroup exclusive onChange={(_, v) => onResultChange(v ?? "")} size="small" value={result}>
           <ToggleButton sx={{ fontSize: "0.7rem", px: 1.5, bgcolor: colors.card, borderColor: colors.accent4d, color: colors.green, "&.Mui-selected": { bgcolor: colors.green, color: "#fff", "&:hover": { bgcolor: colors.green } } }} value="W">
             <CheckCircle sx={{ fontSize: "0.75rem", mr: 0.3 }} /> {t("common.win")}
           </ToggleButton>
@@ -64,41 +78,41 @@ export const MatchFilters = (props: MatchFiltersProps) => {
         </ToggleButtonGroup>
 
         <TextField
-          onChange={(e) => props.onQuickQChange(e.target.value)}
+          onChange={(e) => onQuickQChange(e.target.value)}
           placeholder={t("matchesPage.searchPlaceholder")}
           size="small"
           slotProps={{ input: { startAdornment: <Search sx={{ fontSize: "0.85rem", mr: 0.5, color: colors.text.muted }} /> } }}
           sx={{ minWidth: 220, flex: { xs: 1, md: "none" }, ...inputSx }}
-          value={props.quickQ}
+          value={quickQ}
         />
 
-        <Box onClick={props.onToggleFilters} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: 1, bgcolor: props.showFilters ? colors.accent : colors.card, border: "1px solid", borderColor: colors.accent4d, cursor: "pointer", flexShrink: 0 }}>
-          {props.showFilters ? <Close sx={{ fontSize: "0.85rem", color: "#fff" }} /> : <FilterList sx={{ fontSize: "0.85rem", color: colors.text.secondary }} />}
+        <Box onClick={onToggleFilters} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: 1, bgcolor: showFilters ? colors.accent : colors.card, border: "1px solid", borderColor: colors.accent4d, cursor: "pointer", flexShrink: 0 }}>
+          {showFilters ? <Close sx={{ fontSize: "0.85rem", color: "#fff" }} /> : <FilterList sx={{ fontSize: "0.85rem", color: colors.text.secondary }} />}
         </Box>
 
-        {props.hasFilters ? <Typography onClick={props.onClearAll} sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 600, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
+        {hasFilters ? <Typography onClick={onClearAll} sx={{ color: colors.accent, fontSize: "0.7rem", fontWeight: 600, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
             {t("common.clearAll")}
           </Typography> : null}
       </Box>
 
-      <Collapse in={props.showFilters} timeout={250}>
+      <Collapse in={showFilters} timeout={250}>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", mt: 1.5 }}>
           <Autocomplete
-            inputValue={props.player}
-            onChange={(_, v) => props.onPlayerChange(v ?? "")}
-            onInputChange={(_, v) => { if (!v) props.onPlayerChange(""); }}
-            options={props.playerNames}
+            inputValue={player}
+            onChange={(_, v) => onPlayerChange(v ?? "")}
+            onInputChange={(_, v) => { if (!v) onPlayerChange(""); }}
+            options={playerNames}
             renderInput={(params) => <TextField {...params} placeholder={t("matchesPage.filterPlayer")} sx={inputSx} />}
             size="small"
             sx={{ minWidth: 180, maxWidth: 240 }}
-            value={props.player}
+            value={player}
           />
           <TextField
-            onChange={(e) => props.onScoreQChange(e.target.value)}
+            onChange={(e) => onScoreQChange(e.target.value)}
             placeholder={t("matchesPage.filterScore")}
             size="small"
             sx={{ minWidth: 130, ...inputSx }}
-            value={props.scoreQ}
+            value={scoreQ}
           />
         </Box>
       </Collapse>

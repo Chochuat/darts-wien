@@ -14,20 +14,20 @@ interface StatLabelProps {
  *
  * @param props - Component properties.
  */
-const StatLabel = (props: StatLabelProps) => {
+const StatLabel = ({ label, value, labelColor }: StatLabelProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.3 }}>
       <Typography
         sx={{
-          color: props.labelColor ?? colors.text.muted,
+          color: labelColor ?? colors.text.muted,
           fontSize: "0.6rem",
           fontWeight: 700,
         }}
       >
-        {props.label}
+        {label}
       </Typography>
       <Typography sx={{ color: colors.text.secondary, fontSize: "0.8rem", fontWeight: 600 }}>
-        {props.value}
+        {value}
       </Typography>
     </Box>
   );

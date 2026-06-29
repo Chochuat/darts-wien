@@ -70,21 +70,26 @@ const FormatInfoBox = ({ isGrandFinal }: { isGrandFinal: boolean }) => {
  *
  * @param props - Component props.
  */
-const GroupStandingsTable = (props: {
+const GroupStandingsTable = ({
+  group,
+  advancingSet,
+  expandedMatches,
+  onToggle,
+}: {
   group: ApiTournamentGroup;
   advancingSet: Set<string>;
   expandedMatches: Record<string, boolean>;
   onToggle: (name: string) => void;
 }) => {
   const { t } = useTranslation();
-  const matchesVisible = props.expandedMatches[props.group.label] ?? false;
-  const groupMatches = groupMatchesFromPerspective(props.group);
+  const matchesVisible = expandedMatches[group.label] ?? false;
+  const groupMatches = groupMatchesFromPerspective(group);
 
   return (
     <Box sx={{ border: "1px solid #e4e4e7", borderRadius: 2, overflow: "hidden" }}>
       <Box sx={{ bgcolor: `${colors.accent}0a`, px: 1.5, py: 0.75, borderBottom: "1px solid #e4e4e7" }}>
         <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.8rem" }}>
-          {t("common.group", { name: props.group.label })}
+          {t("common.group", { name: group.label })}
         </Typography>
       </Box>
 
@@ -99,8 +104,8 @@ const GroupStandingsTable = (props: {
           ))}
         </Box>
 
-        {props.group.standings.map((s, i) => {
-          const advanced = props.advancingSet.has(s.player.name);
+        {group.standings.map((s, i) => {
+          const advanced = advancingSet.has(s.player.name);
           return (
             <Box key={s.player.name} sx={{ display: "flex", alignItems: "center", px: 0.5, py: 0.4, borderRadius: 0.5, gap: 0.25, bgcolor: advanced ? `${colors.accent}12` : "transparent" }}>
               <Box sx={{ width: 20, textAlign: "center", flexShrink: 0 }}>
@@ -125,7 +130,7 @@ const GroupStandingsTable = (props: {
         })}
       </Box>
 
-      <Box onClick={() => props.onToggle(props.group.label)} sx={{ borderTop: "1px solid #f0f0f0", px: 1.5, py: 0.6, display: "flex", alignItems: "center", gap: 0.4, cursor: "pointer", "&:hover": { bgcolor: `${colors.accent}06` }, transition: "background 0.15s" }}>
+      <Box onClick={() => onToggle(group.label)} sx={{ borderTop: "1px solid #f0f0f0", px: 1.5, py: 0.6, display: "flex", alignItems: "center", gap: 0.4, cursor: "pointer", "&:hover": { bgcolor: `${colors.accent}06` }, transition: "background 0.15s" }}>
         <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, flex: 1 }}>
           {matchesVisible ? t("tournamentDetail.hideMatches") : t("tournamentDetail.showMatches")}
         </Typography>
@@ -161,13 +166,16 @@ const GroupStandingsTable = (props: {
  *
  * @param props - Component properties.
  */
-const TournamentDetail = (props: {
+const TournamentDetail = ({
+  detail,
+  summary,
+}: {
   detail: TournamentDetailResponse;
   summary: TournamentSummary;
 }) => {
   const [expandedMatches, setExpandedMatches] = useState<Record<string, boolean>>({});
   const { t } = useTranslation();
-  const isGrandFinal = props.summary.type === "grand_final";
+  const isGrandFinal = summary.type === "grand_final";
 
   const toggleMatches = (groupName: string) => {
     setExpandedMatches((prev) => ({
@@ -177,9 +185,9 @@ const TournamentDetail = (props: {
   };
 
   const allPlayoffPlayerNames = new Set(
-    props.detail.playoffs.flatMap((r) => r.matches).flatMap((m) => [m.player1.name, m.player2.name])
+    detail.playoffs.flatMap((r) => r.matches).flatMap((m) => [m.player1.name, m.player2.name])
   );
-  const allGroupPlayerNames = props.detail.groups.flatMap((g) => g.players.map((p) => p.name));
+  const allGroupPlayerNames = detail.groups.flatMap((g) => g.players.map((p) => p.name));
   const advancingSet = new Set(allGroupPlayerNames.filter((p) => allPlayoffPlayerNames.has(p)));
 
   return (
@@ -191,14 +199,14 @@ const TournamentDetail = (props: {
             <Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
                 <Typography sx={{ color: colors.text.primary, fontWeight: 800, fontSize: { xs: "1.35rem", md: "1.75rem" }, letterSpacing: 1, lineHeight: 1.1 }}>
-                  {isGrandFinal ? t("tournamentDetail.grandFinalTitle") : t("common.week", { week: props.summary.weekNumber })}
+                  {isGrandFinal ? t("tournamentDetail.grandFinalTitle") : t("common.week", { week: summary.weekNumber })}
                 </Typography>
                 {isGrandFinal ? <Typography sx={{ color: colors.goldText, fontSize: "0.55rem", fontWeight: 900, letterSpacing: 2, bgcolor: `${colors.gold}20`, px: 1, py: 0.35, borderRadius: 1, lineHeight: 1 }}>
                     {t("tournamentDetail.grandFinal")}
                   </Typography> : null}
               </Box>
               <Typography sx={{ color: colors.text.subtle, fontSize: "0.75rem", fontWeight: 600, mt: 0.15 }}>
-                {props.summary.date}
+                {summary.date}
               </Typography>
             </Box>
           </Box>
@@ -207,17 +215,17 @@ const TournamentDetail = (props: {
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <EmojiEvents sx={{ color: colors.gold, fontSize: "0.9rem" }} />
               <Typography sx={{ color: colors.goldText, fontSize: "0.8rem", fontWeight: 700 }}>
-                {t("common.winner", { name: props.summary.winner?.name ?? "" })}
+                {t("common.winner", { name: summary.winner?.name ?? "" })}
               </Typography>
             </Box>
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {isGrandFinal ? t("tournamentDetail.playersGrandFinal", { count: 8 }) : t("tournamentDetail.players", { count: props.summary.playerCount })}
+              {isGrandFinal ? t("tournamentDetail.playersGrandFinal", { count: 8 }) : t("tournamentDetail.players", { count: summary.playerCount })}
             </Typography>
             {!isGrandFinal ? <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-                {t("tournamentDetail.groupMatches", { count: props.summary.groupMatchCount })}
+                {t("tournamentDetail.groupMatches", { count: summary.groupMatchCount })}
               </Typography> : null}
             <Typography sx={{ color: colors.text.muted, fontSize: "0.7rem" }}>
-              {t("tournamentDetail.playoffMatches", { count: props.summary.playoffMatchCount })}
+              {t("tournamentDetail.playoffMatches", { count: summary.playoffMatchCount })}
             </Typography>
           </Box>
 
@@ -227,7 +235,7 @@ const TournamentDetail = (props: {
         {!isGrandFinal ? <Box sx={{ px: 0.5, mb: 3 }}>
           <SectionHeading icon={<Groups />} label={t("tournamentDetail.groups")} />
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
-            {props.detail.groups.map((g) => (
+            {detail.groups.map((g) => (
               <GroupStandingsTable advancingSet={advancingSet} expandedMatches={expandedMatches} group={g} key={g.label} onToggle={toggleMatches} />
             ))}
           </Box>
@@ -237,7 +245,7 @@ const TournamentDetail = (props: {
           <SectionHeading icon={<EmojiEvents />} label={t("tournamentDetail.playoffs")} />
           <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 1.5, md: 2 }, alignItems: { md: "flex-start" }, justifyContent: { md: "center" } }}>
             <PlayoffRound
-              allPlayoffEntries={playoffMatchesForRound(props.detail, "Quarter-Finals")}
+              allPlayoffEntries={playoffMatchesForRound(detail, "Quarter-Finals")}
               bgcolor={`${colors.accent}06`}
               borderColor={`${colors.accent}15`}
               color={colors.accent}
@@ -245,7 +253,7 @@ const TournamentDetail = (props: {
               roundName="Quarter-Finals"
             />
             <PlayoffRound
-              allPlayoffEntries={playoffMatchesForRound(props.detail, "Semi-Finals")}
+              allPlayoffEntries={playoffMatchesForRound(detail, "Semi-Finals")}
               bgcolor={`${colors.accent}0a`}
               borderColor={`${colors.accent}25`}
               color={colors.accent}
@@ -254,7 +262,7 @@ const TournamentDetail = (props: {
             />
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, flex: 1, maxWidth: { md: 300 } }}>
               <PlayoffRound
-                allPlayoffEntries={playoffMatchesForRound(props.detail, "3rd Place")}
+                allPlayoffEntries={playoffMatchesForRound(detail, "3rd Place")}
                 bgcolor={`${colors.bronze}12`}
                 borderColor={`${colors.bronze}30`}
                 color={colors.bronze}
@@ -262,7 +270,7 @@ const TournamentDetail = (props: {
                 roundName="3rd Place"
               />
               <PlayoffRound
-                allPlayoffEntries={playoffMatchesForRound(props.detail, "Final")}
+                allPlayoffEntries={playoffMatchesForRound(detail, "Final")}
                 bgcolor={`${colors.gold}15`}
                 borderColor={colors.gold}
                 color={colors.goldText}
@@ -285,7 +293,7 @@ const TournamentDetail = (props: {
                 </Typography>
               ))}
             </Box>
-            {props.detail.finalStandings.map((s, i) => (
+            {detail.finalStandings.map((s, i) => (
               <FinalStandingsRow i={i} key={s.player.name} s={s} />
             ))}
           </Box>

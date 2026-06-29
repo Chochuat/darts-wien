@@ -49,18 +49,18 @@ function getNumberTexture(num: number): THREE.CanvasTexture {
   return texture;
 }
 
-const Wedge = (props: {
+const Wedge = ({ innerR, outerR, color, index }: {
   innerR: number;
   outerR: number;
   color: string;
   index: number;
 }) => {
-  const a0 = wedgeCenterAngle(props.index) - WEDGE_HALF;
+  const a0 = wedgeCenterAngle(index) - WEDGE_HALF;
   return (
     <mesh position={[0, 0, Z_L]}>
-      <ringGeometry args={[props.innerR, props.outerR, 1, 1, a0, WEDGE_SPAN]} />
+      <ringGeometry args={[innerR, outerR, 1, 1, a0, WEDGE_SPAN]} />
       <meshStandardMaterial
-        color={props.color}
+        color={color}
         roughness={0.55}
         side={THREE.DoubleSide}
       />
@@ -73,7 +73,7 @@ const Wedge = (props: {
  *
  * @param props - Component properties.
  */
-function PieRing(props: {
+function PieRing({ innerR, outerR, c1, c2 }: {
   innerR: number;
   outerR: number;
   c1: string;
@@ -83,11 +83,11 @@ function PieRing(props: {
   for (let s = 0; s < 20; s++) {
     wedges.push(
       <Wedge
-        color={s % 2 === 0 ? props.c1 : props.c2}
+        color={s % 2 === 0 ? c1 : c2}
         index={s}
-        innerR={props.innerR}
+        innerR={innerR}
         key={s}
-        outerR={props.outerR}
+        outerR={outerR}
       />,
     );
   }

@@ -20,13 +20,13 @@ const metadata: Metadata = {
  *
  * @param props - Component properties.
  */
-const RootLayout = (props: Readonly<{
+const RootLayout = ({ children }: Readonly<{
   children: React.ReactNode;
 }>) => {
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Providers>{props.children}</Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
