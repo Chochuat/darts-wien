@@ -71,7 +71,7 @@
 **Date:** 2026-06-29  
 **Context:** The app needs an admin area for tournament management. Admins may or may not be players. Previously, all write RLS policies used `auth.role() = 'authenticated'`, allowing any logged-in user to write.  
 **Decision:** A `profiles` table links `auth.users.id` to a role (`pending`, `scorekeeper`, `admin`) and optionally to a `players.id`. Middleware gates `/admin/*` — redirects unauthenticated users to `/admin/login`, unauthorized users to `/admin/403`. RLS write policies tightened to check `profiles.role IN ('admin','scorekeeper')`. Self-signup creates `pending` profiles; admins promote via the Users screen. Auth UI is custom-built with MUI (email + password, no OAuth).  
-**Consequences:** Clean separation of admin identity from player identity. Trade-off: no OAuth (simpler but less convenient), and the middleware adds a session check on every `/admin/*` request.
+**Consequences:** Clean separation of admin identity from player identity. Trade-off: no OAuth (simpler but less convenient), and the proxy adds a session check on every `/admin/*` request.
 
 ---
 

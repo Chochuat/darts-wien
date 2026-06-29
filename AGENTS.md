@@ -100,7 +100,7 @@ darts-wien/
 │   └── conventions.md
 ├── public/
 ├── supabase/                      # Migrations + seed SQL + README
-├── middleware.ts                  # Admin route gating (session + role check)
+├── proxy.ts                      # Admin route gating (session + role check)
 ├── opencode.json
 ├── next.config.ts
 ├── tsconfig.json
@@ -146,7 +146,7 @@ npx vitest run --coverage  # Coverage report (lib/ = 100%)
 - **ADR-003:** Vitest for unit testing, colocated `*.test.ts` files.
 - **ADR-004:** JSDoc/TSDoc enforcement via eslint-plugin-jsdoc + eslint-plugin-tsdoc.
 - **ADR-005:** Supabase env var renamed to `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
-- **ADR-006:** Admin auth via Supabase + profiles table + middleware-gated `/admin/*`.
+- **ADR-006:** Admin auth via Supabase + profiles table + proxy-gated `/admin/*`.
 - **ADR-007:** Secret-key client for admin writes (bypasses RLS, server-only).
 - **ADR-008:** Tournament generation engine: 4 algorithms + bracket adjacency + format config.
 - **ADR-009:** Cascade lock model — upstream edits blocked once downstream is played.

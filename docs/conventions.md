@@ -76,7 +76,7 @@
 ### Admin Auth & RLS
 
 - `profiles` table links `auth.users.id` to a role (`pending`, `scorekeeper`, `admin`) and optionally to `players.id` (see ADR-006).
-- Middleware (`src/middleware.ts`) gates `/admin/*` — redirects unauthenticated to `/admin/login`, unauthorized to `/admin/403`.
+- Proxy (`src/proxy.ts`) gates `/admin/*` — redirects unauthenticated to `/admin/login`, unauthorized to `/admin/403`.
 - Auth guards: `requireAdmin()`, `requireAdminOrScorekeeper()`, `isAuthError()` from `@/lib/api-utils`. Always check the result with `isAuthError()` before proceeding.
 - RLS write policies check `EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role IN ('admin','scorekeeper'))`. Scorekeeper match-write is additionally scoped to `in_progress` tournaments.
 - Admin API routes live under `/api/admin/*` and use the secret-key client + auth guards. Public API routes remain under `/api/*`.

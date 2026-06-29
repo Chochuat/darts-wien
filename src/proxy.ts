@@ -12,14 +12,14 @@ const PUBLIC_ADMIN_PATHS = [
 ];
 
 /**
- * Middleware that gates `/admin/*` routes. Unauthenticated users are
+ * Proxy that gates `/admin/*` routes. Unauthenticated users are
  * redirected to `/admin/login`. Authenticated users without a valid role
  * (`admin` or `scorekeeper`) are redirected to `/admin/403`.
  *
  * @param req - The incoming request.
  * @returns A redirect response or `NextResponse.next()`.
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Only gate /admin/* routes.
@@ -76,7 +76,7 @@ export async function middleware(req: NextRequest) {
 
 export
 /**
- * Next.js middleware config: match all /admin/* routes.
+ * Next.js proxy config: match all /admin/* routes.
  */
 const config = {
   matcher: ["/admin/:path*"],
