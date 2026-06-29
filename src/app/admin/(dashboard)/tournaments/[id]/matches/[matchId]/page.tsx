@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -43,6 +44,7 @@ const MatchEntryPage = () => {
   const supabase = createClient();
   const tournamentId = Number(params.id);
   const matchId = Number(params.matchId);
+  const { t } = useTranslation();
 
   const [match, setMatch] = useState<MatchData | null>(null);
   const [p1Name, setP1Name] = useState("TBD");
@@ -66,7 +68,7 @@ const MatchEntryPage = () => {
       .single();
 
     if (mErr || !m) {
-      setError("Match not found");
+      setError(t("admin.matchNotFound"));
       setLoading(false);
       return;
     }
@@ -89,7 +91,7 @@ const MatchEntryPage = () => {
     setP280(String(matchData.player2_180 ?? 0));
 
     setLoading(false);
-  }, [supabase, matchId]);
+  }, [supabase, matchId, t]);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void fetchMatch(); }, [fetchMatch]);
@@ -113,18 +115,18 @@ const MatchEntryPage = () => {
     setSaving(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to save result");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToSaveResult") }));
+      setError(err.error ?? t("admin.failedToSaveResult"));
       return;
     }
 
-    setSuccess("Result saved successfully.");
+    setSuccess(t("admin.resultSaved"));
     void fetchMatch();
   };
 
   const handleNoShow = async () => {
     if (!noShowPlayer) {
-      setError("Select which player did not show");
+      setError(t("admin.selectNoShowPlayer"));
       return;
     }
     setSaving(true);
@@ -140,17 +142,17 @@ const MatchEntryPage = () => {
     setSaving(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to mark no-show");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToSaveResult") }));
+      setError(err.error ?? t("admin.failedToMarkNoShow"));
       return;
     }
 
-    setSuccess("No-show recorded.");
+    setSuccess(t("admin.noShowRecorded"));
     void fetchMatch();
   };
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
-  if (!match) return <Typography sx={{ color: colors.red }}>{error ?? "Error"}</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
+  if (!match) return <Typography sx={{ color: colors.red }}>{error ?? t("common.error")}</Typography>;
 
   const isPending = match.status === "pending";
   const isLocked = !isPending;
@@ -159,14 +161,14 @@ const MatchEntryPage = () => {
   return (
     <Box sx={{ maxWidth: 500 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}/matches`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Matches
+        {t("admin.backToMatches")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 1 }}>
-        Match Result
+        {t("admin.matchResult")}
       </Typography>
       <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem", mb: 3 }}>
-        First to {match.legs_target} legs
+        {t("admin.firstToLegs", { legs: match.legs_target })}
       </Typography>
 
       {error ? <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert> : null}
@@ -174,7 +176,7 @@ const MatchEntryPage = () => {
 
       {isLocked ? (
         <Alert severity="info" sx={{ mb: 2 }}>
-          This match is {match.status === "no_show" ? "a no-show" : "completed"} and cannot be edited.
+          {t("admin.matchLocked", { status: match.status === "no_show" ? t("admin.isNoShow") : t("admin.isCompleted") })}
         </Alert>
       ) : null}
 
@@ -189,7 +191,7 @@ const MatchEntryPage = () => {
           <TextField
             disabled={isLocked || !hasPlayers}
             fullWidth
-            label={`${p1Name} — Legs`}
+            label={`${p1Name} — ${t("admin.legsField")}`}
             onChange={(e) => setLegsP1(e.target.value)}
             sx={darkField}
             size="small"
@@ -199,7 +201,7 @@ const MatchEntryPage = () => {
           <TextField
             disabled={isLocked || !hasPlayers}
             fullWidth
-            label={`${p2Name} — Legs`}
+            label={`${p2Name} — ${t("admin.legsField")}`}
             onChange={(e) => setLegsP2(e.target.value)}
             sx={darkField}
             size="small"
@@ -238,19 +240,19 @@ const MatchEntryPage = () => {
           type="button"
           variant="contained"
         >
-          {saving ? "Saving…" : "Save Result"}
+          {saving ? t("admin.saving") : t("admin.saveResult")}
         </Button>
       </Box>
 
       {isPending && hasPlayers ? (
         <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "rgba(220,38,38,0.06)", border: "1px solid rgba(220,38,38,0.15)" }}>
           <Typography sx={{ color: colors.red, fontWeight: 600, fontSize: "0.9rem", mb: 1.5 }}>
-            No-Show (Walkover)
+            {t("admin.noShowWalkover")}
           </Typography>
           <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
             <TextField
               fullWidth
-              label="No-show player"
+              label={t("admin.noShowPlayer")}
               onChange={(e) => setNoShowPlayer(e.target.value)}
               select
               sx={darkField}
@@ -267,7 +269,7 @@ const MatchEntryPage = () => {
               type="button"
               variant="outlined"
             >
-              Mark
+              {t("admin.mark")}
             </Button>
           </Box>
         </Box>

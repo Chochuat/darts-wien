@@ -11,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { colors } from "@/lib/design-tokens";
 import { createClient } from "@/lib/supabase/client";
 import { AdminSessionResponse } from "@/lib/validation";
+import { useTranslation } from "react-i18next";
 
 interface TournamentListItem {
   id: number;
@@ -32,6 +33,7 @@ const STATUS_COLORS: Record<string, "default" | "primary" | "secondary" | "succe
  * Admin tournament list page. Shows all tournaments in the active season.
  */
 const TournamentsPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const supabase = createClient();
   const [tournaments, setTournaments] = useState<TournamentListItem[]>([]);
@@ -76,7 +78,7 @@ const TournamentsPage = () => {
 
     const sid = seasons?.id;
     if (!sid) {
-      setError("No active season found");
+      setError(t("admin.noActiveSeason"));
       setLoading(false);
       return;
     }
@@ -93,7 +95,7 @@ const TournamentsPage = () => {
       setTournaments((data ?? []) as TournamentListItem[]);
     }
     setLoading(false);
-  }, [supabase]);
+  }, [supabase, t]);
 
   useEffect(() => {
     void (async () => {
@@ -104,7 +106,7 @@ const TournamentsPage = () => {
 
   if (loading) {
     return (
-      <Typography sx={{ color: "#fff" }}>Loading…</Typography>
+      <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>
     );
   }
 
@@ -120,8 +122,15 @@ const TournamentsPage = () => {
   const isScorekeeper = session?.role === "scorekeeper";
 
   const visibleTournaments = isScorekeeper
-    ? tournaments.filter((t) => t.status === "in_progress" || t.status === "ready" || t.status === "completed")
+    ? tournaments.filter((item) => item.status === "in_progress" || item.status === "ready" || item.status === "completed")
     : tournaments;
+
+  const statusLabels: Record<string, string> = {
+    registration: t("admin.statusRegistration"),
+    ready: t("admin.statusReady"),
+    in_progress: t("admin.statusInProgress"),
+    completed: t("admin.statusCompleted"),
+  };
 
   return (
     <Box>
@@ -132,7 +141,7 @@ const TournamentsPage = () => {
         {isAdmin ? (
           <Link href="/admin/tournaments/new">
             <Button startIcon={<AddIcon />} type="button" variant="contained">
-              New Tournament
+              {t("admin.newTournament")}
             </Button>
           </Link>
         ) : null}
@@ -140,11 +149,11 @@ const TournamentsPage = () => {
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {visibleTournaments.length === 0 ? (
-          <Typography sx={{ color: "rgba(255,255,255,0.5)" }}>No tournaments yet.</Typography>
+          <Typography sx={{ color: "rgba(255,255,255,0.5)" }}>{t("admin.noTournaments")}</Typography>
         ) : null}
 
-        {visibleTournaments.map((t) => (
-          <Link href={`/admin/tournaments/${t.id}`} key={t.id} style={{ textDecoration: "none" }}>
+        {visibleTournaments.map((item) => (
+          <Link href={`/admin/tournaments/${item.id}`} key={item.id} style={{ textDecoration: "none" }}>
             <Box
               sx={{
                 display: "flex",
@@ -166,7 +175,7 @@ const TournamentsPage = () => {
                     width: 36,
                     height: 36,
                     borderRadius: 1,
-                    bgcolor: t.type === "grand_final" ? colors.gold : colors.accent,
+                    bgcolor: item.type === "grand_final" ? colors.gold : colors.accent,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -175,20 +184,20 @@ const TournamentsPage = () => {
                     color: "#fff",
                   }}
                 >
-                  {t.week_number}
+                  {item.week_number}
                 </Box>
                 <Box>
                   <Typography sx={{ color: "#fff", fontWeight: 600, fontSize: "0.9rem" }}>
-                    {t.type === "grand_final" ? "Grand Final" : `Week ${t.week_number}`}
+                    {item.type === "grand_final" ? t("admin.grandFinal") : t("common.week", { week: item.week_number })}
                   </Typography>
                   <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.75rem" }}>
-                    {t.date}
+                    {item.date}
                   </Typography>
                 </Box>
               </Box>
               <Chip
-                color={STATUS_COLORS[t.status] ?? "default"}
-                label={t.status.replace("_", " ")}
+                color={STATUS_COLORS[item.status] ?? "default"}
+                label={statusLabels[item.status] ?? item.status}
                 size="small"
                 sx={{ textTransform: "capitalize" }}
               />

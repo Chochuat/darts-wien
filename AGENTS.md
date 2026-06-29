@@ -58,7 +58,7 @@ darts-wien/
 │   │   │   ├── game/              # 3D darts game (Three.js / R3F)
 │   │   │   ├── standings/         # API-backed standings display
 │   │   │   ├── tournaments/       # Format constants, bracket, detail page
-│   │   │   └── ui/                # Shared components (Card, Section, Sidebar, etc.)
+│   │   │   └── ui/                # Shared components (Card, Section, Sidebar, AdminSidebar, etc.)
 │   │   ├── _i18n/                 # i18next init, LocaleProvider, locales/{en,de,sk}.json
 │   │   ├── about/                 # About page
 │   │   ├── admin/                 # Admin area (auth pages + dashboard route group)
@@ -117,7 +117,7 @@ darts-wien/
 npm run dev       # Dev server → http://localhost:3000
 npm run build     # Production build
 npm run lint      # ESLint
-npm test          # Vitest (332 tests across 23 test files)
+npm test          # Vitest (332 tests across 23 test files; no UI component tests yet — npm run test:watch for dev)
 npm run test:watch# Vitest watch mode
 npx vitest run --coverage  # Coverage report (lib/ = 100%)
 ```

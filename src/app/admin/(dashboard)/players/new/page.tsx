@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 
 const darkField = {
@@ -19,6 +20,7 @@ const darkField = {
  * Create new player page. Admin only.
  */
 const NewPlayerPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,8 +40,8 @@ const NewPlayerPage = () => {
     setLoading(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to create player");
+      const err = await res.json().catch(() => ({ error: t("admin.createFailed") }));
+      setError(err.error ?? t("admin.createFailed"));
       return;
     }
 
@@ -50,14 +52,14 @@ const NewPlayerPage = () => {
   return (
     <Box sx={{ maxWidth: 400 }}>
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 3 }}>
-        Add Player
+        {t("admin.addPlayer")}
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {error ? <Typography sx={{ color: colors.red }} variant="body2">{error}</Typography> : null}
         <TextField
           fullWidth
-          label="Player Name"
+          label={t("admin.playerName")}
           onChange={(e) => setName(e.target.value)}
           required
           sx={darkField}
@@ -65,10 +67,10 @@ const NewPlayerPage = () => {
         />
         <Box sx={{ display: "flex", gap: 1.5 }}>
           <Button disabled={loading} type="submit" variant="contained">
-            {loading ? "Creating…" : "Create"}
+            {loading ? t("admin.creating") : t("admin.create")}
           </Button>
           <Button onClick={() => router.back()} type="button" variant="outlined">
-            Cancel
+            {t("admin.cancel")}
           </Button>
         </Box>
       </Box>

@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { colors } from "@/lib/design-tokens";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTranslation } from "react-i18next";
 
 interface FormatEntry {
   phase: string;
@@ -58,6 +59,7 @@ const darkField = {
  * Tournament setup page — format config (legs, starting score, max throws per phase).
  */
 const SetupPage = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const tournamentId = Number(params.id);
@@ -106,28 +108,28 @@ const SetupPage = () => {
     setSaving(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed to save" }));
-      setError(err.error ?? "Failed to save");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToSave") }));
+      setError(err.error ?? t("admin.failedToSave"));
       return;
     }
 
     setSuccess(true);
   };
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 3 }}>
-        Tournament Setup — Format Configuration
+        {t("admin.setupTitle")}
       </Typography>
 
       {error ? <Typography sx={{ color: colors.red, mb: 2 }} variant="body2">{error}</Typography> : null}
-      {success ? <Typography sx={{ color: colors.green, mb: 2 }} variant="body2">Saved successfully.</Typography> : null}
+      {success ? <Typography sx={{ color: colors.green, mb: 2 }} variant="body2">{t("admin.savedSuccessfully")}</Typography> : null}
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {entries.map((entry) => (
@@ -145,7 +147,7 @@ const SetupPage = () => {
             </Typography>
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
               <TextField
-                label="Legs"
+                label={t("admin.legsField")}
                 onChange={(e) => updateEntry(entry.phase, "legsTarget", Number(e.target.value))}
                 sx={darkField}
                 size="small"
@@ -153,7 +155,7 @@ const SetupPage = () => {
                 value={entry.legsTarget}
               />
               <TextField
-                label="Starting Score"
+                label={t("admin.startingScore")}
                 onChange={(e) => updateEntry(entry.phase, "startingScore", Number(e.target.value))}
                 sx={darkField}
                 size="small"
@@ -161,7 +163,7 @@ const SetupPage = () => {
                 value={entry.startingScore}
               />
               <TextField
-                label="Max Throws"
+                label={t("admin.maxThrows")}
                 onChange={(e) => updateEntry(entry.phase, "maxThrows", Number(e.target.value))}
                 sx={darkField}
                 size="small"
@@ -175,7 +177,7 @@ const SetupPage = () => {
 
       <Box sx={{ display: "flex", gap: 1.5, mt: 3 }}>
         <Button disabled={saving} onClick={handleSave} type="button" variant="contained">
-          {saving ? "Saving…" : "Save Format"}
+          {saving ? t("admin.saving") : t("admin.saveFormat")}
         </Button>
       </Box>
     </Box>

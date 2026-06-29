@@ -7,11 +7,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTranslation } from "react-i18next";
 
 /**
  * Close tournament confirmation page. Admin only.
  */
 const CloseTournamentPage = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const tournamentId = Number(params.id);
@@ -30,8 +32,8 @@ const CloseTournamentPage = () => {
     setClosing(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to close tournament");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToClose") }));
+      setError(err.error ?? t("admin.failedToClose"));
       return;
     }
 
@@ -42,18 +44,17 @@ const CloseTournamentPage = () => {
   return (
     <Box sx={{ maxWidth: 450 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 2 }}>
-        Close Tournament
+        {t("admin.closeTournament")}
       </Typography>
 
       {error ? <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert> : null}
 
       <Alert severity="warning" sx={{ mb: 3 }}>
-        Closing the tournament will permanently freeze all match results.
-        This action cannot be undone.
+        {t("admin.closeWarning")}
       </Alert>
 
       <Button
@@ -63,7 +64,7 @@ const CloseTournamentPage = () => {
         type="button"
         variant="contained"
       >
-        {closing ? "Closing…" : "Close Tournament"}
+        {closing ? t("admin.closing") : t("admin.closeTournament")}
       </Button>
     </Box>
   );

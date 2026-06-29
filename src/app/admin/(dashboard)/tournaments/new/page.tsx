@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { colors } from "@/lib/design-tokens";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface Season {
   id: number;
@@ -20,6 +21,7 @@ interface Season {
  * Admin new tournament creation page. Admin only.
  */
 const NewTournamentPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const supabase = createClient();
 
@@ -68,8 +70,8 @@ const NewTournamentPage = () => {
     setLoading(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed to create tournament" }));
-      setError(err.error ?? "Failed to create tournament");
+      const err = await res.json().catch(() => ({ error: t("admin.createFailed") }));
+      setError(err.error ?? t("admin.createFailed"));
       return;
     }
 
@@ -90,7 +92,7 @@ const NewTournamentPage = () => {
 
         <TextField
           fullWidth
-          label="Season"
+          label={t("admin.season")}
           onChange={(e) => setSeasonId(e.target.value)}
           select
           required
@@ -106,7 +108,7 @@ const NewTournamentPage = () => {
 
         <TextField
           fullWidth
-          label="Week Number (1-16)"
+          label={t("admin.weekNumber")}
           onChange={(e) => setWeekNumber(e.target.value)}
           required
           sx={darkField}
@@ -116,7 +118,7 @@ const NewTournamentPage = () => {
 
         <TextField
           fullWidth
-          label="Date"
+          label={t("admin.date")}
           onChange={(e) => setDate(e.target.value)}
           required
           sx={darkField}
@@ -127,20 +129,20 @@ const NewTournamentPage = () => {
 
         <TextField
           fullWidth
-          label="Type"
+          label={t("admin.type")}
           onChange={(e) => setType(e.target.value)}
           select
           sx={darkField}
           value={type}
         >
-          <MenuItem value="regular">Regular</MenuItem>
-          <MenuItem value="grand_final">Grand Final</MenuItem>
+          <MenuItem value="regular">{t("admin.regular")}</MenuItem>
+          <MenuItem value="grand_final">{t("admin.grandFinal")}</MenuItem>
         </TextField>
 
         {type === "regular" ? (
           <TextField
             fullWidth
-            label="Number of Groups (2-4)"
+            label={t("admin.numGroups")}
             onChange={(e) => setNumGroups(e.target.value)}
             select
             sx={darkField}
@@ -154,10 +156,10 @@ const NewTournamentPage = () => {
 
         <Box sx={{ display: "flex", gap: 1.5 }}>
           <Button disabled={loading} type="submit" variant="contained">
-            {loading ? "Creating…" : "Create Tournament"}
+            {loading ? t("admin.creating") : t("admin.createTournament")}
           </Button>
           <Button onClick={() => router.back()} type="button" variant="outlined">
-            Cancel
+            {t("admin.cancel")}
           </Button>
         </Box>
       </Box>

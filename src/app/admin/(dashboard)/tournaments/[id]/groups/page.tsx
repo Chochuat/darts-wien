@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -28,6 +29,7 @@ const GroupsPage = () => {
   const router = useRouter();
   const supabase = createClient();
   const tournamentId = Number(params.id);
+  const { t } = useTranslation();
 
   const [groups, setGroups] = useState<Array<{ id: number; label: string; players: Array<{ player_id: number; name: string }> }>>([]);
   const [loading, setLoading] = useState(true);
@@ -44,15 +46,15 @@ const GroupsPage = () => {
   const [extraPairing, setExtraPairing] = useState("top_vs_bottom");
 
   const fetchData = useCallback(async () => {
-    const { data: t } = await supabase
+    const { data: tournamentRow } = await supabase
       .from("tournaments")
       .select("status, type")
       .eq("id", tournamentId)
       .single();
 
-    if (t) {
-      setTournamentStatus(t.status);
-      setTournamentType(t.type);
+    if (tournamentRow) {
+      setTournamentStatus(tournamentRow.status);
+      setTournamentType(tournamentRow.type);
     }
 
     const { data: groupRows } = await supabase
@@ -81,13 +83,13 @@ const GroupsPage = () => {
         label: g.label,
         players: (groupPlayers ?? [])
           .filter((gp) => gp.group_id === g.id)
-          .map((gp) => ({ player_id: gp.player_id, name: playerMap.get(gp.player_id) ?? "Unknown" })),
+          .map((gp) => ({ player_id: gp.player_id, name: playerMap.get(gp.player_id) ?? t("admin.unknown") })),
       }));
       setGroups(result);
     }
 
     setLoading(false);
-  }, [supabase, tournamentId]);
+  }, [supabase, tournamentId, t]);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void fetchData(); }, [fetchData]);
@@ -115,29 +117,29 @@ const GroupsPage = () => {
     setGenerating(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed to generate" }));
-      setError(err.error ?? "Failed to generate");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToGenerate") }));
+      setError(err.error ?? t("admin.failedToGenerate"));
       return;
     }
 
     const data = await res.json();
-    setSuccess(`Generated ${data.groupsCreated ?? 0} groups and ${data.matchesCreated ?? 0} matches.`);
+    setSuccess(t("admin.generatedSuccess", { groups: data.groupsCreated ?? 0, matches: data.matchesCreated ?? 0 }));
     void fetchData();
   };
 
   const canGenerate = tournamentStatus === "registration";
   const canRegenerate = tournamentStatus === "ready";
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 700 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 3 }}>
-        {tournamentType === "grand_final" ? "Bracket Generation" : "Group Generation"}
+        {tournamentType === "grand_final" ? t("admin.bracketGeneration") : t("admin.groupGeneration")}
       </Typography>
 
       {error ? <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert> : null}
@@ -146,7 +148,7 @@ const GroupsPage = () => {
       {hasGroups ? (
         <Box>
           <Typography sx={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", mb: 2 }}>
-            Groups generated. {canRegenerate ? "You can regenerate (this will delete existing groups and matches)." : ""}
+            {t("admin.groupsGenerated")} {canRegenerate ? t("admin.canRegenerate") : ""}
           </Typography>
 
           <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -163,7 +165,7 @@ const GroupsPage = () => {
                 }}
               >
                 <Typography sx={{ color: colors.accent, fontWeight: 700, fontSize: "1.1rem", mb: 1.5 }}>
-                  Group {g.label}
+                  {t("admin.group")} {g.label}
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
                   {g.players.map((p) => (
@@ -179,7 +181,7 @@ const GroupsPage = () => {
           {canRegenerate ? (
             <Box sx={{ mt: 3 }}>
               <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem", mb: 2 }}>
-                Regenerate with new settings:
+                {t("admin.regenerateHint")}
               </Typography>
               <GenerationForm
                 genType={genType}
@@ -191,7 +193,7 @@ const GroupsPage = () => {
                 onSubmit={handleGenerate}
                 loading={generating}
                 isGrandFinal={tournamentType === "grand_final"}
-                label="Regenerate"
+                label={t("admin.regenerate")}
               />
             </Box>
           ) : null}
@@ -200,8 +202,8 @@ const GroupsPage = () => {
         <Box>
           <Typography sx={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", mb: 2 }}>
             {tournamentType === "grand_final"
-              ? "Generate the 8-player QF bracket. Requires exactly 8 registered players."
-              : "Select generation strategy and number of groups."}
+              ? t("admin.grandFinalHint")
+              : t("admin.generateHint")}
           </Typography>
 
           <GenerationForm
@@ -214,12 +216,12 @@ const GroupsPage = () => {
             onSubmit={handleGenerate}
             loading={generating}
             isGrandFinal={tournamentType === "grand_final"}
-            label="Generate"
+            label={t("admin.generate")}
           />
         </Box>
       ) : (
         <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>
-          No groups available.
+          {t("admin.noGroupsAvailable")}
         </Typography>
       )}
     </Box>
@@ -239,13 +241,15 @@ interface GenerationFormProps {
   label: string;
 }
 
-const GenerationForm = ({ genType, setGenType, numGroups, setNumGroups, extraPairing, setExtraPairing, onSubmit, loading, isGrandFinal, label }: GenerationFormProps) => (
+const GenerationForm = ({ genType, setGenType, numGroups, setNumGroups, extraPairing, setExtraPairing, onSubmit, loading, isGrandFinal, label }: GenerationFormProps) => {
+  const { t } = useTranslation();
+  return (
   <Box sx={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: 400 }}>
     {!isGrandFinal ? (
       <>
         <TextField
           fullWidth
-          label="Generation Strategy"
+          label={t("admin.generationStrategy")}
           onChange={(e) => setGenType(e.target.value)}
           select
           sx={darkField}
@@ -259,7 +263,7 @@ const GenerationForm = ({ genType, setGenType, numGroups, setNumGroups, extraPai
 
         <TextField
           fullWidth
-          label="Number of Groups"
+          label={t("admin.numberOfGroups")}
           onChange={(e) => setNumGroups(e.target.value)}
           select
           sx={darkField}
@@ -273,7 +277,7 @@ const GenerationForm = ({ genType, setGenType, numGroups, setNumGroups, extraPai
         {genType !== "manual" ? (
           <TextField
             fullWidth
-            label="Extra Match Pairing (for unequal groups)"
+            label={t("admin.extraMatchPairing")}
             onChange={(e) => setExtraPairing(e.target.value)}
             select
             sx={darkField}
@@ -289,9 +293,10 @@ const GenerationForm = ({ genType, setGenType, numGroups, setNumGroups, extraPai
     ) : null}
 
     <Button disabled={loading} onClick={onSubmit} type="button" variant="contained">
-      {loading ? "Generating…" : label}
+      {loading ? t("admin.generating") : label}
     </Button>
   </Box>
-);
+  );
+};
 
 export default GroupsPage;

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
+import { useTranslation } from "react-i18next";
 import { createClient } from "@/lib/supabase/client";
 
 interface Player { id: number; name: string; slug: string; }
@@ -15,6 +16,7 @@ interface Player { id: number; name: string; slug: string; }
  * Admin players list page. Admin only.
  */
 const PlayersPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const supabase = createClient();
   const [players, setPlayers] = useState<Player[]>([]);
@@ -48,16 +50,16 @@ const PlayersPage = () => {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (session) void fetchPlayers(); }, [session, fetchPlayers]);
 
-  if (loading || !session) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading || !session) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600 }}>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
         <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem" }}>
-          Players
+          {t("admin.players")}
         </Typography>
         <Link href="/admin/players/new">
-          <Button startIcon={<AddIcon />} type="button" variant="contained">Add Player</Button>
+          <Button startIcon={<AddIcon />} type="button" variant="contained">{t("admin.addPlayer")}</Button>
         </Link>
       </Box>
 

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
+import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import { createClient } from "@/lib/supabase/client";
 
@@ -36,12 +37,19 @@ const ROLE_COLORS: Record<string, "default" | "primary" | "secondary" | "success
  * Admin user management page. Shows all profiles and allows role changes.
  */
 const UsersPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const supabase = createClient();
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const roleLabels: Record<string, string> = {
+    pending: t("admin.pending"),
+    scorekeeper: t("admin.scorekeeper"),
+    admin: t("admin.adminRole"),
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -61,14 +69,14 @@ const UsersPage = () => {
   const fetchProfiles = useCallback(async () => {
     const res = await fetch("/api/admin/profiles");
     if (!res.ok) {
-      setError("Failed to load profiles");
+      setError(t("admin.loadFailed"));
       setLoading(false);
       return;
     }
     const data = await res.json();
     setProfiles(data.profiles ?? []);
     setLoading(false);
-  }, []);
+  }, [t]);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (isAdmin) void fetchProfiles(); }, [isAdmin, fetchProfiles]);
@@ -80,18 +88,18 @@ const UsersPage = () => {
       body: JSON.stringify({ role }),
     });
     if (!res.ok) {
-      setError("Failed to update role");
+      setError(t("admin.updateFailed"));
       return;
     }
     void fetchProfiles();
   };
 
-  if (loading || !isAdmin) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading || !isAdmin) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600 }}>
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 3 }}>
-        Users
+        {t("admin.users")}
       </Typography>
 
       {error ? <Typography sx={{ color: colors.red, mb: 2 }} variant="body2">{error}</Typography> : null}
@@ -114,11 +122,11 @@ const UsersPage = () => {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, minWidth: 0, flex: 1 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Typography sx={{ color: "#fff", fontSize: "0.9rem", fontWeight: 600 }}>
-                  {p.display_name ?? "Unnamed"}
+                  {p.display_name ?? t("admin.unnamed")}
                 </Typography>
                 <Chip
                   color={ROLE_COLORS[p.role] ?? "default"}
-                  label={p.role}
+                  label={roleLabels[p.role] ?? p.role}
                   size="small"
                   sx={{ textTransform: "capitalize" }}
                 />
@@ -134,9 +142,9 @@ const UsersPage = () => {
               sx={{ ...darkField, minWidth: 130 }}
               value={p.role}
             >
-              <MenuItem value="pending">Pending</MenuItem>
-              <MenuItem value="scorekeeper">Scorekeeper</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="pending">{t("admin.pending")}</MenuItem>
+              <MenuItem value="scorekeeper">{t("admin.scorekeeper")}</MenuItem>
+              <MenuItem value="admin">{t("admin.adminRole")}</MenuItem>
             </TextField>
           </Box>
         ))}

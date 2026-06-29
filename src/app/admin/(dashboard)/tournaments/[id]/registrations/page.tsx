@@ -11,6 +11,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface Player { id: number; name: string; slug: string; }
 interface Registration { player_id: number; checked_in: boolean; }
@@ -19,6 +20,7 @@ interface Registration { player_id: number; checked_in: boolean; }
  * Tournament registrations management page.
  */
 const RegistrationsPage = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const supabase = createClient();
@@ -64,8 +66,8 @@ const RegistrationsPage = () => {
       body: JSON.stringify({ playerId: Number(selectedPlayer) }),
     });
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to add player");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToAddPlayer") }));
+      setError(err.error ?? t("admin.failedToAddPlayer"));
       return;
     }
     setSelectedPlayer("");
@@ -78,8 +80,8 @@ const RegistrationsPage = () => {
       method: "DELETE",
     });
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Failed" }));
-      setError(err.error ?? "Failed to remove player");
+      const err = await res.json().catch(() => ({ error: t("admin.failedToRemovePlayer") }));
+      setError(err.error ?? t("admin.failedToRemovePlayer"));
       return;
     }
     void fetchData();
@@ -94,19 +96,19 @@ const RegistrationsPage = () => {
     void fetchData();
   };
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 1 }}>
-        Registrations
+        {t("admin.registrations")}
       </Typography>
       <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem", mb: 3 }}>
-        {registrations.length} player(s) registered
+        {t("admin.playerRegistrations", { count: registrations.length })}
       </Typography>
 
       {error ? <Typography sx={{ color: colors.red, mb: 2 }} variant="body2">{error}</Typography> : null}
@@ -128,20 +130,20 @@ const RegistrationsPage = () => {
             }}
             value={selectedPlayer}
           >
-            <option value="">Select a player…</option>
+            <option value="">{t("admin.selectPlayer")}</option>
             {availablePlayers.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </Box>
           <Button disabled={!selectedPlayer} onClick={addPlayer} size="small" startIcon={<AddIcon />} type="button" variant="contained">
-            Add
+            {t("admin.add")}
           </Button>
         </Box>
       ) : null}
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
         {registrations.length === 0 ? (
-          <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>No players registered yet.</Typography>
+          <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>{t("admin.noPlayersRegistered")}</Typography>
         ) : null}
 
         {registrations.map((reg) => {
@@ -168,11 +170,11 @@ const RegistrationsPage = () => {
                   sx={{ color: "rgba(255,255,255,0.3)" }}
                 />
                 <Typography sx={{ color: "#fff", fontSize: "0.9rem" }}>
-                  {player?.name ?? `Player #${reg.player_id}`}
+                  {player?.name ?? t("admin.playerLabel", { id: reg.player_id })}
                 </Typography>
               </Box>
               <Button onClick={() => removePlayer(reg.player_id)} size="small" startIcon={<RemoveIcon />} sx={{ color: colors.red, textTransform: "none" }} type="button">
-                Remove
+                {t("admin.remove")}
               </Button>
             </Box>
           );

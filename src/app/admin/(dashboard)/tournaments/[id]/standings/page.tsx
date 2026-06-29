@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -27,6 +28,7 @@ const StandingsPage = () => {
   const router = useRouter();
   const supabase = createClient();
   const tournamentId = Number(params.id);
+  const { t } = useTranslation();
 
   const [snapshots, setSnapshots] = useState<SnapshotRow[]>([]);
   const [playerMap, setPlayerMap] = useState<Map<number, string>>(new Map());
@@ -53,23 +55,23 @@ const StandingsPage = () => {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void fetchData(); }, [fetchData]);
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 1 }}>
-        Standings Snapshot
+        {t("admin.standingsSnapshot")}
       </Typography>
       <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem", mb: 3 }}>
-        Rankings at the time of group generation
+        {t("admin.standingsDescription")}
       </Typography>
 
       {snapshots.length === 0 ? (
-        <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>No snapshot available.</Typography>
+        <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>{t("admin.noSnapshot")}</Typography>
       ) : null}
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
@@ -103,7 +105,7 @@ const StandingsPage = () => {
               {s.rank}
             </Box>
             <Typography sx={{ color: "#fff", flex: 1, fontSize: "0.9rem" }}>
-              {playerMap.get(s.player_id) ?? "Unknown"}
+              {playerMap.get(s.player_id) ?? t("admin.unknown")}
             </Typography>
             <Typography sx={{ color: "rgba(255,255,255,0.4)", fontSize: "0.8rem" }}>
               {s.points}pts · {s.leg_diff > 0 ? "+" : ""}{s.leg_diff} diff · {s.one80s}×180

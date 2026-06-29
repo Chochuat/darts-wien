@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Box from "@mui/material/Box";
@@ -38,6 +39,7 @@ const MatchesPage = () => {
   const router = useRouter();
   const supabase = createClient();
   const tournamentId = Number(params.id);
+  const { t } = useTranslation();
 
   const [matches, setMatches] = useState<MatchRow[]>([]);
   const [playerMap, setPlayerMap] = useState<Map<number, string>>(new Map());
@@ -77,7 +79,7 @@ const MatchesPage = () => {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void fetchData(); }, [fetchData]);
 
-  if (loading) return <Typography sx={{ color: "#fff" }}>Loading…</Typography>;
+  if (loading) return <Typography sx={{ color: "#fff" }}>{t("common.loading")}</Typography>;
 
   const groupMatches = matches.filter((m) => m.match_type === "tournament_group");
   const playoffMatches = matches.filter((m) => m.match_type === "tournament_playoff");
@@ -85,8 +87,8 @@ const MatchesPage = () => {
   const playoffRounds = ["Quarter-Finals", "Semi-Finals", "3rd Place", "Final", "Consolation-SF", "5th Place", "7th Place"];
 
   const renderMatch = (m: MatchRow) => {
-    const p1Name = m.player1_id ? (playerMap.get(m.player1_id) ?? "Unknown") : "TBD";
-    const p2Name = m.player2_id ? (playerMap.get(m.player2_id) ?? "Unknown") : "TBD";
+    const p1Name = m.player1_id ? (playerMap.get(m.player1_id) ?? t("admin.unknown")) : t("admin.tbd");
+    const p2Name = m.player2_id ? (playerMap.get(m.player2_id) ?? t("admin.unknown")) : t("admin.tbd");
     const score = m.status !== "pending" ? `${m.legs_player1 ?? 0}-${m.legs_player2 ?? 0}` : "vs";
     const groupLabel = m.tournament_group_id ? groupLabels.get(m.tournament_group_id) : null;
 
@@ -135,21 +137,21 @@ const MatchesPage = () => {
   return (
     <Box sx={{ maxWidth: 700 }}>
       <Button onClick={() => router.push(`/admin/tournaments/${tournamentId}`)} size="small" startIcon={<ArrowBackIcon />} sx={{ color: "rgba(255,255,255,0.5)", mb: 2, textTransform: "none" }} type="button">
-        Back to Tournament
+        {t("admin.backToTournament")}
       </Button>
 
       <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1.25rem", mb: 3 }}>
-        Matches
+        {t("admin.matches")}
       </Typography>
 
       {matches.length === 0 ? (
-        <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>No matches generated yet.</Typography>
+        <Typography sx={{ color: "rgba(255,255,255,0.4)" }}>{t("admin.noMatches")}</Typography>
       ) : null}
 
       {groupMatches.length > 0 ? (
         <Box sx={{ mb: 3 }}>
           <Typography sx={{ color: colors.accent, fontWeight: 700, fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: 1, mb: 1 }}>
-            Group Phase
+            {t("admin.groupPhase")}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
             {groupMatches.map(renderMatch)}
@@ -160,7 +162,7 @@ const MatchesPage = () => {
       {playoffMatches.length > 0 ? (
         <Box>
           <Typography sx={{ color: colors.accent, fontWeight: 700, fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: 1, mb: 1 }}>
-            Playoffs
+            {t("admin.playoffs")}
           </Typography>
           {playoffRounds.map((roundName) => {
             const roundMatches = playoffMatches.filter((m) => m.tournament_round_name === roundName);
