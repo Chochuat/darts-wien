@@ -419,12 +419,12 @@ const roundName = z.enum(["Quarter-Finals", "Semi-Finals", "3rd Place", "Final"]
 
 const matchColumns = {
   season_id: seasonId,
-  player1_id: playerId,
-  player2_id: playerId,
+  player1_id: playerId.nullable().default(null),
+  player2_id: playerId.nullable().default(null),
   status: matchStatus.default("pending"),
   legs_player1: positiveSmallInt.nullable().default(null),
   legs_player2: positiveSmallInt.nullable().default(null),
-  legs_target: z.number().int().min(2).max(6),
+  legs_target: z.number().int().min(1).max(10),
   max_throws: z.number().int().min(1).default(45),
   player1_180: positiveSmallInt.default(0),
   player2_180: positiveSmallInt.default(0),
@@ -435,6 +435,10 @@ const matchColumns = {
   tournament_round_name: roundName.nullable().default(null),
   sort_order: z.number().int().min(0).nullable().default(null),
   match_date: dateString,
+  next_match_id: matchId.nullable().default(null),
+  advances: z.enum(["winner", "loser"]).default("winner"),
+  player_slot: z.enum(["player1", "player2"]).nullable().default(null),
+  starting_score: z.number().int().min(1).default(501),
 };
 
 export 
@@ -446,8 +450,8 @@ const MatchRow = z.object({
   ...matchColumns,
   created_at: timestamptz,
 }).refine(
-  (m) => m.player1_id !== m.player2_id,
-  { message: "player1_id and player2_id must be different" },
+  (m) => m.player1_id === null || m.player2_id === null || m.player1_id !== m.player2_id,
+  { message: "player1_id and player2_id must be different when both are set" },
 ).refine(
   (m) => {
     switch (m.match_type) {
@@ -489,8 +493,8 @@ export
 const MatchInsert = z.object({
   ...matchColumns,
 }).refine(
-  (m) => m.player1_id !== m.player2_id,
-  { message: "player1_id and player2_id must be different" },
+  (m) => m.player1_id === null || m.player2_id === null || m.player1_id !== m.player2_id,
+  { message: "player1_id and player2_id must be different when both are set" },
 ).refine(
   (m) => {
     switch (m.match_type) {
@@ -640,21 +644,6 @@ const GameThrowInsert = z.object({
  * Inferred type of the payload to insert a game throw score.
  */
 export type GameThrowInsert = z.infer<typeof GameThrowInsert>;
-
-// ─── API: Tournament generate ─────────────────────────────────
-
-export 
-/**
- * Zod schema for the tournament generate request body.
- */
-const TournamentGenerateBody = z.object({
-  generationType: generationType,
-});
-
-/**
- * Inferred type of the tournament generate request body.
- */
-export type TournamentGenerateBody = z.infer<typeof TournamentGenerateBody>;
 
 // ─── API: Registration request bodies ─────────────────────────
 
@@ -868,12 +857,13 @@ const ApiMatchRow = z.object({
   id: matchId,
   matchType: matchType,
   status: matchStatus,
-  player1: PlayerSummary,
-  player2: PlayerSummary,
+  player1: PlayerSummary.nullable(),
+  player2: PlayerSummary.nullable(),
   legsPlayer1: positiveSmallInt.nullable(),
   legsPlayer2: positiveSmallInt.nullable(),
-  legsTarget: z.number().int().min(2).max(6),
+  legsTarget: z.number().int().min(1).max(10),
   maxThrows: z.number().int().min(1),
+  startingScore: z.number().int().min(1).default(501),
   player1_180: positiveSmallInt,
   player2_180: positiveSmallInt,
   noShowPlayerId: playerId.nullable(),
@@ -883,6 +873,9 @@ const ApiMatchRow = z.object({
   groupLabel: groupLabel.nullable().optional(),
   roundName: roundName.nullable().optional(),
   sortOrder: z.number().int().min(0).nullable().optional(),
+  nextMatchId: matchId.nullable().optional(),
+  advances: z.enum(["winner", "loser"]).optional(),
+  playerSlot: z.enum(["player1", "player2"]).nullable().optional(),
 });
 
 /**
@@ -1015,3 +1008,340 @@ const ApiRegistrationsResponse = z.object({
  * Inferred type of the tournament registrations API response.
  */
 export type ApiRegistrationsResponse = z.infer<typeof ApiRegistrationsResponse>;
+
+// ─── Admin: Profile ───────────────────────────────────────────
+
+export
+/**
+ * Zod enum of profile roles.
+ */
+const profileRole = z.enum(["pending", "scorekeeper", "admin"]);
+export
+/**
+ * Zod schema for a profile row as stored in the `profiles` table.
+ */
+const ProfileRow = z.object({
+  user_id: z.string().uuid(),
+  role: profileRole,
+  player_id: playerId.nullable().default(null),
+  display_name: z.string().nullable().default(null),
+  created_at: timestamptz,
+});
+
+/**
+ * Inferred type of a validated profile database row.
+ */
+export type ProfileRow = z.infer<typeof ProfileRow>;
+
+export
+/**
+ * Zod schema for the request body to update a profile (promote/demote/link player).
+ */
+const ProfileUpdateBody = z.object({
+  role: profileRole.optional(),
+  playerId: playerId.nullable().optional(),
+  displayName: z.string().max(255).nullable().optional(),
+});
+
+/**
+ * Inferred type of the profile update request body.
+ */
+export type ProfileUpdateBody = z.infer<typeof ProfileUpdateBody>;
+
+// ─── Admin: Auth request bodies ───────────────────────────────
+
+export
+/**
+ * Zod schema for the login request body.
+ */
+const LoginBody = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+/**
+ * Inferred type of the login request body.
+ */
+export type LoginBody = z.infer<typeof LoginBody>;
+
+export
+/**
+ * Zod schema for the signup request body. New profiles default to role 'pending'.
+ */
+const SignupBody = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  displayName: z.string().min(1).max(255).optional(),
+});
+
+/**
+ * Inferred type of the signup request body.
+ */
+export type SignupBody = z.infer<typeof SignupBody>;
+
+export
+/**
+ * Zod schema for the forgot-password request body.
+ */
+const ForgotPasswordBody = z.object({
+  email: z.string().email(),
+});
+
+/**
+ * Inferred type of the forgot-password request body.
+ */
+export type ForgotPasswordBody = z.infer<typeof ForgotPasswordBody>;
+
+export
+/**
+ * Zod schema for the reset-password request body.
+ */
+const ResetPasswordBody = z.object({
+  password: z.string().min(8),
+});
+
+/**
+ * Inferred type of the reset-password request body.
+ */
+export type ResetPasswordBody = z.infer<typeof ResetPasswordBody>;
+
+// ─── Admin: Tournament format config ──────────────────────────
+
+export
+/**
+ * Zod enum of tournament format phases.
+ */
+const tournamentFormatPhase = z.enum([
+  "group", "playoff", "third_place", "final",
+  "grand_final_qf", "grand_final_sf", "grand_final_third",
+  "grand_final_final", "grand_final_consolation_sf",
+  "grand_final_5th", "grand_final_7th",
+]);
+export
+/**
+ * Zod schema for a tournament_format row.
+ */
+const TournamentFormatRow = z.object({
+  tournament_id: tournamentId,
+  phase: tournamentFormatPhase,
+  legs_target: z.number().int().min(1).max(10),
+  starting_score: z.number().int().min(1).default(501),
+  max_throws: z.number().int().min(1).default(45),
+});
+
+/**
+ * Inferred type of a tournament_format row.
+ */
+export type TournamentFormatRow = z.infer<typeof TournamentFormatRow>;
+
+export
+/**
+ * Zod schema for a single phase entry in a format config update body.
+ */
+const TournamentFormatEntry = z.object({
+  phase: tournamentFormatPhase,
+  legsTarget: z.number().int().min(1).max(10),
+  startingScore: z.number().int().min(1).default(501),
+  maxThrows: z.number().int().min(1).default(45),
+});
+
+/**
+ * Inferred type of a format config entry.
+ */
+export type TournamentFormatEntry = z.infer<typeof TournamentFormatEntry>;
+
+export
+/**
+ * Zod schema for the request body to set tournament format config.
+ */
+const TournamentFormatBody = z.object({
+  entries: z.array(TournamentFormatEntry).min(1),
+});
+
+/**
+ * Inferred type of the tournament format config request body.
+ */
+export type TournamentFormatBody = z.infer<typeof TournamentFormatBody>;
+
+// ─── Admin: Club settings ─────────────────────────────────────
+
+export
+/**
+ * Zod enum of tiebreaker dimensions used for group advancement.
+ */
+const tiebreakerDimension = z.enum([
+  "head_to_head", "leg_diff", "legs_won", "legs_lost", "one80s",
+]);
+export
+/**
+ * Zod schema for the club_settings row.
+ */
+const ClubSettingsRow = z.object({
+  id: z.number().int().min(1),
+  tiebreaker_order: z.array(tiebreakerDimension),
+  updated_at: timestamptz,
+});
+
+/**
+ * Inferred type of the club_settings row.
+ */
+export type ClubSettingsRow = z.infer<typeof ClubSettingsRow>;
+
+export
+/**
+ * Zod schema for the request body to update the tiebreaker order. Must contain all five dimensions exactly once.
+ */
+const ClubSettingsBody = z.object({
+  tiebreakerOrder: z.array(tiebreakerDimension).length(5),
+}).refine(
+  (b) => new Set(b.tiebreakerOrder).size === 5,
+  { message: "tiebreakerOrder must contain each dimension exactly once" },
+);
+
+/**
+ * Inferred type of the club settings update body.
+ */
+export type ClubSettingsBody = z.infer<typeof ClubSettingsBody>;
+
+// ─── Admin: Standings snapshot ────────────────────────────────
+
+export
+/**
+ * Zod schema for a tournament_standings_snapshot row.
+ */
+const StandingsSnapshotRow = z.object({
+  tournament_id: tournamentId,
+  player_id: playerId,
+  rank: z.number().int().min(1),
+  points: z.number().int().default(0),
+  leg_diff: z.number().int().default(0),
+  legs_won: z.number().int().default(0),
+  legs_lost: z.number().int().default(0),
+  one80s: z.number().int().default(0),
+});
+
+/**
+ * Inferred type of a standings snapshot row.
+ */
+export type StandingsSnapshotRow = z.infer<typeof StandingsSnapshotRow>;
+
+// ─── Admin: Tournament generation ─────────────────────────────
+
+export
+/**
+ * Zod enum of group generation strategies.
+ */
+const generationStrategy = z.enum([
+  "split_contiguous", "interleaved_strict", "snake", "manual",
+]);
+export
+/**
+ * Zod enum of extra-match pairing rules for unequal-group compensation.
+ */
+const extraMatchPairing = z.enum([
+  "top_vs_bottom", "top_vs_top", "cross", "manual",
+]);
+export
+/**
+ * Zod schema for a manual group assignment (player_id to group label).
+ */
+const ManualAssignment = z.object({
+  playerId: playerId,
+  groupLabel: groupLabel,
+});
+
+/**
+ * Inferred type of a manual group assignment.
+ */
+export type ManualAssignment = z.infer<typeof ManualAssignment>;
+
+export
+/**
+ * Zod schema for a manual extra-match pairing (two player_ids in a smaller group).
+ */
+const ManualExtraMatch = z.object({
+  player1Id: playerId,
+  player2Id: playerId,
+  groupLabel: groupLabel,
+}).refine(
+  (m) => m.player1Id !== m.player2Id,
+  { message: "player1Id and player2Id must be different" },
+);
+
+/**
+ * Inferred type of a manual extra-match pairing.
+ */
+export type ManualExtraMatch = z.infer<typeof ManualExtraMatch>;
+
+export
+/**
+ * Zod schema for the tournament generate request body.
+ */
+const TournamentGenerateBody = z.object({
+  generationType: generationStrategy,
+  numGroups: z.number().int().min(2).max(4),
+  manualAssignments: z.array(ManualAssignment).optional(),
+  extraMatchPairing: extraMatchPairing.optional(),
+  manualExtraMatches: z.array(ManualExtraMatch).optional(),
+}).refine(
+  (b) => b.generationType === "manual" ? Array.isArray(b.manualAssignments) && b.manualAssignments.length > 0 : true,
+  { message: "manualAssignments is required when generationType is 'manual'" },
+);
+
+/**
+ * Inferred type of the tournament generate request body.
+ */
+export type TournamentGenerateBody = z.infer<typeof TournamentGenerateBody>;
+
+// ─── Admin: Seed playoffs ─────────────────────────────────────
+
+export
+/**
+ * Zod schema for a single advancement entry (player + QF seed position 1-8).
+ */
+const AdvancementEntry = z.object({
+  playerId: playerId,
+  seedPosition: z.number().int().min(1).max(8),
+});
+
+/**
+ * Inferred type of an advancement entry.
+ */
+export type AdvancementEntry = z.infer<typeof AdvancementEntry>;
+
+export
+/**
+ * Zod schema for the seed-playoffs request body. Must contain exactly 8 advancement entries with distinct seed positions.
+ */
+const SeedPlayoffsBody = z.object({
+  advancements: z.array(AdvancementEntry).length(8),
+}).refine(
+  (b) => new Set(b.advancements.map((a) => a.seedPosition)).size === 8,
+  { message: "seedPosition values must be unique across advancements" },
+).refine(
+  (b) => new Set(b.advancements.map((a) => a.playerId)).size === 8,
+  { message: "playerId values must be unique across advancements" },
+);
+
+/**
+ * Inferred type of the seed-playoffs request body.
+ */
+export type SeedPlayoffsBody = z.infer<typeof SeedPlayoffsBody>;
+
+// ─── Admin: Session response ──────────────────────────────────
+
+export
+/**
+ * Zod schema for the admin session API response.
+ */
+const AdminSessionResponse = z.object({
+  userId: z.string().uuid(),
+  role: profileRole,
+  playerId: playerId.nullable(),
+  displayName: z.string().nullable(),
+});
+
+/**
+ * Inferred type of the admin session API response.
+ */
+export type AdminSessionResponse = z.infer<typeof AdminSessionResponse>;

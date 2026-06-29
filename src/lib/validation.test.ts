@@ -153,6 +153,10 @@ describe("Match schemas - structural integrity", () => {
       tournament_round_name: null,
       sort_order: null,
       match_date: "2025-09-18",
+      next_match_id: null,
+      advances: "winner",
+      player_slot: null,
+      starting_score: 501,
     };
     expect(MatchInsert.parse(data)).toEqual(data);
   });
@@ -176,6 +180,10 @@ describe("Match schemas - structural integrity", () => {
       tournament_round_name: null,
       sort_order: null,
       match_date: "2025-09-18",
+      next_match_id: null,
+      advances: "winner",
+      player_slot: null,
+      starting_score: 501,
     };
     expect(MatchInsert.parse(data)).toEqual(data);
   });
@@ -199,6 +207,10 @@ describe("Match schemas - structural integrity", () => {
       tournament_round_name: "Quarter-Finals",
       sort_order: 0,
       match_date: "2025-09-18",
+      next_match_id: null,
+      advances: "winner",
+      player_slot: null,
+      starting_score: 501,
     };
     expect(MatchInsert.parse(data)).toEqual(data);
   });
@@ -222,6 +234,10 @@ describe("Match schemas - structural integrity", () => {
       tournament_round_name: null,
       sort_order: null,
       match_date: "2025-09-18",
+      next_match_id: null,
+      advances: "winner",
+      player_slot: null,
+      starting_score: 501,
     };
     expect(MatchInsert.parse(data)).toEqual(data);
   });
@@ -437,18 +453,34 @@ describe("TournamentCreateBody", () => {
 });
 
 describe("TournamentGenerateBody", () => {
-  it("accepts a valid generationType", () => {
+  it("accepts a valid generationType with numGroups", () => {
     expect(
-      TournamentGenerateBody.parse({ generationType: "1A_4A_8A_12A" }),
-    ).toEqual({ generationType: "1A_4A_8A_12A" });
+      TournamentGenerateBody.parse({ generationType: "snake", numGroups: 2 }),
+    ).toEqual({ generationType: "snake", numGroups: 2 });
   });
 
-  it("rejects an empty generationType", () => {
-    expect(() => TournamentGenerateBody.parse({ generationType: "" })).toThrow();
+  it("rejects an invalid generationType", () => {
+    expect(() => TournamentGenerateBody.parse({ generationType: "1A_4A_8A_12A", numGroups: 2 })).toThrow();
   });
 
-  it("rejects missing generationType", () => {
-    expect(() => TournamentGenerateBody.parse({})).toThrow();
+  it("rejects missing numGroups", () => {
+    expect(() => TournamentGenerateBody.parse({ generationType: "snake" })).toThrow();
+  });
+
+  it("rejects manual without manualAssignments", () => {
+    expect(() =>
+      TournamentGenerateBody.parse({ generationType: "manual", numGroups: 2 }),
+    ).toThrow();
+  });
+
+  it("accepts manual with manualAssignments", () => {
+    expect(() =>
+      TournamentGenerateBody.parse({
+        generationType: "manual",
+        numGroups: 2,
+        manualAssignments: [{ playerId: 1, groupLabel: "A" }],
+      }),
+    ).not.toThrow();
   });
 });
 
@@ -598,12 +630,38 @@ describe("ApiMatchRow", () => {
       legsPlayer2: 1,
       legsTarget: 3,
       maxThrows: 45,
+      startingScore: 501,
       player1_180: 0,
       player2_180: 0,
       noShowPlayerId: null,
       matchDate: "2025-09-18",
       roundName: "Quarter-Finals" as const,
       sortOrder: 0,
+    };
+    expect(ApiMatchRow.parse(data)).toEqual(data);
+  });
+
+  it("validates a playoff match row with null players (unseeded)", () => {
+    const data = {
+      id: 101,
+      matchType: "tournament_playoff" as const,
+      status: "pending" as const,
+      player1: null,
+      player2: null,
+      legsPlayer1: null,
+      legsPlayer2: null,
+      legsTarget: 3,
+      maxThrows: 45,
+      startingScore: 501,
+      player1_180: 0,
+      player2_180: 0,
+      noShowPlayerId: null,
+      matchDate: "2025-09-18",
+      roundName: "Semi-Finals" as const,
+      sortOrder: 0,
+      nextMatchId: 200,
+      advances: "winner",
+      playerSlot: "player1",
     };
     expect(ApiMatchRow.parse(data)).toEqual(data);
   });
