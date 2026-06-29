@@ -1,4 +1,4 @@
-import type { tiebreakerDimension } from "@/lib/validation";
+import type { TiebreakerDimension } from "@/lib/validation";
 
 /** Stats for a single player within a group, used for tiebreaker comparison. */
 export interface GroupPlayerStats {
@@ -20,7 +20,7 @@ export interface RankedPlayerResult {
 }
 
 const DIMENSION_COMPARATORS: Record<
-  tiebreakerDimension,
+  TiebreakerDimension,
   (a: GroupPlayerStats, b: GroupPlayerStats) => number
 > = {
   head_to_head: (a, b) => {
@@ -47,7 +47,7 @@ const DIMENSION_COMPARATORS: Record<
  */
 export function rankWithTiebreakers(
   stats: GroupPlayerStats[],
-  tiebreakerOrder: tiebreakerDimension[],
+  tiebreakerOrder: TiebreakerDimension[],
 ): RankedPlayerResult[] {
   const sorted = [...stats].sort((a, b) => {
     for (const dim of tiebreakerOrder) {
@@ -85,7 +85,7 @@ export function rankWithTiebreakers(
 function isTied(
   a: GroupPlayerStats,
   b: GroupPlayerStats,
-  tiebreakerOrder: tiebreakerDimension[],
+  tiebreakerOrder: TiebreakerDimension[],
 ): boolean {
   for (const dim of tiebreakerOrder) {
     if (DIMENSION_COMPARATORS[dim]!(a, b) !== 0) return false;

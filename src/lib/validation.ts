@@ -331,6 +331,11 @@ export
  */
 const groupLabel = z.enum(["A", "B", "C", "D"]);
 
+/**
+ * Inferred type of a tournament group label.
+ */
+export type GroupLabel = z.infer<typeof groupLabel>;
+
 const tournamentGroupColumns = {
   tournament_id: tournamentId,
   label: groupLabel,
@@ -1172,6 +1177,11 @@ export
 const tiebreakerDimension = z.enum([
   "head_to_head", "leg_diff", "legs_won", "legs_lost", "one80s",
 ]);
+
+/**
+ * Inferred type of a tiebreaker dimension.
+ */
+export type TiebreakerDimension = z.infer<typeof tiebreakerDimension>;
 export
 /**
  * Zod schema for the club_settings row.
@@ -1234,6 +1244,11 @@ export
 const generationStrategy = z.enum([
   "split_contiguous", "interleaved_strict", "snake", "manual",
 ]);
+
+/**
+ * Inferred type of a group generation strategy.
+ */
+export type GenerationType = z.infer<typeof generationStrategy>;
 export
 /**
  * Zod enum of extra-match pairing rules for unequal-group compensation.
@@ -1241,6 +1256,11 @@ export
 const extraMatchPairing = z.enum([
   "top_vs_bottom", "top_vs_top", "cross", "manual",
 ]);
+
+/**
+ * Inferred type of an extra-match pairing rule.
+ */
+export type ExtraMatchPairing = z.infer<typeof extraMatchPairing>;
 export
 /**
  * Zod schema for a manual group assignment (player_id to group label).

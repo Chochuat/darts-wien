@@ -21,6 +21,7 @@ export function toPerspective(
   m: ApiMatchRow,
   forPlayerName: string
 ): PerspectiveMatch | null {
+  if (!m.player1 || !m.player2) return null;
   const isP1 = m.player1.name === forPlayerName;
   const isP2 = m.player2.name === forPlayerName;
   if (!isP1 && !isP2) return null;
@@ -51,6 +52,7 @@ export function groupMatchesFromPerspective(
   const entries: PerspectiveMatch[] = [];
 
   for (const m of g.matches) {
+    if (!m.player1 || !m.player2) continue;
     const p1v = toPerspective(m, m.player1.name);
     const p2v = toPerspective(m, m.player2.name);
     if (p1v) entries.push(p1v);

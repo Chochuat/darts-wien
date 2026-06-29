@@ -98,7 +98,7 @@ export async function GET(
   );
 
   const unknownPlayer = (pid: number) => ({ id: pid, name: "Unknown", slug: "unknown" });
-  const getPlayer = (pid: number) => playerMap.get(pid) ?? unknownPlayer(pid);
+  const getPlayer = (pid: number | null) => pid ? (playerMap.get(pid) ?? unknownPlayer(pid)) : null;
 
   const playersByGroup = new Map<number, number[]>();
   for (const gp of groupPlayersRows ?? []) {
@@ -133,6 +133,7 @@ export async function GET(
       legsPlayer2: m.legs_player2,
       legsTarget: m.legs_target,
       maxThrows: m.max_throws,
+      startingScore: m.starting_score ?? 501,
       player1_180: m.player1_180,
       player2_180: m.player2_180,
       noShowPlayerId: m.no_show_player_id,
@@ -211,6 +212,7 @@ export async function GET(
         legsPlayer2: m.legs_player2,
         legsTarget: m.legs_target,
         maxThrows: m.max_throws,
+        startingScore: m.starting_score ?? 501,
         player1_180: m.player1_180,
         player2_180: m.player2_180,
         noShowPlayerId: m.no_show_player_id,

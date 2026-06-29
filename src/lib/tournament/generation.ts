@@ -1,4 +1,4 @@
-import type { generationStrategy, extraMatchPairing, groupLabel } from "@/lib/validation";
+import type { GenerationType, ExtraMatchPairing, GroupLabel } from "@/lib/validation";
 
 /** A player ranked by standings for group generation. */
 export interface RankedPlayer {
@@ -127,7 +127,7 @@ export function snake(
  * @throws when strategy is "manual" (use manualAssignments directly).
  */
 export function generateGroups(
-  strategy: generationStrategy,
+  strategy: GenerationType,
   players: RankedPlayer[],
   numGroups: number,
 ): GroupAssignment[] {
@@ -201,7 +201,7 @@ export function extraMatchCount(groupSize: number, maxSize: number): number {
 export function suggestExtraMatches(
   groupSize: number,
   maxSize: number,
-  pairing: extraMatchPairing,
+  pairing: ExtraMatchPairing,
 ): Array<[number, number]> {
   const count = extraMatchCount(groupSize, maxSize);
   if (count === 0) return [];
@@ -246,7 +246,7 @@ export function suggestExtraMatches(
 export function generateGroupMatches(
   playerIds: number[],
   maxSize: number,
-  pairing: extraMatchPairing,
+  pairing: ExtraMatchPairing,
 ): Array<{ player1Id: number; player2Id: number }> {
   const rr = roundRobinPairings(playerIds.length);
   const base = rr.map(([i, j]) => ({
@@ -261,4 +261,4 @@ export function generateGroupMatches(
   return [...base, ...extraMatches];
 }
 
-export type { groupLabel };
+export type { GroupLabel };

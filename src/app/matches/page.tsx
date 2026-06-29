@@ -5,6 +5,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Pagination from "@mui/material/Pagination";
 import TrackChanges from "@mui/icons-material/TrackChanges";
+import SportsScore from "@mui/icons-material/SportsScore";
+import Person from "@mui/icons-material/Person";
+import EventIcon from "@mui/icons-material/Event";
 import { useTranslation } from "react-i18next";
 import { colors } from "@/lib/design-tokens";
 import Section from "@/app/_components/ui/section";
@@ -14,76 +17,61 @@ import PageHeader from "@/app/_components/ui/page-header";
 import { DartLoading } from "@/app/_components/ui/dart-loading";
 import { useMatches } from "@/lib/hooks/use-matches";
 import { MatchFilters } from "@/app/_components/ui/match-filters";
-import { MatchListRow } from "@/app/_components/ui/match-list-row";
-import type { ApiMatchRow } from "@/lib/validation";
+import Badge180 from "@/app/_components/ui/badge-180";
 
-interface MatchDisplay {
-  playerName: string;
-  opponent: string;
+interface MatchRow {
+  player1: string;
+  player2: string;
   score: string;
-  result: "W" | "L";
   date: string;
-  one80: number;
+  p1_180: number;
+  p2_180: number;
   id: number;
 }
 
-/**
- * Converts an API match row to display entries.
- *
- * @param m - The API match row.
- */
-function toDisplayEntries(m: ApiMatchRow): [MatchDisplay, MatchDisplay] {
-  const p1Score = m.legsPlayer1 ?? 0;
-  const p2Score = m.legsPlayer2 ?? 0;
-  return [
-    { id: m.id, playerName: m.player1.name, opponent: m.player2.name, score: `${p1Score}-${p2Score}`, result: p1Score > p2Score ? "W" : "L", date: m.matchDate, one80: m.player1_180 },
-    { id: m.id, playerName: m.player2.name, opponent: m.player1.name, score: `${p2Score}-${p1Score}`, result: p2Score > p1Score ? "W" : "L", date: m.matchDate, one80: m.player2_180 },
-  ];
-}
-
-const PLAYERS_PER_PAGE = 20;
+const MATCHES_PER_PAGE = 20;
 
 /**
- * Filters a match display entry against the active filters.
+ * Filters a match row against a quick-search query.
  *
- * @param match - The match display entry.
- * @param filters - The active filters.
+ * @param m - The match row.
+ * @param q - The search query.
  */
-function matchFilter(match: MatchDisplay, filters: { player: string; result: string; scoreQ: string; quickQ: string }) {
-  if (filters.player && match.playerName !== filters.player) return false;
-  if (filters.result && match.result !== filters.result) return false;
-  if (filters.scoreQ && !match.score.toLowerCase().includes(filters.scoreQ.toLowerCase())) return false;
-  if (filters.quickQ) {
-    const q = filters.quickQ.toLowerCase();
-    if (!match.playerName.toLowerCase().includes(q) && !match.opponent.toLowerCase().includes(q) && !match.score.toLowerCase().includes(q) && !match.date.toLowerCase().includes(q)) return false;
-  }
-  return true;
+function matchFilter(m: MatchRow, q: string) {
+  if (!q) return true;
+  const lq = q.toLowerCase();
+  return m.player1.toLowerCase().includes(lq) || m.player2.toLowerCase().includes(lq) || m.score.toLowerCase().includes(lq) || m.date.toLowerCase().includes(lq);
 }
 
 /**
- * All-matches page: filterable, paginated list of every completed match in the season.
+ * All-matches page: searchable, paginated list of every completed match.
  */
 const AllMatchesPage = () => {
-  const [player, setPlayer] = useState("");
-  const [result, setResult] = useState("");
-  const [scoreQ, setScoreQ] = useState("");
   const [quickQ, setQuickQ] = useState("");
   const [page, setPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
   const { t } = useTranslation();
   const { data, isLoading, isError } = useMatches({ limit: 5000 });
 
-  const allEntries = useMemo(() => data ? data.matches.flatMap(toDisplayEntries) : [], [data]);
-  const playerNames = useMemo(() => [...new Set(allEntries.map((m) => m.playerName))].sort(), [allEntries]);
+  const rows: MatchRow[] = useMemo(() => (data?.matches ?? [])
+    .filter((m) => m.player1 && m.player2)
+    .map((m) => ({
+      id: m.id,
+      player1: m.player1!.name,
+      player2: m.player2!.name,
+      score: `${m.legsPlayer1 ?? 0}-${m.legsPlayer2 ?? 0}`,
+      date: m.matchDate,
+      p1_180: m.player1_180,
+      p2_180: m.player2_180,
+    })), [data]);
 
-  const filtered = useMemo(() => allEntries.filter((m) => matchFilter(m, { player, result, scoreQ, quickQ })), [allEntries, player, result, scoreQ, quickQ]);
+  const filtered = useMemo(() => rows.filter((m) => matchFilter(m, quickQ)), [rows, quickQ]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PLAYERS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / MATCHES_PER_PAGE));
   const safePage = Math.min(page, totalPages);
-  const paginated = filtered.slice((safePage - 1) * PLAYERS_PER_PAGE, safePage * PLAYERS_PER_PAGE);
+  const paginated = filtered.slice((safePage - 1) * MATCHES_PER_PAGE, safePage * MATCHES_PER_PAGE);
 
-  const clearAll = () => { setPlayer(""); setResult(""); setScoreQ(""); setQuickQ(""); setPage(1); };
-  const hasFilters = !!(player || result || scoreQ || quickQ);
+  const clearAll = () => { setQuickQ(""); setPage(1); };
+  const hasFilters = !!quickQ;
 
   if (isLoading) return <DartLoading />;
 
@@ -102,34 +90,60 @@ const AllMatchesPage = () => {
       <Section>
         <PageHeader icon={<TrackChanges />} subtitle={t("matchesPage.subtitle", { count: data?.total ?? 0 })} title={t("matchesPage.title")} />
 
-        <MatchFilters
-          hasFilters={hasFilters}
-          onClearAll={clearAll}
-          onPlayerChange={setPlayer}
-          onQuickQChange={setQuickQ}
-          onResultChange={setResult}
-          onScoreQChange={setScoreQ}
-          onToggleFilters={() => setShowFilters(!showFilters)}
-          player={player}
-          playerNames={playerNames}
-          quickQ={quickQ}
-          result={result}
-          scoreQ={scoreQ}
-          showFilters={showFilters}
-        />
+        <Box sx={{ px: 0.5, mb: 2 }}>
+          <MatchFilters
+            hasFilters={hasFilters}
+            onClearAll={clearAll}
+            onQuickQChange={setQuickQ}
+            quickQ={quickQ}
+          />
+        </Box>
 
         <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", fontWeight: 600, px: 0.5, mb: 1 }}>
           {t("matchesPage.matchesFound", { count: filtered.length })}
         </Typography>
 
         <Card borderColor={colors.accent4d}>
+          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", px: 2.5, py: 1, borderBottom: "1px solid #f0f0f0" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, minWidth: 44 }}>
+              <EventIcon sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>{t("matchesPage.date")}</Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, flex: 1 }}>
+              <Person sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>{t("matchesPage.players")}</Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.3, minWidth: 36 }}>
+              <SportsScore sx={{ color: colors.text.muted, fontSize: "0.6rem" }} />
+              <Typography sx={{ color: colors.text.muted, fontSize: "0.55rem", fontWeight: 700, letterSpacing: 1 }}>{t("matchesPage.score")}</Typography>
+            </Box>
+          </Box>
+
           {filtered.length === 0 ? (
             <Box sx={{ py: 4, textAlign: "center" }}>
               <Typography sx={{ color: colors.text.muted, fontSize: "0.85rem" }}>{t("common.noMatchesFilter")}</Typography>
             </Box>
           ) : (
             paginated.map((m, i) => (
-              <MatchListRow date={m.date} index={i} key={`${m.playerName}-${m.id}`} one80={m.one80} opponent={m.opponent} playerName={m.playerName} result={m.result} score={m.score} />
+              <Box key={m.id} sx={{ display: "flex", alignItems: "center", px: { xs: 1.75, md: 2.5 }, py: { xs: 1.25, md: 0.85 }, borderTop: i === 0 ? "none" : "1px solid #f0f0f0", gap: { xs: 0.75, md: 1 } }}>
+                <Typography sx={{ color: colors.text.muted, fontSize: "0.6rem", minWidth: 44, flexShrink: 0 }}>
+                  {m.date}
+                </Typography>
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography sx={{ color: colors.text.primary, fontSize: "0.75rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <Box component="span" sx={{ color: colors.text.primary }}>{m.player1}</Box>
+                    {m.p1_180 > 0 ? <Badge180 /> : null}
+                    {" "}
+                    <Box component="span" sx={{ color: colors.text.muted, fontWeight: 400 }}>{t("common.vs")}</Box>
+                    {" "}
+                    <Box component="span" sx={{ color: colors.text.primary }}>{m.player2}</Box>
+                    {m.p2_180 > 0 ? <Badge180 /> : null}
+                  </Typography>
+                </Box>
+                <Typography sx={{ color: colors.text.primary, fontSize: "0.8rem", fontWeight: 700, fontFamily: "'Courier New', monospace", textAlign: "center", minWidth: 36, flexShrink: 0 }}>
+                  {m.score}
+                </Typography>
+              </Box>
             ))
           )}
         </Card>

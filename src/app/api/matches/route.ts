@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from("matches")
     .select(
-      "id, match_type, status, player1_id, player2_id, legs_player1, legs_player2, legs_target, max_throws, player1_180, player2_180, no_show_player_id, match_date, tournament_id, tournament_group_id, tournament_round_name, sort_order",
+      "id, match_type, status, player1_id, player2_id, legs_player1, legs_player2, legs_target, max_throws, starting_score, player1_180, player2_180, no_show_player_id, match_date, tournament_id, tournament_group_id, tournament_round_name, sort_order",
     );
 
   if (params.seasonId) {
@@ -45,8 +45,8 @@ export async function GET(req: NextRequest) {
   const allTournamentIds = new Set<number>();
   const allGroupIds = new Set<number>();
   for (const m of matches ?? []) {
-    allPlayerIds.add(m.player1_id);
-    allPlayerIds.add(m.player2_id);
+    if (m.player1_id) allPlayerIds.add(m.player1_id);
+    if (m.player2_id) allPlayerIds.add(m.player2_id);
     if (m.tournament_id) allTournamentIds.add(m.tournament_id);
     if (m.tournament_group_id) allGroupIds.add(m.tournament_group_id);
   }
@@ -91,12 +91,13 @@ export async function GET(req: NextRequest) {
       id: m.id,
       matchType: m.match_type,
       status: m.status,
-      player1: playerMap.get(m.player1_id) ?? unknownPlayer(m.player1_id),
-      player2: playerMap.get(m.player2_id) ?? unknownPlayer(m.player2_id),
+      player1: m.player1_id ? (playerMap.get(m.player1_id) ?? unknownPlayer(m.player1_id)) : null,
+      player2: m.player2_id ? (playerMap.get(m.player2_id) ?? unknownPlayer(m.player2_id)) : null,
       legsPlayer1: m.legs_player1,
       legsPlayer2: m.legs_player2,
       legsTarget: m.legs_target,
       maxThrows: m.max_throws,
+      startingScore: m.starting_score ?? 501,
       player1_180: m.player1_180,
       player2_180: m.player2_180,
       noShowPlayerId: m.no_show_player_id,
@@ -114,6 +115,7 @@ export async function GET(req: NextRequest) {
   if (params.playerId && params.result) {
     const pid = params.playerId;
     resultRows = resultRows.filter((m) => {
+      if (!m.player1 || !m.player2) return false;
       const isPlayer1 = m.player1.id === pid;
       const legsFor = isPlayer1 ? m.legsPlayer1 : m.legsPlayer2;
       const legsAgainst = isPlayer1 ? m.legsPlayer2 : m.legsPlayer1;
@@ -126,8 +128,8 @@ export async function GET(req: NextRequest) {
     const lowerQ = params.q.toLowerCase();
     resultRows = resultRows.filter(
       (m) =>
-        m.player1.name.toLowerCase().includes(lowerQ) ||
-        m.player2.name.toLowerCase().includes(lowerQ) ||
+        m.player1?.name.toLowerCase().includes(lowerQ) === true ||
+        m.player2?.name.toLowerCase().includes(lowerQ) === true ||
         m.matchDate.includes(lowerQ),
     );
   }

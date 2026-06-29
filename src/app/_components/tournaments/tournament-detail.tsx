@@ -32,6 +32,7 @@ import type {
  */
 const playoffMatchesForRound = (detail: TournamentDetailResponse, roundName: string): PerspectiveMatch[] => {
   return detail.playoffs.find((r) => r.name === roundName)?.matches.flatMap((m) => {
+    if (!m.player1 || !m.player2) return [];
     const p1 = toPerspective(m, m.player1.name);
     const p2 = toPerspective(m, m.player2.name);
     return [p1, p2].filter((p): p is PerspectiveMatch => p != null);
@@ -185,7 +186,9 @@ const TournamentDetail = ({
   };
 
   const allPlayoffPlayerNames = new Set(
-    detail.playoffs.flatMap((r) => r.matches).flatMap((m) => [m.player1.name, m.player2.name])
+    detail.playoffs.flatMap((r) => r.matches).flatMap((m) => [
+      m.player1?.name, m.player2?.name,
+    ].filter((n): n is string => n != null))
   );
   const allGroupPlayerNames = detail.groups.flatMap((g) => g.players.map((p) => p.name));
   const advancingSet = new Set(allGroupPlayerNames.filter((p) => allPlayoffPlayerNames.has(p)));
