@@ -14,6 +14,21 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+-- SECURITY DEFINER function: returns the caller's role, bypassing RLS.
+-- Needed because admin policies must check the caller's role in the same
+-- table, which would cause infinite recursion if done with a sub-query.
+CREATE OR REPLACE FUNCTION public.get_my_role()
+RETURNS TEXT
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+SET search_path = public
+AS $$
+  SELECT role FROM public.profiles WHERE user_id = auth.uid();
+$$;
+
+GRANT EXECUTE ON FUNCTION public.get_my_role() TO authenticated, anon;
+
 -- A user can read their own profile.
 CREATE POLICY "Users can read own profile"
   ON public.profiles FOR SELECT
@@ -22,12 +37,7 @@ CREATE POLICY "Users can read own profile"
 -- Admins can read all profiles.
 CREATE POLICY "Admins can read all profiles"
   ON public.profiles FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = auth.uid() AND p.role = 'admin'
-    )
-  );
+  USING (public.get_my_role() = 'admin');
 
 -- A user can insert their own profile (on signup). Role defaults to 'pending'.
 CREATE POLICY "Users can insert own profile"
@@ -38,19 +48,9 @@ CREATE POLICY "Users can insert own profile"
 -- Users cannot self-promote.
 CREATE POLICY "Admins can update any profile"
   ON public.profiles FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = auth.uid() AND p.role = 'admin'
-    )
-  );
+  USING (public.get_my_role() = 'admin');
 
 -- Admins can delete profiles.
 CREATE POLICY "Admins can delete profiles"
   ON public.profiles FOR DELETE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = auth.uid() AND p.role = 'admin'
-    )
-  );
+  USING (public.get_my_role() = 'admin');

@@ -17,7 +17,7 @@ const PUBLIC_ADMIN_PATHS = [
  * (`admin` or `scorekeeper`) are redirected to `/admin/403`.
  *
  * @param req - The incoming request.
- * @returns A redirect response or `NextResponse.next()`.
+ * @returns A redirect response or `NextResponse.next()` with forwarded cookies.
  */
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -38,20 +38,28 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Create a response object so refreshed cookies are forwarded to both
+  // the downstream request and the browser.
+  const res = NextResponse.next({ request: { headers: req.headers } });
+
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return req.cookies.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
-          req.cookies.set({ name, value, ...options }),
-        );
+        cookiesToSet.forEach(({ name, value, options }) => {
+          req.cookies.set({ name, value, ...options });
+          res.cookies.set(name, value, options);
+        });
       },
     },
   });
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // getUser() makes a network call to Auth to verify the token.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     const loginUrl = new URL("/admin/login", req.url);
@@ -59,19 +67,23 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Check profile role.
-  const { data: profile } = await supabase
+  // Check profile role using the authenticated client (RLS: auth.uid() = user_id).
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
     .eq("user_id", user.id)
     .maybeSingle();
+
+  if (profileError) {
+    console.error("[proxy] profiles query error:", profileError.message);
+  }
 
   if (!profile || (profile.role !== "admin" && profile.role !== "scorekeeper")) {
     const forbiddenUrl = new URL("/admin/403", req.url);
     return NextResponse.redirect(forbiddenUrl);
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export
