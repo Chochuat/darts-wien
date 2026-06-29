@@ -18,15 +18,19 @@ interface StatBox {
   icon: React.ReactNode;
 }
 
+interface PlayerDesktopStatsProps {
+  stats: StatBox[];
+}
+
 /**
- * PlayerDesktopStats component.
- * @param root0
- * @param root0.stats
+ * Player stats summary for standings row.
+ *
+ * @param props - Component properties.
  */
-export const PlayerDesktopStats = ({ stats }: { stats: StatBox[] }) => {
+export const PlayerDesktopStats = (props: PlayerDesktopStatsProps) => {
   return (
     <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2, px: 0.5, mb: 2 }}>
-      {stats.map((s) => (
+      {props.stats.map((s) => (
         <Box key={s.label} sx={{ bgcolor: `${colors.accent}08`, borderRadius: 1.5, px: 1.5, py: 1 }}>
           <Typography sx={{ color: colors.text.secondary, fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, mb: 0.2, display: "flex", alignItems: "center", gap: 0.3 }}>
             {s.icon}{s.label}
@@ -40,15 +44,19 @@ export const PlayerDesktopStats = ({ stats }: { stats: StatBox[] }) => {
   );
 };
 
+interface PlayerMobileStatsProps {
+  stats: StatBox[];
+}
+
 /**
- * PlayerMobileStats component.
- * @param root0
- * @param root0.stats
+ * Player stats summary compact variant for mobile.
+ *
+ * @param props - Component properties.
  */
-export const PlayerMobileStats = ({ stats }: { stats: StatBox[] }) => {
+export const PlayerMobileStats = (props: PlayerMobileStatsProps) => {
   return (
     <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1, mt: 2, px: 0.5 }}>
-      {stats.map((s) => (
+      {props.stats.map((s) => (
         <Box key={s.label} sx={{ flex: 1, bgcolor: `${colors.accent}08`, borderRadius: 1.5, px: 1, py: 1.25, textAlign: "center" }}>
           <Typography sx={{ color: s.color ?? colors.text.primary, fontSize: "0.95rem", fontWeight: 800 }}>
             {s.value}

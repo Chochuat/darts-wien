@@ -5,18 +5,18 @@ import { MatchNoShowUpdate } from "@/lib/validation";
 
 /**
  * Handles PATCH requests to mark a match as no-show.
+ *
  * @param req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const matchId = Number(id);
   if (Number.isNaN(matchId)) {

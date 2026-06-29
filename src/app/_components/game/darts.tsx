@@ -31,7 +31,7 @@ interface FlightState {
 }
 
 /**
- *
+ * Creates a memoized flight shape for dart rendering.
  */
 function useFlightShape() {
   return useMemo(() => {

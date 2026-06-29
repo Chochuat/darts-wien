@@ -26,7 +26,7 @@ interface LbResources {
 }
 let lbResources: LbResources | null = null;
 /**
- *
+ * Creates or retrieves the cached leaderboard resources.
  */
 function getLb(): LbResources | null {
   if (lbResources) return lbResources;
@@ -45,13 +45,14 @@ function getLb(): LbResources | null {
 const PODIUM_COLORS = [GOLD, SILVER, BRONZE];
 
 /**
+ * Draws the leaderboard on a canvas texture.
  *
- * @param res
- * @param entries
- * @param loading
- * @param tTitle
- * @param tLoading
- * @param tEmpty
+ * @param res - The leaderboard canvas resources.
+ * @param entries - The leaderboard entries.
+ * @param loading - Whether data is still loading.
+ * @param tTitle - Localized title text.
+ * @param tLoading - Localized loading text.
+ * @param tEmpty - Localized empty state text.
  */
 function drawLb(
   res: LbResources,

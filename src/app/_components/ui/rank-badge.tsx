@@ -8,11 +8,11 @@ interface RankBadgeProps {
 
 
 /**
- * Rank position badge (1st, 2nd, 3rd).
- * @param root0
- * @param root0.position
+ * Rank position badge.
+ *
+ * @param props - Component properties.
  */
-const RankBadge = ({ position }: RankBadgeProps) => {
+const RankBadge = (props: RankBadgeProps) => {
   return (
     <Box
       sx={{
@@ -22,18 +22,18 @@ const RankBadge = ({ position }: RankBadgeProps) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: rankBadgeBg(position),
+        bgcolor: rankBadgeBg(props.position),
         flexShrink: 0,
       }}
     >
       <Typography
         sx={{
-          color: rankBadgeColor(position),
+          color: rankBadgeColor(props.position),
           fontWeight: 900,
           fontSize: "0.95rem",
         }}
       >
-        {position}
+        {props.position}
       </Typography>
     </Box>
   );

@@ -9,14 +9,17 @@ import { colors } from "@/lib/design-tokens";
 import Badge180 from "@/app/_components/ui/badge-180";
 import type { StandingRecentMatch } from "@/lib/validation";
 
+interface MatchRowProps {
+  match: StandingRecentMatch;
+}
 
 /**
  * Single match row display.
- * @param root0
- * @param root0.match
+ *
+ * @param props - Component properties.
  */
-const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
-  const isWin = match.result === "W";
+const MatchRow = (props: MatchRowProps) => {
+  const isWin = props.match.result === "W";
   const { t } = useTranslation();
 
   return (
@@ -47,7 +50,7 @@ const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
             whiteSpace: "nowrap",
           }}
         >
-          {t("common.vs")} {match.opponent}
+          {t("common.vs")} {props.match.opponent}
         </Typography>
       </Box>
 
@@ -62,9 +65,9 @@ const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
             minWidth: 36,
           }}
         >
-          {match.score}
+          {props.match.score}
         </Typography>
-        {match.one80 > 0 ? <Badge180 /> : null}
+        {props.match.one80 > 0 ? <Badge180 /> : null}
       </Box>
 
       <Typography
@@ -75,7 +78,7 @@ const MatchRow = ({ match }: { match: StandingRecentMatch }) => {
           minWidth: 40,
         }}
       >
-        {match.date}
+        {props.match.date}
       </Typography>
     </Box>
   );

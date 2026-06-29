@@ -18,10 +18,10 @@ const theme = createTheme({
 
 /**
  * Application providers wrapper.
- * @param root0
- * @param root0.children
+ *
+ * @param props - Component properties.
  */
-const Providers = ({ children }: { children: React.ReactNode }) => {
+const Providers = (props: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -31,7 +31,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           <Suspense fallback={null}>
             <LocaleProvider />
           </Suspense>
-          {children}
+          {props.children}
         </QueryClientProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>

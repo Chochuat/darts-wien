@@ -5,8 +5,9 @@ import { queryKeys } from "@/lib/query/keys";
 import { StandingsResponse } from "@/lib/validation";
 
 /**
+ * Fetches standings for a given season.
  *
- * @param seasonId
+ * @param seasonId - The season ID.
  */
 async function fetchStandings(seasonId: number) {
   const res = await fetch(`/api/seasons/${seasonId}/standings`);
@@ -17,6 +18,7 @@ async function fetchStandings(seasonId: number) {
 
 /**
  * Fetches standings for a given season.
+ *
  * @param seasonId - The season ID.
  */
 export function useStandings(seasonId: number) {

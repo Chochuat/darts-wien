@@ -21,8 +21,9 @@ const DARK_BACK = "#1a0c04";
 let arrowCache: Partial<Record<Direction, THREE.CanvasTexture>> | null = null;
 
 /**
+ * Creates or retrieves a cached arrow texture.
  *
- * @param dir
+ * @param dir - The direction for the arrow.
  */
 function getArrowTexture(dir: Direction): THREE.CanvasTexture {
   if (typeof document === "undefined") return new THREE.CanvasTexture();
@@ -80,7 +81,7 @@ function getArrowTexture(dir: Direction): THREE.CanvasTexture {
 }
 
 /**
- *
+ * Detects whether the device supports touch input.
  */
 function useIsTouch(): boolean {
   const [isTouch, setIsTouch] = useState(false);
@@ -96,7 +97,7 @@ function useIsTouch(): boolean {
 }
 
 /**
- *
+ * Blocks orbit controls while interactable is hovered.
  */
 function useOrbitBlock() {
   const controlsValue = useThree((s) => s.controls) as

@@ -10,26 +10,24 @@ interface StatLabelProps {
 
 
 /**
- * Statistic label with value.
- * @param root0
- * @param root0.label
- * @param root0.value
- * @param root0.labelColor
+ * Stat label-value pair display.
+ *
+ * @param props - Component properties.
  */
-const StatLabel = ({ label, value, labelColor }: StatLabelProps) => {
+const StatLabel = (props: StatLabelProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.3 }}>
       <Typography
         sx={{
-          color: labelColor ?? colors.text.muted,
+          color: props.labelColor ?? colors.text.muted,
           fontSize: "0.6rem",
           fontWeight: 700,
         }}
       >
-        {label}
+        {props.label}
       </Typography>
       <Typography sx={{ color: colors.text.secondary, fontSize: "0.8rem", fontWeight: 600 }}>
-        {value}
+        {props.value}
       </Typography>
     </Box>
   );

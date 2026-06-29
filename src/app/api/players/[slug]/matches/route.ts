@@ -4,18 +4,18 @@ import { getSupabase } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for a player's matches.
+ *
  * @param _req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function GET(
   _req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   slug: string }> },
 ) {
   
-  const { slug } = await params;
+  const { slug } = await context.params;
 
   
   const supabase = await getSupabase();

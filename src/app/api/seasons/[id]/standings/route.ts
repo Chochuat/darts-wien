@@ -5,18 +5,18 @@ import type { StandingsResponse, StandingPlayer, StandingRecentMatch } from "@/l
 
 /**
  * Handles GET requests for season standings.
+ *
  * @param _req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function GET(
   _req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const seasonId = Number(id);
   if (Number.isNaN(seasonId)) {

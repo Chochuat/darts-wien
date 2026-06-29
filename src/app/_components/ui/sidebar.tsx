@@ -24,6 +24,7 @@ export const SIDEBAR_WIDTH = 100;
 
 /**
  * Sidebar component that provides main navigation links.
+ *
  * @returns The rendered Sidebar component.
  */
 const Sidebar = () => {

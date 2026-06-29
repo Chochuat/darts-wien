@@ -16,7 +16,8 @@ export interface LeaderboardEntry {
 
 /**
  * Fetches top throws from the leaderboard.
- * @param limit - Maximum number of entries to fetch
+ *
+ * @param limit - Maximum number of entries to fetch.
  */
 export async function fetchTopThrows(limit = 10): Promise<LeaderboardEntry[]> {
   
@@ -50,8 +51,9 @@ export async function fetchTopThrows(limit = 10): Promise<LeaderboardEntry[]> {
 
 /**
  * Saves a throw to the leaderboard.
- * @param name - Player name
- * @param score - Throw score
+ *
+ * @param name - Player name.
+ * @param score - Throw score.
  */
 export async function saveThrow(name: string, score: number): Promise<void> {
   
@@ -68,7 +70,8 @@ export async function saveThrow(name: string, score: number): Promise<void> {
 
 /**
  * Hook that fetches top throws reactively when dirtyKey changes.
- * @param dirtyKey - Increment to trigger a refetch
+ *
+ * @param dirtyKey - Increment to trigger a refetch.
  */
 export function useTopThrows(dirtyKey: number): {
   entries: LeaderboardEntry[];

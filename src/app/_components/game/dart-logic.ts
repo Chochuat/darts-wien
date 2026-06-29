@@ -44,7 +44,8 @@ const WEDGE_SPAN = Math.PI / 10;
 
 /**
  * Returns the wedge center angle for a given index.
- * @param index - Wedge index
+ *
+ * @param index - Wedge index.
  */
 export function wedgeCenterAngle(index: number): number {
   return Math.PI / 2 - index * WEDGE_SPAN;
@@ -74,8 +75,9 @@ export function randomOutcome(): DartOutcome {
 
 /**
  * Computes a dart outcome from a board position.
- * @param x - X coordinate relative to board center
- * @param y - Y coordinate relative to board center
+ *
+ * @param x - X coordinate relative to board center.
+ * @param y - Y coordinate relative to board center.
  */
 export function computeOutcomeFromBoardPosition(
   x: number,

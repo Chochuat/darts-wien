@@ -53,6 +53,7 @@ const spacing = {
 
 /**
  * Returns a border color for a given rank position.
+ *
  * @param pos - The rank position (1-based).
  */
 export const borderForRank = (pos: number): string => {
@@ -64,6 +65,7 @@ export const borderForRank = (pos: number): string => {
 
 /**
  * Returns a background color for a rank badge.
+ *
  * @param pos - The rank position (1-based).
  */
 export const rankBadgeBg = (pos: number): string => {
@@ -74,6 +76,7 @@ export const rankBadgeBg = (pos: number): string => {
 
 /**
  * Returns a text color for a rank badge.
+ *
  * @param pos - The rank position (1-based).
  */
 export const rankBadgeColor = (pos: number): string => {

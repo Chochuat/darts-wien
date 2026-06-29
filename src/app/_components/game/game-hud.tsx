@@ -31,7 +31,7 @@ const HUD_CW = 512;
 const HUD_CH = Math.round((HUD_CW / PANEL_W) * PANEL_H);
 
 /**
- *
+ * Creates or retrieves the cached HUD resources.
  */
 function getHud(): HudResources | null {
   if (hudResources) return hudResources;
@@ -68,14 +68,14 @@ interface HudTexts {
 }
 
 /**
+ * Draws the HUD overlay on a canvas texture.
  *
- * @param res
- * @param cw
- * @param ch
- * @param state
- * @param buttonRect
- * @param buttonRect.current
- * @param texts
+ * @param res - The HUD canvas resources.
+ * @param cw - Canvas width.
+ * @param ch - Canvas height.
+ * @param state - Current game state.
+ * @param buttonRect - Mutable ref storing throw button UV coordinates.
+ * @param texts - Localized text strings.
  */
 function drawHud(
   res: HudResources,
@@ -292,12 +292,13 @@ const DragHint = ({ opacity, text }: { opacity: number; text: string }) => {
 }
 
 /**
+ * Draws a rounded label background.
  *
- * @param ctx
- * @param cx
- * @param cy
- * @param w
- * @param h
+ * @param ctx - The canvas rendering context.
+ * @param cx - Center X position.
+ * @param cy - Center Y position.
+ * @param w - Width.
+ * @param h - Height.
  */
 function labelBack(
   ctx: CanvasRenderingContext2D,
@@ -314,13 +315,14 @@ function labelBack(
 }
 
 /**
+ * Draws a rounded rectangle path.
  *
- * @param ctx
- * @param x
- * @param y
- * @param w
- * @param h
- * @param r
+ * @param ctx - The canvas rendering context.
+ * @param x - Top-left X position.
+ * @param y - Top-left Y position.
+ * @param w - Width.
+ * @param h - Height.
+ * @param r - Corner radius.
  */
 function roundRect(
   ctx: CanvasRenderingContext2D,

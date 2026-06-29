@@ -48,6 +48,7 @@ if (!i18n.isInitialized) {
 
 /**
  * Resolves a language string to a supported language code.
+ *
  * @param lang - The language code to resolve.
  */
 export function resolveLanguage(lang: string | null): SupportedLanguage {

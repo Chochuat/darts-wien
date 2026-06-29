@@ -12,7 +12,8 @@ export interface PerspectiveMatch {
 }
 
 /**
- * toPerspective component.
+ * Converts a match to a perspective from one player's viewpoint.
+ *
  * @param m - The match row.
  * @param forPlayerName - The player name to calculate perspective for.
  */
@@ -40,7 +41,8 @@ export function toPerspective(
 }
 
 /**
- * groupMatchesFromPerspective component.
+ * Converts all matches in a group to perspective format.
+ *
  * @param g - The tournament group.
  */
 export function groupMatchesFromPerspective(

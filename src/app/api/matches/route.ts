@@ -4,6 +4,7 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for match listings.
+ *
  * @param req - The incoming request.
  */
 export async function GET(req: NextRequest) {

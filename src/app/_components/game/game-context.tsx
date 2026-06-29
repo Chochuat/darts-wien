@@ -34,9 +34,10 @@ const initialState: GameState = {
 };
 
 /**
+ * Game state reducer handling all game actions.
  *
- * @param state
- * @param action
+ * @param state - The current game state.
+ * @param action - The dispatched action.
  */
 function reducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -104,11 +105,10 @@ const GameContext = createContext<GameContextValue | null>(null);
 
 /**
  * Game state provider component.
- * @param root0
- * @param root0.children
+ *
+ * @param props - Component properties.
  */
-export const GameProvider = ({ children }: { /** Child React nodes. */
-children: ReactNode }) => {
+export const GameProvider = (props: { children: ReactNode }) => {
   /** Application state and dispatch. */
   const [state, dispatch] = useReducer(reducer, initialState);
   /** Reference to flight input state. */
@@ -189,12 +189,13 @@ children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.leaderboardDirtyKey]);
 
-  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
+  return <GameContext.Provider value={value}>{props.children}</GameContext.Provider>;
 }
 
 /**
  * Returns the game context value.
- * @throws {Error} if used outside of GameProvider.
+ *
+ * @throws Error if used outside of GameProvider.
  */
 export function useGame(): GameContextValue {
   const ctx = useContext(GameContext);

@@ -7,14 +7,14 @@ interface FormIndicatorProps {
 
 
 /**
- * Shows form indicator (win/loss streak).
- * @param root0
- * @param root0.form
+ * Form indicator showing W/L string.
+ *
+ * @param props - Component properties.
  */
-const FormIndicator = ({ form }: FormIndicatorProps) => {
+const FormIndicator = (props: FormIndicatorProps) => {
   return (
     <Box sx={{ display: "flex", gap: 0.3, alignItems: "center" }}>
-      {form.map((r, i) => (
+      {props.form.map((r, i) => (
         <Box
           // eslint-disable-next-line react/no-array-index-key
           key={i}

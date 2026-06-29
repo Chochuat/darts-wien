@@ -4,10 +4,10 @@ import { colors, borderRadius } from "@/lib/design-tokens";
 
 /**
  * Generic section wrapper.
- * @param root0
- * @param root0.children
+ *
+ * @param props - Component properties.
  */
-const Section = ({ children }: { children: React.ReactNode }) => {
+const Section = (props: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
@@ -19,7 +19,7 @@ const Section = ({ children }: { children: React.ReactNode }) => {
         mx: "auto",
       }}
     >
-      {children}
+      {props.children}
     </Box>
   );
 }

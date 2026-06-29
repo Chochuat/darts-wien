@@ -10,18 +10,16 @@ interface PageHeaderProps {
 
 
 /**
- * Page header with title and optional back button.
- * @param root0
- * @param root0.icon
- * @param root0.title
- * @param root0.subtitle
+ * Page header with title and subtitle.
+ *
+ * @param props - Component properties.
  */
-const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
+const PageHeader = (props: PageHeaderProps) => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.3, px: 0.5 }}>
         <Box sx={{ color: colors.accent, fontSize: "1.2rem", display: "flex" }}>
-          {icon}
+          {props.icon}
         </Box>
         <Typography
           sx={{
@@ -31,7 +29,7 @@ const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
             letterSpacing: 1,
           }}
         >
-          {title}
+          {props.title}
         </Typography>
       </Box>
       <Typography
@@ -44,7 +42,7 @@ const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => {
           px: 0.5,
         }}
       >
-        {subtitle}
+        {props.subtitle}
       </Typography>
     </>
   );

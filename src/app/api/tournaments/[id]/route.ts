@@ -4,18 +4,18 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for a single tournament by ID.
+ *
  * @param _req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function GET(
   _req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
@@ -261,18 +261,18 @@ export async function GET(
 
 /**
  * Handles PATCH requests to update a tournament.
+ *
  * @param req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {

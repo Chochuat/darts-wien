@@ -10,14 +10,12 @@ interface WinBarProps {
 
 
 /**
- * Win percentage progress bar.
- * @param root0
- * @param root0.wins
- * @param root0.played
- * @param root0.color
+ * Win percentage bar visualization.
+ *
+ * @param props - Component properties.
  */
-const WinBar = ({ wins, played, color }: WinBarProps) => {
-  const pct = played > 0 ? (wins / played) * 100 : 0;
+const WinBar = (props: WinBarProps) => {
+  const pct = props.played > 0 ? (props.wins / props.played) * 100 : 0;
 
   return (
     <Box sx={{ height: 2.5, bgcolor: "#f4f4f5" }}>
@@ -25,7 +23,7 @@ const WinBar = ({ wins, played, color }: WinBarProps) => {
         sx={{
           height: "100%",
           width: `${pct}%`,
-          bgcolor: color,
+          bgcolor: props.color,
           transition: "width 0.3s",
         }}
       />

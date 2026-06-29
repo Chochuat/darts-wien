@@ -4,19 +4,19 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles DELETE requests to remove a tournament registration.
+ *
  * @param _req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function DELETE(
   _req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string; 
   playerId: string }> },
 ) {
   
-  const { id, playerId } = await params;
+  const { id, playerId } = await context.params;
   
   const tournamentId = Number(id);
   
@@ -57,19 +57,19 @@ export async function DELETE(
 
 /**
  * Handles PATCH requests to update a player's check-in status.
+ *
  * @param req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string; 
   playerId: string }> },
 ) {
   
-  const { id, playerId } = await params;
+  const { id, playerId } = await context.params;
   
   const tournamentId = Number(id);
   

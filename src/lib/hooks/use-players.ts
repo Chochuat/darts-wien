@@ -24,7 +24,7 @@ interface PlayerResponse {
 }
 
 /**
- *
+ * Fetches all players from the API.
  */
 async function fetchPlayers(): Promise<PlayersResponse> {
   const res = await fetch("/api/players");
@@ -34,8 +34,9 @@ async function fetchPlayers(): Promise<PlayersResponse> {
 }
 
 /**
+ * Fetches a single player by their slug.
  *
- * @param slug
+ * @param slug - The player slug.
  */
 async function fetchPlayerBySlug(slug: string): Promise<PlayerResponse> {
   const res = await fetch(`/api/players/${encodeURIComponent(slug)}`);
@@ -45,8 +46,9 @@ async function fetchPlayerBySlug(slug: string): Promise<PlayerResponse> {
 }
 
 /**
+ * Fetches matches for a specific player by their slug.
  *
- * @param slug
+ * @param slug - The player slug.
  */
 async function fetchPlayerMatches(slug: string): Promise<PlayerMatchPerspective[]> {
   const res = await fetch(`/api/players/${encodeURIComponent(slug)}/matches`);
@@ -69,6 +71,7 @@ export function usePlayers() {
 
 /**
  * Fetches a single player by their slug.
+ *
  * @param slug - The player slug.
  */
 export function usePlayerBySlug(slug: string) {
@@ -81,6 +84,7 @@ export function usePlayerBySlug(slug: string) {
 
 /**
  * Fetches matches for a specific player by their slug.
+ *
  * @param slug - The player slug.
  */
 export function usePlayerMatches(slug: string) {

@@ -4,18 +4,18 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles POST requests to generate tournament groups and matches.
+ *
  * @param req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function POST(
   req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {

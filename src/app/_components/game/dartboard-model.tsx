@@ -18,8 +18,9 @@ const PUB_FONT = '"Georgia", serif';
 let numberTextureCache: Map<number, THREE.CanvasTexture> | null = null;
 
 /**
+ * Creates or retrieves a cached number texture.
  *
- * @param num
+ * @param num - The number to render.
  */
 function getNumberTexture(num: number): THREE.CanvasTexture {
   if (typeof document === "undefined") {
@@ -48,23 +49,18 @@ function getNumberTexture(num: number): THREE.CanvasTexture {
   return texture;
 }
 
-const Wedge = ({
-  innerR,
-  outerR,
-  color,
-  index,
-}: {
+const Wedge = (props: {
   innerR: number;
   outerR: number;
   color: string;
   index: number;
 }) => {
-  const a0 = wedgeCenterAngle(index) - WEDGE_HALF;
+  const a0 = wedgeCenterAngle(props.index) - WEDGE_HALF;
   return (
     <mesh position={[0, 0, Z_L]}>
-      <ringGeometry args={[innerR, outerR, 1, 1, a0, WEDGE_SPAN]} />
+      <ringGeometry args={[props.innerR, props.outerR, 1, 1, a0, WEDGE_SPAN]} />
       <meshStandardMaterial
-        color={color}
+        color={props.color}
         roughness={0.55}
         side={THREE.DoubleSide}
       />
@@ -73,19 +69,11 @@ const Wedge = ({
 }
 
 /**
+ * Renders alternating color wedges in a ring.
  *
- * @param root0
- * @param root0.innerR
- * @param root0.outerR
- * @param root0.c1
- * @param root0.c2
+ * @param props - Component properties.
  */
-function PieRing({
-  innerR,
-  outerR,
-  c1,
-  c2,
-}: {
+function PieRing(props: {
   innerR: number;
   outerR: number;
   c1: string;
@@ -95,11 +83,11 @@ function PieRing({
   for (let s = 0; s < 20; s++) {
     wedges.push(
       <Wedge
-        color={s % 2 === 0 ? c1 : c2}
+        color={s % 2 === 0 ? props.c1 : props.c2}
         index={s}
-        innerR={innerR}
+        innerR={props.innerR}
         key={s}
-        outerR={outerR}
+        outerR={props.outerR}
       />,
     );
   }

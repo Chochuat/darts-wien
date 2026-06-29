@@ -15,8 +15,9 @@ interface MatchListParams {
 }
 
 /**
+ * Builds a query string from match list parameters.
  *
- * @param params
+ * @param params - The match list parameters.
  */
 function buildQueryString(params: MatchListParams): string {
   const search = new URLSearchParams();
@@ -30,8 +31,9 @@ function buildQueryString(params: MatchListParams): string {
 }
 
 /**
+ * Fetches matches from the API.
  *
- * @param params
+ * @param params - The match list parameters.
  */
 async function fetchMatches(params: MatchListParams) {
   const qs = buildQueryString(params);
@@ -42,8 +44,9 @@ async function fetchMatches(params: MatchListParams) {
 }
 
 /**
+ * Fetches a single match by ID.
  *
- * @param id
+ * @param id - The match ID.
  */
 async function fetchMatchDetail(id: number) {
   const res = await fetch(`/api/matches/${id}`);
@@ -54,6 +57,7 @@ async function fetchMatchDetail(id: number) {
 
 /**
  * Fetches match data by query parameters.
+ *
  * @param params - Query parameters for filtering matches.
  */
 export function useMatches(params: MatchListParams = {}) {
@@ -66,6 +70,7 @@ export function useMatches(params: MatchListParams = {}) {
 
 /**
  * Fetches a single match by its ID.
+ *
  * @param id - The match ID.
  */
 export function useMatchDetail(id: number) {

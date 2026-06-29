@@ -4,18 +4,18 @@ import { getSupabase, errorResponse } from "@/lib/api-utils";
 
 /**
  * Handles GET requests for tournament registrations.
+ *
  * @param _req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function GET(
   _req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {
@@ -58,18 +58,18 @@ export async function GET(
 
 /**
  * Handles POST requests to register a player for a tournament.
+ *
  * @param req - The incoming request.
- * @param root0
- * @param root0.params
+ * @param context - Route context.
  */
 export async function POST(
   req: NextRequest,
-  { params }: { 
+  context: { 
   params: Promise<{ 
   id: string }> },
 ) {
   
-  const { id } = await params;
+  const { id } = await context.params;
   
   const tournamentId = Number(id);
   if (Number.isNaN(tournamentId)) {

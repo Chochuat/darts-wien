@@ -9,19 +9,18 @@ interface SectionHeadingProps {
 
 
 /**
- * Section heading with optional icon.
- * @param root0
- * @param root0.icon
- * @param root0.label
+ * Section heading with icon and label.
+ *
+ * @param props - Component properties.
  */
-const SectionHeading = ({ icon, label }: SectionHeadingProps) => {
+const SectionHeading = (props: SectionHeadingProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>
       <Box sx={{ color: colors.accent, fontSize: "1.1rem", display: "flex" }}>
-        {icon}
+        {props.icon}
       </Box>
       <Typography sx={{ color: colors.text.primary, fontWeight: 700, fontSize: "0.95rem", letterSpacing: 1 }}>
-        {label}
+        {props.label}
       </Typography>
     </Box>
   );

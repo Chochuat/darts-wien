@@ -22,7 +22,7 @@ interface PopupResources {
 }
 let popupResources: PopupResources | null = null;
 /**
- *
+ * Creates or retrieves the cached popup resources.
  */
 function getPopup(): PopupResources | null {
   if (popupResources) return popupResources;
@@ -49,75 +49,62 @@ interface DrawParams {
 }
 
 /**
+ * Draws the round result popup.
  *
- * @param root0
- * @param root0.canvas
- * @param root0.ctx
- * @param root0.texture
- * @param root0.playerName
- * @param root0.resultScore
- * @param root0.beReadyText
- * @param root0.ptsShort
+ * @param params - Popup drawing parameters.
  */
-function drawPopup({
-  canvas,
-  ctx,
-  texture,
-  playerName,
-  resultScore,
-  beReadyText,
-  ptsShort,
-}: DrawParams) {
-  const cw = canvas.width;
-  const ch = canvas.height;
-  ctx.clearRect(0, 0, cw, ch);
+function drawPopup(params: DrawParams) {
+  const cw = params.canvas.width;
+  const ch = params.canvas.height;
+  params.ctx.clearRect(0, 0, cw, ch);
 
-  ctx.fillStyle = DARK_BACK;
+  params.ctx.fillStyle = DARK_BACK;
   const r = ch * 0.04;
-  ctx.beginPath();
-  ctx.moveTo(r, 0);
-  ctx.arcTo(cw, 0, cw, ch, r);
-  ctx.arcTo(cw, ch, 0, ch, r);
-  ctx.arcTo(0, ch, 0, 0, r);
-  ctx.arcTo(0, 0, cw, 0, r);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = CRIMSON_DEEP;
-  ctx.lineWidth = 18;
-  ctx.stroke();
+  params.ctx.beginPath();
+  params.ctx.moveTo(r, 0);
+  params.ctx.arcTo(cw, 0, cw, ch, r);
+  params.ctx.arcTo(cw, ch, 0, ch, r);
+  params.ctx.arcTo(0, ch, 0, 0, r);
+  params.ctx.arcTo(0, 0, cw, 0, r);
+  params.ctx.closePath();
+  params.ctx.fill();
+  params.ctx.strokeStyle = CRIMSON_DEEP;
+  params.ctx.lineWidth = 18;
+  params.ctx.stroke();
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  params.ctx.textAlign = "center";
+  params.ctx.textBaseline = "middle";
 
-  ctx.fillStyle = MUTED;
-  ctx.font = `${Math.round(ch * 0.05)}px ${PUB_FONT}`;
-  ctx.fillText(playerName, cw / 2, ch * 0.09);
+  params.ctx.fillStyle = MUTED;
+  params.ctx.font = `${Math.round(ch * 0.05)}px ${PUB_FONT}`;
+  params.ctx.fillText(params.playerName, cw / 2, ch * 0.09);
 
-  ctx.fillStyle = CREAM;
-  ctx.font = `bold ${Math.round(ch * 0.22)}px ${PUB_FONT}`;
-  ctx.fillText(`${resultScore}`, cw / 2, ch * 0.24);
-  ctx.font = `${Math.round(ch * 0.045)}px ${PUB_FONT}`;
-  ctx.fillStyle = MUTED;
-  ctx.fillText(ptsShort.toUpperCase(), cw / 2, ch * 0.34);
+  params.ctx.fillStyle = CREAM;
+  params.ctx.font = `bold ${Math.round(ch * 0.22)}px ${PUB_FONT}`;
+  params.ctx.fillText(`${params.resultScore}`, cw / 2, ch * 0.24);
+  params.ctx.font = `${Math.round(ch * 0.045)}px ${PUB_FONT}`;
+  params.ctx.fillStyle = MUTED;
+  params.ctx.fillText(params.ptsShort.toUpperCase(), cw / 2, ch * 0.34);
 
-  ctx.fillStyle = CREAM;
-  ctx.font = `bold ${Math.round(ch * 0.08)}px ${PUB_FONT}`;
-  ctx.fillText("DARTS WIEN", cw / 2, ch * 0.46);
-  ctx.font = `${Math.round(ch * 0.05)}px ${PUB_FONT}`;
-  ctx.fillStyle = MUTED;
-  ctx.fillText("SEPTEMBER 2027", cw / 2, ch * 0.54);
-  ctx.font = `bold ${Math.round(ch * 0.07)}px ${PUB_FONT}`;
-  ctx.fillStyle = CREAM;
-  ctx.fillText(beReadyText, cw / 2, ch * 0.64);
+  params.ctx.fillStyle = CREAM;
+  params.ctx.font = `bold ${Math.round(ch * 0.08)}px ${PUB_FONT}`;
+  params.ctx.fillText("DARTS WIEN", cw / 2, ch * 0.46);
+  params.ctx.font = `${Math.round(ch * 0.05)}px ${PUB_FONT}`;
+  params.ctx.fillStyle = MUTED;
+  params.ctx.fillText("SEPTEMBER 2027", cw / 2, ch * 0.54);
+  params.ctx.font = `bold ${Math.round(ch * 0.07)}px ${PUB_FONT}`;
+  params.ctx.fillStyle = CREAM;
+  params.ctx.fillText(params.beReadyText, cw / 2, ch * 0.64);
 
-  texture.needsUpdate = true;
+  params.texture.needsUpdate = true;
 }
 
 let nextBtnTex: THREE.CanvasTexture | null = null;
 let nextBtnLabel: string | null = null;
 /**
+ * Creates or retrieves a cached "Next" button texture.
  *
- * @param label
+ * @param label - The button label text.
  */
 function getNextBtnTexture(label: string): THREE.CanvasTexture {
   if (typeof document === "undefined") return new THREE.CanvasTexture();

@@ -10,12 +10,10 @@ interface CardProps {
 
 /**
  * Generic card wrapper component.
- * @param root0
- * @param root0.children
- * @param root0.borderColor
- * @param root0.hoverBorderColor
+ *
+ * @param props - Component properties.
  */
-const Card = ({ children, borderColor, hoverBorderColor }: CardProps) => {
+const Card = (props: CardProps) => {
   return (
     <Box
       sx={{
@@ -23,16 +21,16 @@ const Card = ({ children, borderColor, hoverBorderColor }: CardProps) => {
         borderRadius: borderRadius.sm,
         overflow: "hidden",
         border: "1px solid",
-        borderColor,
+        borderColor: props.borderColor,
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         transition: "box-shadow 0.2s, border-color 0.2s",
         "&:hover": {
           boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
-          ...(hoverBorderColor ? { borderColor: hoverBorderColor } : {}),
+          ...(props.hoverBorderColor ? { borderColor: props.hoverBorderColor } : {}),
         },
       }}
     >
-      {children}
+      {props.children}
     </Box>
   );
 }
