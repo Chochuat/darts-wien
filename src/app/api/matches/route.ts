@@ -52,35 +52,36 @@ export async function GET(req: NextRequest) {
   }
 
   const playerIdsArr = [...allPlayerIds];
-  const { data: players } = await supabase
-    .from("players")
-    .select("id, name, slug")
-    .in("id", playerIdsArr.length ? playerIdsArr : [0]);
+  const tournamentIdsArr = [...allTournamentIds];
+  const groupIdsArr = [...allGroupIds];
+
+  const [playersRes, tournamentsRes, groupsRes] = await Promise.all([
+    supabase
+      .from("players")
+      .select("id, name, slug")
+      .in("id", playerIdsArr.length ? playerIdsArr : [0]),
+    supabase
+      .from("tournaments")
+      .select("id, week_number, type")
+      .in("id", tournamentIdsArr.length ? tournamentIdsArr : [0]),
+    supabase
+      .from("tournament_groups")
+      .select("id, label")
+      .in("id", groupIdsArr.length ? groupIdsArr : [0]),
+  ]);
 
   const playerMap = new Map(
-    (players ?? []).map((p) => [p.id, { id: p.id, name: p.name, slug: p.slug }]),
+    (playersRes.data ?? []).map((p) => [p.id, { id: p.id, name: p.name, slug: p.slug }]),
   );
 
-  const tournamentIdsArr = [...allTournamentIds];
-  const { data: tournaments } = await supabase
-    .from("tournaments")
-    .select("id, week_number, type")
-    .in("id", tournamentIdsArr.length ? tournamentIdsArr : [0]);
-
   const tournamentMap = new Map(
-    (tournaments ?? []).map((t) => [
+    (tournamentsRes.data ?? []).map((t) => [
       t.id,
       { weekNumber: t.week_number, type: t.type },
     ]),
   );
 
-  const groupIdsArr = [...allGroupIds];
-  const { data: groups } = await supabase
-    .from("tournament_groups")
-    .select("id, label")
-    .in("id", groupIdsArr.length ? groupIdsArr : [0]);
-
-  const groupMap = new Map((groups ?? []).map((g) => [g.id, g.label]));
+  const groupMap = new Map((groupsRes.data ?? []).map((g) => [g.id, g.label]));
 
   const unknownPlayer = (id: number) => ({ id, name: "Unknown", slug: "unknown" });
 

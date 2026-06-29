@@ -32,7 +32,7 @@ const PlayerMatchesPage = () => {
   const { t } = useTranslation();
   const { desktopStats, mobileStats } = usePlayerStatBoxes();
 
-  if (isLoading) return <DartLoading withSection={false} />;
+  if (isLoading) return <DartLoading />;
 
   if (isError || !data) {
     return (

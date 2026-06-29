@@ -30,43 +30,54 @@ export async function GET(
     return NextResponse.json({ error: "Tournament not found" }, { status: 404 });
   }
 
-  const { data: groups } = await supabase
-    .from("tournament_groups")
-    .select("id, label")
-    .eq("tournament_id", tournamentId);
+  const [groupsRes, allMatchesRes, registrationsRes, finalStandingsRes] =
+    await Promise.all([
+      supabase
+        .from("tournament_groups")
+        .select("id, label")
+        .eq("tournament_id", tournamentId),
+      supabase
+        .from("matches")
+        .select("*")
+        .eq("tournament_id", tournamentId)
+        .in("match_type", ["tournament_group", "tournament_playoff"])
+        .order("sort_order"),
+      supabase
+        .from("tournament_registrations")
+        .select("id")
+        .eq("tournament_id", tournamentId),
+      supabase
+        .from("tournament_final_standings")
+        .select("*")
+        .eq("tournament_id", tournamentId)
+        .order("position"),
+    ]);
 
-  const groupIds = (groups ?? []).map((g) => g.id);
+  const groups = groupsRes.data ?? [];
+  const groupIds = groups.map((g) => g.id);
 
-  const { data: groupPlayersRows } = await supabase
+  const groupMatches = (allMatchesRes.data ?? []).filter(
+    (m) => m.match_type === "tournament_group",
+  );
+  const playoffMatches = (allMatchesRes.data ?? []).filter(
+    (m) => m.match_type === "tournament_playoff",
+  );
+  const registrations = registrationsRes.data;
+  const finalStandings = finalStandingsRes.data;
+
+  const groupPlayersRes = await supabase
     .from("tournament_group_players")
     .select("group_id, player_id")
     .in("group_id", groupIds.length ? groupIds : [0]);
-
-  const { data: groupMatches } = await supabase
-    .from("matches")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .eq("match_type", "tournament_group");
-
-  const { data: playoffMatches } = await supabase
-    .from("matches")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .eq("match_type", "tournament_playoff")
-    .order("sort_order");
-
-  const { data: registrations } = await supabase
-    .from("tournament_registrations")
-    .select("id")
-    .eq("tournament_id", tournamentId);
+  const groupPlayersRows = groupPlayersRes.data ?? [];
 
   const involvedPlayerIds = new Set<number>();
-  for (const gp of groupPlayersRows ?? []) involvedPlayerIds.add(gp.player_id);
-  for (const m of groupMatches ?? []) {
+  for (const gp of groupPlayersRows) involvedPlayerIds.add(gp.player_id);
+  for (const m of groupMatches) {
     involvedPlayerIds.add(m.player1_id);
     involvedPlayerIds.add(m.player2_id);
   }
-  for (const m of playoffMatches ?? []) {
+  for (const m of playoffMatches) {
     involvedPlayerIds.add(m.player1_id);
     involvedPlayerIds.add(m.player2_id);
   }
@@ -209,12 +220,6 @@ export async function GET(
         groupLabel: undefined,
       })) as ApiMatchRow[],
   }));
-
-  const { data: finalStandings } = await supabase
-    .from("tournament_final_standings")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("position");
 
   const apiStandings = (finalStandings ?? []).map((fs) => {
     const p = playerMap.get(fs.player_id);

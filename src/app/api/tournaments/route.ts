@@ -33,61 +33,81 @@ export async function GET(req: NextRequest) {
 
   if (error) return errorResponse(error);
 
-  const result = await Promise.all(
-    (tournaments ?? []).map(async (t) => {
-      const { count: registrations } = await supabase
-        .from("tournament_registrations")
-        .select("id", { count: "exact", head: true })
-        .eq("tournament_id", t.id)
-        .eq("checked_in", true);
+  const tournamentList = tournaments ?? [];
+  const tournamentIds = tournamentList.map((t) => t.id);
+  const winnerIds = tournamentList
+    .map((t) => t.winner_player_id)
+    .filter((id): id is number => id != null);
 
-      const winner =
-        t.winner_player_id != null
-          ? await supabase
-              .from("players")
-              .select("id, name, slug")
-              .eq("id", t.winner_player_id)
-              .single()
-              .then((r) => r.data)
-          : null;
+  const idsForIn = tournamentIds.length ? tournamentIds : [0];
 
-      const { count: groupMatchCount } = await supabase
-        .from("matches")
-        .select("id", { count: "exact", head: true })
-        .eq("tournament_id", t.id)
-        .eq("match_type", "tournament_group");
+  const [registrationsRes, matchesRes, winnersRes] = await Promise.all([
+    supabase
+      .from("tournament_registrations")
+      .select("tournament_id")
+      .eq("checked_in", true)
+      .in("tournament_id", idsForIn),
+    supabase
+      .from("matches")
+      .select("tournament_id, match_type, player1_180, player2_180")
+      .in("tournament_id", idsForIn),
+    winnerIds.length
+      ? supabase
+          .from("players")
+          .select("id, name, slug")
+          .in("id", winnerIds)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
 
-      const { count: playoffMatchCount } = await supabase
-        .from("matches")
-        .select("id", { count: "exact", head: true })
-        .eq("tournament_id", t.id)
-        .eq("match_type", "tournament_playoff");
+  const regCountByTournament = new Map<number, number>();
+  for (const r of registrationsRes.data ?? []) {
+    const tid = r.tournament_id;
+    regCountByTournament.set(tid, (regCountByTournament.get(tid) ?? 0) + 1);
+  }
 
-      const { data: one80Rows } = await supabase
-        .from("matches")
-        .select("player1_180, player2_180")
-        .eq("tournament_id", t.id);
-
-      const total180s = (one80Rows ?? []).reduce(
-        (sum, m) => sum + (m.player1_180 ?? 0) + (m.player2_180 ?? 0),
-        0,
+  const groupMatchCountByTournament = new Map<number, number>();
+  const playoffMatchCountByTournament = new Map<number, number>();
+  const total180sByTournament = new Map<number, number>();
+  for (const m of matchesRes.data ?? []) {
+    const tid = m.tournament_id;
+    if (m.match_type === "tournament_group") {
+      groupMatchCountByTournament.set(
+        tid,
+        (groupMatchCountByTournament.get(tid) ?? 0) + 1,
       );
+    } else if (m.match_type === "tournament_playoff") {
+      playoffMatchCountByTournament.set(
+        tid,
+        (playoffMatchCountByTournament.get(tid) ?? 0) + 1,
+      );
+    }
+    total180sByTournament.set(
+      tid,
+      (total180sByTournament.get(tid) ?? 0) +
+        (m.player1_180 ?? 0) +
+        (m.player2_180 ?? 0),
+    );
+  }
 
-      return {
-        id: t.id,
-        weekNumber: t.week_number,
-        date: t.date,
-        type: t.type,
-        status: t.status,
-        winner: winner ?? null,
-        generationType: t.generation_type,
-        playerCount: registrations ?? 0,
-        groupMatchCount: groupMatchCount ?? 0,
-        playoffMatchCount: playoffMatchCount ?? 0,
-        total180s,
-      };
-    }),
+  const winnerMap = new Map(
+    (winnersRes.data ?? []).map((p) => [p.id, p]),
   );
+
+  const result = tournamentList.map((t) => ({
+    id: t.id,
+    weekNumber: t.week_number,
+    date: t.date,
+    type: t.type,
+    status: t.status,
+    winner: t.winner_player_id != null
+      ? (winnerMap.get(t.winner_player_id) ?? null)
+      : null,
+    generationType: t.generation_type,
+    playerCount: regCountByTournament.get(t.id) ?? 0,
+    groupMatchCount: groupMatchCountByTournament.get(t.id) ?? 0,
+    playoffMatchCount: playoffMatchCountByTournament.get(t.id) ?? 0,
+    total180s: total180sByTournament.get(t.id) ?? 0,
+  }));
 
   return NextResponse.json({ tournaments: result });
 }

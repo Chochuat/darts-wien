@@ -40,7 +40,7 @@ const AppBar = () => {
   return (
     <Box
       sx={{
-        display: { xs: "flex", lg: "none" },
+        display: { xs: "flex", md: "none" },
         flexDirection: "column",
         alignItems: "center",
         px: 2,

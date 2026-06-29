@@ -17,7 +17,7 @@ const PageLayout = ({ children }: PageLayoutProps) => {
     <Box sx={{ bgcolor: colors.background, minHeight: "100dvh" }}>
       <AppBar />
       <Sidebar />
-      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 }, ml: { lg: "100px" } }}>
+      <Box sx={{ px: { xs: 1.5, sm: 3 }, py: { xs: 2, md: 3 }, ml: { md: "100px" } }}>
         {children}
       </Box>
     </Box>

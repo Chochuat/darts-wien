@@ -40,7 +40,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <Box sx={{ display: { xs: "none", lg: "flex" }, flexDirection: "column", alignItems: "center", gap: 4.5, position: "fixed", left: 0, top: 0, bottom: 0, width: SIDEBAR_WIDTH, borderRight: "1px solid rgba(255,255,255,0.15)", zIndex: 1100, pt: 3 }}>
+    <Box sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", alignItems: "center", gap: 4.5, position: "fixed", left: 0, top: 0, bottom: 0, width: SIDEBAR_WIDTH, borderRight: "1px solid rgba(255,255,255,0.15)", zIndex: 1100, pt: 3 }}>
       <Link href="/" style={{ textDecoration: "none" }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
           <TrackChanges sx={{ color: colors.accent, fontSize: "1.5rem" }} />

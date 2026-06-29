@@ -60,33 +60,33 @@ export async function GET(
     if (m.tournament_group_id) groupIds.add(m.tournament_group_id);
   }
 
-  const { data: opponents } = await supabase
-    .from("players")
-    .select("id, name, slug")
-    .in("id", opponentIds.size ? [...opponentIds] : [0]);
+  const [opponentsRes, tournamentsRes, groupsRes] = await Promise.all([
+    supabase
+      .from("players")
+      .select("id, name, slug")
+      .in("id", opponentIds.size ? [...opponentIds] : [0]),
+    supabase
+      .from("tournaments")
+      .select("id, week_number, type")
+      .in("id", tournamentIds.size ? [...tournamentIds] : [0]),
+    supabase
+      .from("tournament_groups")
+      .select("id, label")
+      .in("id", groupIds.size ? [...groupIds] : [0]),
+  ]);
 
   const opponentMap = new Map(
-    (opponents ?? []).map((p) => [p.id, { name: p.name, slug: p.slug }]),
+    (opponentsRes.data ?? []).map((p) => [p.id, { name: p.name, slug: p.slug }]),
   );
 
-  const { data: tournaments } = await supabase
-    .from("tournaments")
-    .select("id, week_number, type")
-    .in("id", tournamentIds.size ? [...tournamentIds] : [0]);
-
   const tournamentMap = new Map(
-    (tournaments ?? []).map((t) => [
+    (tournamentsRes.data ?? []).map((t) => [
       t.id,
       { weekNumber: t.week_number, type: t.type },
     ]),
   );
 
-  const { data: groups } = await supabase
-    .from("tournament_groups")
-    .select("id, label")
-    .in("id", groupIds.size ? [...groupIds] : [0]);
-
-  const groupMap = new Map((groups ?? []).map((g) => [g.id, g.label]));
+  const groupMap = new Map((groupsRes.data ?? []).map((g) => [g.id, g.label]));
 
   let wins = 0;
   let losses = 0;
@@ -130,7 +130,7 @@ export async function GET(
     };
   });
 
-  const recentForm = form.slice(-5);
+  const recentForm = form.slice(0, 5);
 
   const response = {
     player: {
